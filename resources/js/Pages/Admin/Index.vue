@@ -14,6 +14,7 @@ const props = defineProps({
 });
 
 const page = usePage();
+const siteUrl = computed(() => (typeof window !== 'undefined' ? window.location.origin : ''));
 const active = ref('overview');
 const editingProject = ref(null);
 const editingExperience = ref(null);
@@ -31,7 +32,6 @@ watch(projectImage, (file) => {
     if (projectImagePreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(projectImagePreview.value);
     projectImagePreview.value = file ? URL.createObjectURL(file) : null;
 });
-
 watch(photo, (file) => {
     if (photoPreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(photoPreview.value);
     photoPreview.value = file ? URL.createObjectURL(file) : null;
@@ -43,7 +43,52 @@ const errorList = computed(() => Object.entries(errors.value).map(([field, messa
 const projectRows = ref([...props.projects]);
 const experienceRows = ref([...props.experiences]);
 const certificateRows = ref([...props.certificates]);
+const skillRows = ref([...props.skills]);
+const messageRows = ref([...props.messages]);
 const dragging = ref({ type: null, id: null });
+
+const PER_PAGE = 6;
+const viewMode = ref('grid');
+try { viewMode.value = localStorage.getItem('admin-view-mode') || 'grid'; } catch {}
+const setViewMode = (mode) => {
+    viewMode.value = mode;
+    try { localStorage.setItem('admin-view-mode', mode); } catch {}
+};
+
+const projectQuery = ref('');
+const experienceQuery = ref('');
+const certificateQuery = ref('');
+const skillQuery = ref('');
+const messageQuery = ref('');
+const projectPage = ref(1);
+const experiencePage = ref(1);
+const certificatePage = ref(1);
+const skillPage = ref(1);
+const messagePage = ref(1);
+
+const paginate = (rows, query, pageRef, fields) => {
+    const q = query.value.trim().toLowerCase();
+    const filtered = rows.value.filter((item) => {
+        if (!q) return true;
+        return fields.some((field) => String(item[field] ?? '').toLowerCase().includes(q));
+    });
+    const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    if (pageRef.value > pages) pageRef.value = pages;
+    const start = (pageRef.value - 1) * PER_PAGE;
+    return { filtered, pages, items: filtered.slice(start, start + PER_PAGE), total: filtered.length };
+};
+
+const projectPager = computed(() => paginate(projectRows, projectQuery, projectPage, ['title', 'company', 'category', 'summary']));
+const experiencePager = computed(() => paginate(experienceRows, experienceQuery, experiencePage, ['role', 'company', 'location', 'description']));
+const certificatePager = computed(() => paginate(certificateRows, certificateQuery, certificatePage, ['title', 'issuer', 'description']));
+const skillPager = computed(() => paginate(skillRows, skillQuery, skillPage, ['name', 'category']));
+const messagePager = computed(() => paginate(messageRows, messageQuery, messagePage, ['name', 'email', 'company', 'message']));
+
+watch(projectQuery, () => { projectPage.value = 1; });
+watch(experienceQuery, () => { experiencePage.value = 1; });
+watch(certificateQuery, () => { certificatePage.value = 1; });
+watch(skillQuery, () => { skillPage.value = 1; });
+watch(messageQuery, () => { messagePage.value = 1; });
 
 const profileForm = useForm({
     name: props.profile?.name ?? '',
@@ -74,7 +119,6 @@ const blankExperience = () => ({
 });
 const experienceLogo = ref(null);
 const experienceLogoPreview = ref(null);
-
 watch(experienceLogo, (file) => {
     if (experienceLogoPreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(experienceLogoPreview.value);
     experienceLogoPreview.value = file ? URL.createObjectURL(file) : null;
@@ -88,9 +132,24 @@ const experienceForm = ref(blankExperience());
 const skillForm = ref(blankSkill());
 const certificateForm = ref(blankCertificate());
 
-watch(() => props.projects, value => projectRows.value = [...value]);
-watch(() => props.experiences, value => experienceRows.value = [...value]);
-watch(() => props.certificates, value => certificateRows.value = [...value]);
+watch(() => props.projects, (value) => { projectRows.value = [...value]; });
+watch(() => props.experiences, (value) => { experienceRows.value = [...value]; });
+watch(() => props.certificates, (value) => { certificateRows.value = [...value]; });
+watch(() => props.skills, (value) => { skillRows.value = [...value]; });
+watch(() => props.messages, (value) => { messageRows.value = [...value]; });
+
+const navItems = [
+    ['overview', 'Overview'],
+    ['profile', 'Profile'],
+    ['projects', 'Projects'],
+    ['experience', 'Experience'],
+    ['certificates', 'Certificates'],
+    ['skills', 'Skills'],
+    ['linkedin', 'LinkedIn'],
+    ['sections', 'Sections'],
+    ['resume', 'Resume PDF'],
+    ['messages', 'Messages'],
+];
 
 const setTab = (tab) => {
     active.value = tab;
@@ -148,7 +207,7 @@ const editCertificate = (item = null) => {
 
 const persistOrder = (type) => {
     const rows = type === 'projects' ? projectRows.value : experienceRows.value;
-    router.patch(`/admin/${type}/reorder`, { ids: rows.map(item => item.id) }, { preserveScroll: true, preserveState: true });
+    router.patch(`/admin/${type}/reorder`, { ids: rows.map((item) => item.id) }, { preserveScroll: true, preserveState: true });
 };
 
 const startDrag = (event, type, id) => {
@@ -160,22 +219,22 @@ const startDrag = (event, type, id) => {
 const dropRecord = (type, targetId) => {
     if (dragging.value.type !== type || dragging.value.id === targetId) return;
     const rows = type === 'projects' ? projectRows.value : experienceRows.value;
-    const sourceIndex = rows.findIndex(item => item.id === dragging.value.id);
-    const targetIndex = rows.findIndex(item => item.id === targetId);
+    const sourceIndex = rows.findIndex((item) => item.id === dragging.value.id);
+    const targetIndex = rows.findIndex((item) => item.id === targetId);
     const [moved] = rows.splice(sourceIndex, 1);
     rows.splice(targetIndex, 0, moved);
-    rows.forEach((item, index) => item.order = index);
+    rows.forEach((item, index) => { item.order = index; });
     dragging.value = { type: null, id: null };
     persistOrder(type);
 };
 
 const moveRecord = (type, id, direction) => {
     const rows = type === 'projects' ? projectRows.value : experienceRows.value;
-    const index = rows.findIndex(item => item.id === id);
+    const index = rows.findIndex((item) => item.id === id);
     const target = index + direction;
     if (target < 0 || target >= rows.length) return;
     [rows[index], rows[target]] = [rows[target], rows[index]];
-    rows.forEach((item, order) => item.order = order);
+    rows.forEach((item, order) => { item.order = order; });
     persistOrder(type);
 };
 
@@ -207,10 +266,7 @@ const saveProject = () => {
     router.post(url, payload, {
         forceFormData: true,
         preserveScroll: true,
-        onSuccess: () => {
-            editingProject.value = null;
-            projectImage.value = null;
-        },
+        onSuccess: () => { editingProject.value = null; projectImage.value = null; },
     });
 };
 
@@ -249,14 +305,14 @@ const saveSkill = () => {
     const item = skillForm.value;
     const url = item.id ? `/admin/skills/${item.id}` : '/admin/skills';
     const method = item.id ? 'patch' : 'post';
-    router[method](url, item, { preserveScroll: true, onSuccess: () => editingSkill.value = null });
+    router[method](url, item, { preserveScroll: true, onSuccess: () => { editingSkill.value = null; } });
 };
 
 const saveCertificate = () => {
     const item = certificateForm.value;
     const url = item.id ? `/admin/certificates/${item.id}` : '/admin/certificates';
     const method = item.id ? 'patch' : 'post';
-    router[method](url, item, { preserveScroll: true, onSuccess: () => editingCertificate.value = null });
+    router[method](url, item, { preserveScroll: true, onSuccess: () => { editingCertificate.value = null; } });
 };
 
 const remove = (url, label) => {
@@ -264,6 +320,37 @@ const remove = (url, label) => {
         router.delete(url, { preserveScroll: true });
     }
 };
+
+const linkedInConnected = computed(() => !!profileForm.linkedin_url);
+const linkedInShareUrl = computed(() => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl.value || 'https://ibrahimnawab.com')}`);
+const linkedInFeatureText = computed(() => {
+    const name = profileForm.name || 'Ibrahim Nawab';
+    const headline = profileForm.headline || 'Full Stack Developer';
+    return `${name} — ${headline}\n\nExplore my portfolio: selected Laravel products, platforms and mobile work.\n${siteUrl.value || 'https://your-portfolio-url'}\n\nOpen to collaborations and product builds.`;
+});
+const copyNotice = ref('');
+const copyText = async (value, label = 'Copied') => {
+    try {
+        await navigator.clipboard.writeText(value);
+        copyNotice.value = label;
+        setTimeout(() => { copyNotice.value = ''; }, 2200);
+    } catch {
+        copyNotice.value = 'Copy failed — select and copy manually';
+    }
+};
+
+const tabTitle = computed(() => ({
+    overview: 'Overview',
+    profile: 'Profile',
+    projects: 'Projects',
+    experience: 'Experience',
+    certificates: 'Certificates',
+    skills: 'Skills',
+    linkedin: 'LinkedIn connect',
+    sections: 'Custom sections',
+    resume: 'Resume PDF',
+    messages: 'Messages',
+}[active.value] || active.value));
 </script>
 
 <template>
@@ -272,10 +359,15 @@ const remove = (url, label) => {
         <aside class="admin-sidebar">
             <Link href="/" class="admin-brand">IBRAHIM<span>.</span><small>Portfolio CMS</small></Link>
             <nav>
-                <button v-for="item in [
-                    ['overview','Overview'],['profile','Profile'],['projects','Projects'],['experience','Experience'],['certificates','Certificates'],['skills','Skills'],['sections','Custom sections'],['resume','Resume PDF'],['messages','Messages']
-                ]" :key="item[0]" :class="{ active: active === item[0] }" @click="setTab(item[0])">
-                    <span>{{ item[1] }}</span><b v-if="item[0] === 'messages' && stats.unreadMessages">{{ stats.unreadMessages }}</b>
+                <button
+                    v-for="item in navItems"
+                    :key="item[0]"
+                    :class="{ active: active === item[0] }"
+                    @click="setTab(item[0])"
+                >
+                    <span>{{ item[1] }}</span>
+                    <b v-if="item[0] === 'messages' && stats.unreadMessages">{{ stats.unreadMessages }}</b>
+                    <em v-else-if="item[0] === 'linkedin'" class="nav-dot" :class="{ on: linkedInConnected }" />
                 </button>
             </nav>
             <div class="admin-side-foot">
@@ -287,7 +379,10 @@ const remove = (url, label) => {
 
         <main class="admin-main">
             <header class="admin-topbar">
-                <div><small>Content management</small><h1>{{ active }}</h1></div>
+                <div>
+                    <small>Content management</small>
+                    <h1>{{ tabTitle }}</h1>
+                </div>
                 <div class="admin-topbar-actions">
                     <span class="admin-status"><i></i>Website live</span>
                     <Link class="admin-top-link" href="/" target="_blank">View site ↗</Link>
@@ -296,13 +391,25 @@ const remove = (url, label) => {
             </header>
 
             <div v-if="flash" class="admin-flash">{{ flash }}</div>
+            <div v-if="copyNotice" class="admin-flash">{{ copyNotice }}</div>
             <div v-if="errorList.length" class="admin-errors">
                 <strong>Please fix these fields.</strong>
                 <span v-for="error in errorList" :key="error.field"><b>{{ error.field }}</b> — {{ error.message }}</span>
             </div>
 
             <section v-if="active === 'overview'" class="admin-view">
-                <div class="admin-welcome"><div><span>Welcome back</span><h2>Manage your complete portfolio from one place.</h2><p>Every change here updates the public Laravel + Inertia website immediately.</p></div><img v-if="profile?.photo_path" :src="profile.photo_path" alt=""></div>
+                <div class="admin-welcome">
+                    <div>
+                        <span>Welcome back</span>
+                        <h2>Your portfolio CMS, ready to ship updates.</h2>
+                        <p>Projects, experience, skills and LinkedIn sharing — all in one place.</p>
+                        <div class="welcome-actions">
+                            <button type="button" class="admin-primary" @click="setTab('projects'); editProject()">Add project</button>
+                            <button type="button" class="admin-ghost" @click="setTab('linkedin')">LinkedIn connect</button>
+                        </div>
+                    </div>
+                    <img v-if="profile?.photo_path" :src="profile.photo_path" alt="">
+                </div>
                 <div class="admin-stats">
                     <button @click="setTab('projects')"><strong>{{ stats.projects }}</strong><span>Projects</span></button>
                     <button @click="setTab('experience')"><strong>{{ stats.experiences }}</strong><span>Experiences</span></button>
@@ -310,36 +417,160 @@ const remove = (url, label) => {
                     <button @click="setTab('skills')"><strong>{{ stats.skills }}</strong><span>Skills</span></button>
                     <button @click="setTab('messages')"><strong>{{ stats.unreadMessages }}</strong><span>Unread messages</span></button>
                 </div>
-                <div class="admin-quick">
-                    <h3>Quick actions</h3>
-                    <button @click="setTab('profile')">Update profile & photo <span>→</span></button>
-                    <button @click="setTab('projects'); editProject()">Add a new project <span>→</span></button>
-                    <button @click="setTab('experience'); editExperience()">Add experience <span>→</span></button>
+                <div class="admin-quick-grid">
+                    <button @click="setTab('profile')"><strong>Profile</strong><span>Photo, bio, social links</span></button>
+                    <button @click="setTab('linkedin')"><strong>LinkedIn</strong><span>Connect & share portfolio</span></button>
+                    <button @click="setTab('resume')"><strong>Resume</strong><span>PDF settings & download</span></button>
+                    <button @click="setTab('messages')"><strong>Inbox</strong><span>Client enquiries</span></button>
                 </div>
             </section>
 
-            <section v-if="active === 'sections'" class="admin-view"><div class="admin-heading"><h2>Custom sections</h2><button class="admin-primary" @click="editSection()">New section</button></div><div class="admin-records"><article v-for="section in sections" :key="section.id"><span>{{ section.order }}</span><div><h3>{{ section.title }}</h3><p>{{ section.published ? 'Published' : 'Draft' }}</p></div><div class="record-actions"><button @click="editSection(section)">Edit</button><button @click="sectionForm.delete(`/admin/sections/${section.id}`, { preserveScroll: true })">Delete</button></div></article></div><form class="admin-form" @submit.prevent="saveSection"><label><span>Eyebrow</span><input v-model="sectionForm.eyebrow"></label><label><span>Title</span><input v-model="sectionForm.title" required></label><label><span>Body</span><textarea v-model="sectionForm.body" rows="5" required></textarea></label><div class="admin-grid"><label><span>Link label</span><input v-model="sectionForm.link_label"></label><label><span>Link URL</span><input v-model="sectionForm.link_url" type="url"></label></div><label><span>Display order</span><input v-model="sectionForm.order" type="number" min="0"></label><label><input v-model="sectionForm.published" type="checkbox"> Published on homepage</label><p v-for="(error,field) in sectionForm.errors" :key="field" role="alert">{{ error }}</p><button class="admin-primary" :disabled="sectionForm.processing">Save section</button></form></section>
-            <section v-if="active === 'resume'" class="admin-view"><div class="admin-heading"><h2>Resume PDF</h2><a class="admin-primary" href="/resume">Download current PDF ↓</a></div><p>The PDF is generated from your current profile, skills and selected experience and projects. Changes appear on the next download.</p><form class="admin-form" @submit.prevent="saveProfile"><label><span>Resume headline</span><input v-model="profileForm.resume_headline"></label><label><span>Resume summary (leave blank to use profile summary)</span><textarea v-model="profileForm.resume_summary" rows="4"></textarea></label><label><span>Education title</span><input v-model="profileForm.education_title"></label><div class="admin-grid"><label><span>Institution</span><input v-model="profileForm.education_institution"></label><label><span>Period</span><input v-model="profileForm.education_period"></label></div><button class="admin-primary" :disabled="profileForm.processing">Save resume settings</button></form></section>
+            <section v-if="active === 'linkedin'" class="admin-view">
+                <div class="admin-heading">
+                    <div>
+                        <span>Distribution</span>
+                        <h2>LinkedIn connect</h2>
+                    </div>
+                    <span class="li-badge" :class="{ on: linkedInConnected }">{{ linkedInConnected ? 'Profile linked' : 'Not connected' }}</span>
+                </div>
+
+                <div class="li-hero">
+                    <div>
+                        <h3>Connect your portfolio to LinkedIn</h3>
+                        <p>Save your LinkedIn profile, share this website as a featured link, and push selected work to your network — without leaving the CMS.</p>
+                    </div>
+                    <ol>
+                        <li>Paste your LinkedIn profile URL below and save.</li>
+                        <li>Use Share / Featured helpers to promote the live site.</li>
+                        <li>On LinkedIn → Profile → Featured → Add a link → paste your portfolio URL.</li>
+                    </ol>
+                </div>
+
+                <form class="admin-form" @submit.prevent="saveProfile">
+                    <div class="admin-grid">
+                        <label>
+                            <span>LinkedIn profile URL</span>
+                            <input v-model="profileForm.linkedin_url" type="url" placeholder="https://www.linkedin.com/in/your-handle">
+                        </label>
+                        <label>
+                            <span>Public portfolio URL</span>
+                            <input :value="siteUrl" type="url" readonly>
+                        </label>
+                    </div>
+                    <div class="li-actions">
+                        <button class="admin-primary" type="submit" :disabled="profileForm.processing">Save LinkedIn link</button>
+                        <a v-if="profileForm.linkedin_url" class="admin-ghost" :href="profileForm.linkedin_url" target="_blank" rel="noreferrer">Open LinkedIn profile ↗</a>
+                        <a class="admin-ghost" :href="linkedInShareUrl" target="_blank" rel="noreferrer">Share portfolio on LinkedIn ↗</a>
+                        <button type="button" class="admin-ghost" @click="copyText(siteUrl, 'Portfolio URL copied')">Copy portfolio URL</button>
+                        <button type="button" class="admin-ghost" @click="copyText(linkedInFeatureText, 'Featured post text copied')">Copy Featured post text</button>
+                    </div>
+                </form>
+
+                <div class="li-share-grid">
+                    <article>
+                        <h4>Featured section text</h4>
+                        <pre>{{ linkedInFeatureText }}</pre>
+                    </article>
+                    <article>
+                        <h4>Suggested work to feature</h4>
+                        <ul>
+                            <li v-for="project in projectRows.slice(0, 5)" :key="project.id">
+                                <strong>{{ project.title }}</strong>
+                                <button type="button" @click="copyText(`${siteUrl}/work/${project.slug}`, 'Project URL copied')">Copy case URL</button>
+                            </li>
+                            <li v-if="!projectRows.length">Add projects first, then share case study links.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section v-if="active === 'sections'" class="admin-view">
+                <div class="admin-heading"><h2>Custom sections</h2><button class="admin-primary" @click="editSection()">New section</button></div>
+                <div class="admin-records">
+                    <article v-for="section in sections" :key="section.id">
+                        <span>{{ section.order }}</span>
+                        <div><h3>{{ section.title }}</h3><p>{{ section.published ? 'Published' : 'Draft' }}</p></div>
+                        <div class="record-actions">
+                            <button @click="editSection(section)">Edit</button>
+                            <button @click="sectionForm.delete(`/admin/sections/${section.id}`, { preserveScroll: true })">Delete</button>
+                        </div>
+                    </article>
+                </div>
+                <form class="admin-form" @submit.prevent="saveSection">
+                    <label><span>Eyebrow</span><input v-model="sectionForm.eyebrow"></label>
+                    <label><span>Title</span><input v-model="sectionForm.title" required></label>
+                    <label><span>Body</span><textarea v-model="sectionForm.body" rows="5" required></textarea></label>
+                    <div class="admin-grid">
+                        <label><span>Link label</span><input v-model="sectionForm.link_label"></label>
+                        <label><span>Link URL</span><input v-model="sectionForm.link_url" type="url"></label>
+                    </div>
+                    <label><span>Display order</span><input v-model="sectionForm.order" type="number" min="0"></label>
+                    <label><input v-model="sectionForm.published" type="checkbox"> Published on homepage</label>
+                    <p v-for="(error, field) in sectionForm.errors" :key="field" role="alert">{{ error }}</p>
+                    <button class="admin-primary" :disabled="sectionForm.processing">Save section</button>
+                </form>
+            </section>
+
+            <section v-if="active === 'resume'" class="admin-view">
+                <div class="admin-heading"><h2>Resume PDF</h2><a class="admin-primary" href="/resume">Download current PDF ↓</a></div>
+                <p class="admin-lead">The PDF is generated from your current profile, skills and selected experience and projects.</p>
+                <form class="admin-form" @submit.prevent="saveProfile">
+                    <label><span>Resume headline</span><input v-model="profileForm.resume_headline"></label>
+                    <label><span>Resume summary (leave blank to use profile summary)</span><textarea v-model="profileForm.resume_summary" rows="4"></textarea></label>
+                    <label><span>Education title</span><input v-model="profileForm.education_title"></label>
+                    <div class="admin-grid">
+                        <label><span>Institution</span><input v-model="profileForm.education_institution"></label>
+                        <label><span>Period</span><input v-model="profileForm.education_period"></label>
+                    </div>
+                    <button class="admin-primary" :disabled="profileForm.processing">Save resume settings</button>
+                </form>
+            </section>
+
             <section v-if="active === 'profile'" class="admin-view">
-                <div class="admin-heading"><div><span>Public identity</span><h2>Profile & biography</h2></div><button class="admin-primary" @click="saveProfile" :disabled="profileForm.processing">{{ profileForm.processing ? 'Saving…' : 'Save profile' }}</button></div>
+                <div class="admin-heading">
+                    <div><span>Public identity</span><h2>Profile & biography</h2></div>
+                    <button class="admin-primary" @click="saveProfile" :disabled="profileForm.processing">{{ profileForm.processing ? 'Saving…' : 'Save profile' }}</button>
+                </div>
                 <form class="admin-form profile-admin-form" @submit.prevent="saveProfile">
                     <div class="admin-photo">
                         <img v-if="photoPreview || profile?.photo_path" :src="photoPreview || profile.photo_path" alt="Current profile">
-                        <div><strong>Profile photo</strong><p>Portrait JPEG, PNG or WebP. Maximum 5 MB.</p><input type="file" accept="image/*" @change="photo = $event.target.files[0]"></div>
+                        <div>
+                            <strong>Profile photo</strong>
+                            <p>Portrait JPEG, PNG or WebP. Maximum 5 MB.</p>
+                            <input type="file" accept="image/*" @change="photo = $event.target.files[0]">
+                        </div>
                     </div>
-                    <div class="admin-grid"><label><span>Display name</span><input v-model="profileForm.name"></label><label><span>Professional headline</span><input v-model="profileForm.headline"></label></div>
-                    <div class="admin-grid"><label><span>Location</span><input v-model="profileForm.location"></label><label><span>Public email</span><input v-model="profileForm.email" type="email"></label></div>
-                    <label><span>WhatsApp number (international format, e.g. +92…)</span><input v-model="profileForm.whatsapp_number" type="tel"></label><label><span>Short summary</span><textarea v-model="profileForm.summary" rows="3"></textarea></label>
+                    <div class="admin-grid">
+                        <label><span>Display name</span><input v-model="profileForm.name"></label>
+                        <label><span>Professional headline</span><input v-model="profileForm.headline"></label>
+                    </div>
+                    <div class="admin-grid">
+                        <label><span>Location</span><input v-model="profileForm.location"></label>
+                        <label><span>Public email</span><input v-model="profileForm.email" type="email"></label>
+                    </div>
+                    <label><span>WhatsApp number (international format, e.g. +92…)</span><input v-model="profileForm.whatsapp_number" type="tel"></label>
+                    <label><span>Short summary</span><textarea v-model="profileForm.summary" rows="3"></textarea></label>
                     <label><span>Full biography</span><textarea v-model="profileForm.bio" rows="7"></textarea></label>
-                    <div class="admin-grid"><label><span>LinkedIn URL</span><input v-model="profileForm.linkedin_url" type="url"></label><label><span>GitHub URL</span><input v-model="profileForm.github_url" type="url"></label></div>
-                    <div class="admin-grid"><label><span>Availability</span><input v-model="profileForm.availability"></label><label><span>Years experience</span><input v-model="profileForm.years_experience" type="number" min="0"></label></div>
+                    <div class="admin-grid">
+                        <label><span>LinkedIn URL</span><input v-model="profileForm.linkedin_url" type="url"></label>
+                        <label><span>GitHub URL</span><input v-model="profileForm.github_url" type="url"></label>
+                    </div>
+                    <div class="admin-grid">
+                        <label><span>Availability</span><input v-model="profileForm.availability"></label>
+                        <label><span>Years experience</span><input v-model="profileForm.years_experience" type="number" min="0"></label>
+                    </div>
                     <button class="admin-primary mobile-save" type="submit">Save profile</button>
                 </form>
             </section>
 
             <section v-if="active === 'projects'" class="admin-view">
-                <div class="admin-heading"><div><span>Portfolio records</span><h2>Projects</h2></div><button class="admin-primary" @click="editProject()">+ Add project</button></div>
-                <form v-if="editingProject !== null" class="admin-form admin-editor" @submit.prevent="saveProject"><label><input v-model="projectForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
+                <div class="admin-heading">
+                    <div><span>Portfolio records</span><h2>Projects</h2></div>
+                    <button class="admin-primary" @click="editProject()">+ Add project</button>
+                </div>
+
+                <form v-if="editingProject !== null" class="admin-form admin-editor" @submit.prevent="saveProject">
+                    <label><input v-model="projectForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
                     <div class="editor-head"><h3>{{ projectForm.id ? 'Edit project' : 'New project' }}</h3><button type="button" @click="editingProject = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Title</span><input v-model="projectForm.title" required></label><label><span>Slug</span><input v-model="projectForm.slug" placeholder="project-url-slug" required></label></div>
                     <div class="admin-grid"><label><span>Category</span><input v-model="projectForm.category"></label><label><span>Associated company</span><input v-model="projectForm.company"></label></div>
@@ -355,34 +586,75 @@ const remove = (url, label) => {
                             <img :src="projectImagePreview || projectForm.image_path" alt="">
                         </div>
                         <input type="file" accept="image/*" @change="projectImage = $event.target.files?.[0] ?? null">
-                        <small class="field-hint">Shown on Work and homepage cards. JPEG/PNG/WebP, max 5 MB.</small>
                     </label>
                     <label class="admin-check"><input v-model="projectForm.featured" type="checkbox"><span>Feature on homepage</span></label>
                     <button class="admin-primary" type="submit">Save project</button>
                 </form>
-                <p class="sort-help">Drag records using the handle to control their public display order. Arrow buttons work on touch devices.</p>
-                <div class="admin-records sortable-records sortable-records--projects">
+
+                <div class="admin-toolbar">
+                    <input v-model="projectQuery" type="search" placeholder="Search projects…">
+                    <div class="view-toggle" role="group" aria-label="View mode">
+                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
+                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
+                    </div>
+                    <span class="toolbar-meta">{{ projectPager.total }} items</span>
+                </div>
+
+                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--projects'">
                     <article
-                        v-for="project in projectRows"
+                        v-for="project in projectPager.items"
                         :key="project.id"
                         draggable="true"
-                        :class="{ dragging: dragging.type === 'projects' && dragging.id === project.id }"
+                        :class="[{ dragging: dragging.type === 'projects' && dragging.id === project.id }, viewMode === 'grid' ? 'admin-card' : '']"
                         @dragstart="startDrag($event, 'projects', project.id)"
                         @dragover.prevent
                         @drop="dropRecord('projects', project.id)"
                         @dragend="dragging = { type: null, id: null }"
                     >
-                        <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
-                        <div class="record-order">{{ String(project.order + 1).padStart(2,'0') }}</div>
-                        <div><small>{{ project.category }}<template v-if="project.company"> · {{ project.company }}</template></small><h3>{{ project.title }}</h3><p>{{ project.summary }}</p></div>
-                        <div class="record-actions"><button title="Move up" @click="moveRecord('projects', project.id, -1)">↑</button><button title="Move down" @click="moveRecord('projects', project.id, 1)">↓</button><button @click="editProject(project)">Edit</button><Link :href="`/work/${project.slug}`" target="_blank">View ↗</Link><button class="danger" @click="remove(`/admin/projects/${project.id}`, project.title)">Delete</button></div>
+                        <template v-if="viewMode === 'grid'">
+                            <div class="admin-card-cover">
+                                <img v-if="project.image_path" :src="project.image_path" :alt="project.title">
+                                <span v-else>{{ project.title.slice(0, 1) }}</span>
+                            </div>
+                            <div class="admin-card-body">
+                                <small>{{ project.category }}<template v-if="project.company"> · {{ project.company }}</template></small>
+                                <h3>{{ project.title }}</h3>
+                                <p>{{ project.summary }}</p>
+                                <div class="record-actions">
+                                    <button @click="editProject(project)">Edit</button>
+                                    <Link :href="`/work/${project.slug}`" target="_blank">View ↗</Link>
+                                    <button class="danger" @click="remove(`/admin/projects/${project.id}`, project.title)">Delete</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+                            <div class="record-order">{{ String(project.order + 1).padStart(2, '0') }}</div>
+                            <div><small>{{ project.category }}<template v-if="project.company"> · {{ project.company }}</template></small><h3>{{ project.title }}</h3><p>{{ project.summary }}</p></div>
+                            <div class="record-actions">
+                                <button title="Move up" @click="moveRecord('projects', project.id, -1)">↑</button>
+                                <button title="Move down" @click="moveRecord('projects', project.id, 1)">↓</button>
+                                <button @click="editProject(project)">Edit</button>
+                                <Link :href="`/work/${project.slug}`" target="_blank">View ↗</Link>
+                                <button class="danger" @click="remove(`/admin/projects/${project.id}`, project.title)">Delete</button>
+                            </div>
+                        </template>
                     </article>
+                </div>
+                <div v-if="projectPager.pages > 1" class="admin-pager">
+                    <button type="button" :disabled="projectPage <= 1" @click="projectPage--">← Prev</button>
+                    <span>Page {{ projectPage }} / {{ projectPager.pages }}</span>
+                    <button type="button" :disabled="projectPage >= projectPager.pages" @click="projectPage++">Next →</button>
                 </div>
             </section>
 
             <section v-if="active === 'experience'" class="admin-view">
-                <div class="admin-heading"><div><span>Career history</span><h2>Experience</h2></div><button class="admin-primary" @click="editExperience()">+ Add experience</button></div>
-                <form v-if="editingExperience !== null" class="admin-form admin-editor" @submit.prevent="saveExperience"><label><input v-model="experienceForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
+                <div class="admin-heading">
+                    <div><span>Career history</span><h2>Experience</h2></div>
+                    <button class="admin-primary" @click="editExperience()">+ Add experience</button>
+                </div>
+                <form v-if="editingExperience !== null" class="admin-form admin-editor" @submit.prevent="saveExperience">
+                    <label><input v-model="experienceForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
                     <div class="editor-head"><h3>{{ experienceForm.id ? 'Edit experience' : 'New experience' }}</h3><button type="button" @click="editingExperience = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Role</span><input v-model="experienceForm.role" required></label><label><span>Company</span><input v-model="experienceForm.company" required></label></div>
                     <label><span>Company URL</span><input v-model="experienceForm.company_url" type="url" placeholder="https://"></label>
@@ -392,76 +664,201 @@ const remove = (url, label) => {
                             <img :src="experienceLogoPreview || experienceForm.logo_path" alt="">
                         </div>
                         <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" @change="experienceLogo = $event.target.files?.[0] ?? null">
-                        <small class="field-hint">Square PNG/JPG/WebP preferred. Shown on the Experience page.</small>
                     </label>
                     <div class="admin-grid">
                         <label><span>Employment type</span><select v-model="experienceForm.employment_type"><option value="">Select type</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Contract</option><option>Internship</option></select></label>
                         <label><span>Work mode</span><select v-model="experienceForm.work_mode"><option value="">Select mode</option><option>Remote</option><option>On-site</option><option>Hybrid</option></select></label>
                     </div>
-                    <label><span>Location</span><input v-model="experienceForm.location" placeholder="Karachi, Sindh, Pakistan"></label>
+                    <label><span>Location</span><input v-model="experienceForm.location"></label>
                     <label><span>Display order</span><input v-model="experienceForm.order" type="number" min="0"></label>
-                    <div class="admin-grid"><label><span>Start date (optional)</span><input v-model="experienceForm.start_date" type="date"></label><label><span>End date (empty = present)</span><input v-model="experienceForm.end_date" type="date"></label></div>
+                    <div class="admin-grid"><label><span>Start date</span><input v-model="experienceForm.start_date" type="date"></label><label><span>End date</span><input v-model="experienceForm.end_date" type="date"></label></div>
                     <label><span>Description</span><textarea v-model="experienceForm.description" rows="5"></textarea></label>
                     <button class="admin-primary" type="submit">Save experience</button>
                 </form>
-                <p class="sort-help">Drag roles into the exact order you want visitors to see them.</p>
-                <div class="admin-records sortable-records sortable-records--experiences">
+
+                <div class="admin-toolbar">
+                    <input v-model="experienceQuery" type="search" placeholder="Search experience…">
+                    <div class="view-toggle" role="group" aria-label="View mode">
+                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
+                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
+                    </div>
+                    <span class="toolbar-meta">{{ experiencePager.total }} items</span>
+                </div>
+
+                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--experiences'">
                     <article
-                        v-for="item in experienceRows"
+                        v-for="item in experiencePager.items"
                         :key="item.id"
                         draggable="true"
-                        :class="{ dragging: dragging.type === 'experiences' && dragging.id === item.id }"
+                        :class="[{ dragging: dragging.type === 'experiences' && dragging.id === item.id }, viewMode === 'grid' ? 'admin-card' : '']"
                         @dragstart="startDrag($event, 'experiences', item.id)"
                         @dragover.prevent
                         @drop="dropRecord('experiences', item.id)"
                         @dragend="dragging = { type: null, id: null }"
                     >
-                        <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
-                        <div class="record-order">{{ String(item.order + 1).padStart(2,'0') }}</div>
-                        <img v-if="item.logo_path" class="admin-exp-logo" :src="item.logo_path" :alt="item.company">
-                        <span v-else class="admin-exp-logo admin-exp-logo--empty" aria-hidden="true"></span>
-                        <div><small>{{ item.company }}<template v-if="item.employment_type"> · {{ item.employment_type }}</template><template v-if="item.work_mode"> · {{ item.work_mode }}</template> · {{ item.location }}</small><h3>{{ item.role }}</h3><p>{{ item.description }}</p></div>
-                        <div class="record-actions"><button title="Move up" @click="moveRecord('experiences', item.id, -1)">↑</button><button title="Move down" @click="moveRecord('experiences', item.id, 1)">↓</button><button @click="editExperience(item)">Edit</button><button class="danger" @click="remove(`/admin/experiences/${item.id}`, item.role)">Delete</button></div>
+                        <template v-if="viewMode === 'grid'">
+                            <div class="admin-card-body experience-card-body">
+                                <img v-if="item.logo_path" class="admin-exp-logo" :src="item.logo_path" :alt="item.company">
+                                <span v-else class="admin-exp-logo admin-exp-logo--empty" />
+                                <small>{{ item.company }}</small>
+                                <h3>{{ item.role }}</h3>
+                                <p>{{ item.description }}</p>
+                                <div class="record-actions">
+                                    <button @click="editExperience(item)">Edit</button>
+                                    <button class="danger" @click="remove(`/admin/experiences/${item.id}`, item.role)">Delete</button>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div class="drag-handle">⋮⋮</div>
+                            <div class="record-order">{{ String(item.order + 1).padStart(2, '0') }}</div>
+                            <img v-if="item.logo_path" class="admin-exp-logo" :src="item.logo_path" :alt="item.company">
+                            <span v-else class="admin-exp-logo admin-exp-logo--empty" />
+                            <div><small>{{ item.company }} · {{ item.location }}</small><h3>{{ item.role }}</h3><p>{{ item.description }}</p></div>
+                            <div class="record-actions">
+                                <button @click="moveRecord('experiences', item.id, -1)">↑</button>
+                                <button @click="moveRecord('experiences', item.id, 1)">↓</button>
+                                <button @click="editExperience(item)">Edit</button>
+                                <button class="danger" @click="remove(`/admin/experiences/${item.id}`, item.role)">Delete</button>
+                            </div>
+                        </template>
                     </article>
+                </div>
+                <div v-if="experiencePager.pages > 1" class="admin-pager">
+                    <button type="button" :disabled="experiencePage <= 1" @click="experiencePage--">← Prev</button>
+                    <span>Page {{ experiencePage }} / {{ experiencePager.pages }}</span>
+                    <button type="button" :disabled="experiencePage >= experiencePager.pages" @click="experiencePage++">Next →</button>
                 </div>
             </section>
 
             <section v-if="active === 'certificates'" class="admin-view">
-                <div class="admin-heading"><div><span>Education & recognition</span><h2>Certificates</h2></div><button class="admin-primary" @click="editCertificate()">+ Add certificate</button></div>
+                <div class="admin-heading">
+                    <div><span>Education & recognition</span><h2>Certificates</h2></div>
+                    <button class="admin-primary" @click="editCertificate()">+ Add certificate</button>
+                </div>
                 <form v-if="editingCertificate !== null" class="admin-form admin-editor" @submit.prevent="saveCertificate">
                     <div class="editor-head"><h3>{{ certificateForm.id ? 'Edit certificate' : 'New certificate' }}</h3><button type="button" @click="editingCertificate = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Certificate title</span><input v-model="certificateForm.title" required></label><label><span>Issuer</span><input v-model="certificateForm.issuer" required></label></div>
-                    <div class="admin-grid"><label><span>Issue date</span><input v-model="certificateForm.issue_date" type="date"></label><label><span>Credential URL</span><input v-model="certificateForm.credential_url" type="url" placeholder="https://"></label></div>
+                    <div class="admin-grid"><label><span>Issue date</span><input v-model="certificateForm.issue_date" type="date"></label><label><span>Credential URL</span><input v-model="certificateForm.credential_url" type="url"></label></div>
                     <label><span>Description</span><textarea v-model="certificateForm.description" rows="4"></textarea></label>
                     <label><span>Display order</span><input v-model="certificateForm.order" type="number" min="0"></label>
                     <button class="admin-primary" type="submit">Save certificate</button>
                 </form>
-                <div class="certificate-admin-list">
-                    <article v-for="certificate in certificateRows" :key="certificate.id">
-                        <span class="certificate-mark">✓</span>
-                        <div><small>{{ certificate.issuer }}</small><h3>{{ certificate.title }}</h3><p>{{ certificate.description }}</p></div>
-                        <div class="record-actions"><button @click="editCertificate(certificate)">Edit</button><a v-if="certificate.credential_url" :href="certificate.credential_url" target="_blank">Credential ↗</a><button class="danger" @click="remove(`/admin/certificates/${certificate.id}`, certificate.title)">Delete</button></div>
+                <div class="admin-toolbar">
+                    <input v-model="certificateQuery" type="search" placeholder="Search certificates…">
+                    <div class="view-toggle">
+                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
+                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
+                    </div>
+                </div>
+                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'certificate-admin-list'">
+                    <article v-for="certificate in certificatePager.items" :key="certificate.id" :class="{ 'admin-card': viewMode === 'grid' }">
+                        <div class="admin-card-body" v-if="viewMode === 'grid'">
+                            <small>{{ certificate.issuer }}</small>
+                            <h3>{{ certificate.title }}</h3>
+                            <p>{{ certificate.description }}</p>
+                            <div class="record-actions">
+                                <button @click="editCertificate(certificate)">Edit</button>
+                                <button class="danger" @click="remove(`/admin/certificates/${certificate.id}`, certificate.title)">Delete</button>
+                            </div>
+                        </div>
+                        <template v-else>
+                            <span class="certificate-mark">✓</span>
+                            <div><small>{{ certificate.issuer }}</small><h3>{{ certificate.title }}</h3><p>{{ certificate.description }}</p></div>
+                            <div class="record-actions">
+                                <button @click="editCertificate(certificate)">Edit</button>
+                                <button class="danger" @click="remove(`/admin/certificates/${certificate.id}`, certificate.title)">Delete</button>
+                            </div>
+                        </template>
                     </article>
+                </div>
+                <div v-if="certificatePager.pages > 1" class="admin-pager">
+                    <button type="button" :disabled="certificatePage <= 1" @click="certificatePage--">← Prev</button>
+                    <span>Page {{ certificatePage }} / {{ certificatePager.pages }}</span>
+                    <button type="button" :disabled="certificatePage >= certificatePager.pages" @click="certificatePage++">Next →</button>
                 </div>
             </section>
 
             <section v-if="active === 'skills'" class="admin-view">
-                <div class="admin-heading"><div><span>Technical capability</span><h2>Skills</h2></div><button class="admin-primary" @click="editSkill()">+ Add skill</button></div>
+                <div class="admin-heading">
+                    <div><span>Technical capability</span><h2>Skills</h2></div>
+                    <button class="admin-primary" @click="editSkill()">+ Add skill</button>
+                </div>
                 <form v-if="editingSkill !== null" class="admin-form admin-editor skill-editor" @submit.prevent="saveSkill">
                     <div class="editor-head"><h3>{{ skillForm.id ? 'Edit skill' : 'New skill' }}</h3><button type="button" @click="editingSkill = null">Close ×</button></div>
-                    <div class="admin-grid four"><label><span>Skill</span><input v-model="skillForm.name" required></label><label><span>Category</span><input v-model="skillForm.category" required></label><label><span>Level %</span><input v-model="skillForm.proficiency" type="number" min="1" max="100"></label><label><span>Order</span><input v-model="skillForm.order" type="number" min="0"></label></div>
+                    <div class="admin-grid four">
+                        <label><span>Skill</span><input v-model="skillForm.name" required></label>
+                        <label><span>Category</span><input v-model="skillForm.category" required></label>
+                        <label><span>Level %</span><input v-model="skillForm.proficiency" type="number" min="1" max="100"></label>
+                        <label><span>Order</span><input v-model="skillForm.order" type="number" min="0"></label>
+                    </div>
                     <button class="admin-primary" type="submit">Save skill</button>
                 </form>
-                <div class="skill-admin-list">
-                    <article v-for="skill in skills" :key="skill.id"><div><small>{{ skill.category }}</small><strong>{{ skill.name }}</strong></div><span>{{ skill.proficiency }}%</span><div class="skill-bar"><i :style="{ width: `${skill.proficiency}%` }"></i></div><button @click="editSkill(skill)">Edit</button><button class="danger" @click="remove(`/admin/skills/${skill.id}`, skill.name)">Delete</button></article>
+                <div class="admin-toolbar">
+                    <input v-model="skillQuery" type="search" placeholder="Search skills…">
+                    <div class="view-toggle">
+                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
+                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
+                    </div>
+                </div>
+                <div :class="viewMode === 'grid' ? 'admin-card-grid skills-grid-cards' : 'skill-admin-list'">
+                    <article v-for="skill in skillPager.items" :key="skill.id" :class="{ 'admin-card': viewMode === 'grid' }">
+                        <div v-if="viewMode === 'grid'" class="admin-card-body">
+                            <small>{{ skill.category }}</small>
+                            <h3>{{ skill.name }}</h3>
+                            <div class="skill-bar"><i :style="{ width: `${skill.proficiency}%` }"></i></div>
+                            <span>{{ skill.proficiency }}%</span>
+                            <div class="record-actions">
+                                <button @click="editSkill(skill)">Edit</button>
+                                <button class="danger" @click="remove(`/admin/skills/${skill.id}`, skill.name)">Delete</button>
+                            </div>
+                        </div>
+                        <template v-else>
+                            <div><small>{{ skill.category }}</small><strong>{{ skill.name }}</strong></div>
+                            <span>{{ skill.proficiency }}%</span>
+                            <div class="skill-bar"><i :style="{ width: `${skill.proficiency}%` }"></i></div>
+                            <button @click="editSkill(skill)">Edit</button>
+                            <button class="danger" @click="remove(`/admin/skills/${skill.id}`, skill.name)">Delete</button>
+                        </template>
+                    </article>
+                </div>
+                <div v-if="skillPager.pages > 1" class="admin-pager">
+                    <button type="button" :disabled="skillPage <= 1" @click="skillPage--">← Prev</button>
+                    <span>Page {{ skillPage }} / {{ skillPager.pages }}</span>
+                    <button type="button" :disabled="skillPage >= skillPager.pages" @click="skillPage++">Next →</button>
                 </div>
             </section>
 
             <section v-if="active === 'messages'" class="admin-view">
                 <div class="admin-heading"><div><span>Project enquiries</span><h2>Messages</h2></div></div>
-                <div v-if="!messages.length" class="admin-empty">No messages yet.</div>
+                <div class="admin-toolbar">
+                    <input v-model="messageQuery" type="search" placeholder="Search messages…">
+                    <span class="toolbar-meta">{{ messagePager.total }} messages</span>
+                </div>
+                <div v-if="!messagePager.total" class="admin-empty">No messages yet.</div>
                 <div class="message-list">
-                    <article v-for="message in messages" :key="message.id" :class="{ unread: !message.read_at }"><header><div><span v-if="!message.read_at"></span><strong>{{ message.name }}</strong><small>{{ message.email }} · {{ message.company || 'Independent' }}</small></div><time>{{ new Date(message.created_at).toLocaleDateString() }}</time></header><p>{{ message.message }}</p><footer><span>{{ message.budget || 'Budget not specified' }}</span><button v-if="!message.read_at" @click="router.patch(`/admin/messages/${message.id}/read`, {}, { preserveScroll: true })">Mark read</button><a :href="`mailto:${message.email}`">Reply ↗</a><button class="danger" @click="remove(`/admin/messages/${message.id}`, 'message')">Delete</button></footer></article>
+                    <article v-for="message in messagePager.items" :key="message.id" :class="{ unread: !message.read_at }">
+                        <header>
+                            <div>
+                                <span v-if="!message.read_at"></span>
+                                <strong>{{ message.name }}</strong>
+                                <small>{{ message.email }} · {{ message.company || 'Independent' }}</small>
+                            </div>
+                            <time>{{ new Date(message.created_at).toLocaleDateString() }}</time>
+                        </header>
+                        <p>{{ message.message }}</p>
+                        <footer>
+                            <span>{{ message.budget || 'Budget not specified' }}</span>
+                            <button v-if="!message.read_at" @click="router.patch(`/admin/messages/${message.id}/read`, {}, { preserveScroll: true })">Mark read</button>
+                            <a :href="`mailto:${message.email}`">Reply ↗</a>
+                            <button class="danger" @click="remove(`/admin/messages/${message.id}`, 'message')">Delete</button>
+                        </footer>
+                    </article>
+                </div>
+                <div v-if="messagePager.pages > 1" class="admin-pager">
+                    <button type="button" :disabled="messagePage <= 1" @click="messagePage--">← Prev</button>
+                    <span>Page {{ messagePage }} / {{ messagePager.pages }}</span>
+                    <button type="button" :disabled="messagePage >= messagePager.pages" @click="messagePage++">Next →</button>
                 </div>
             </section>
         </main>
