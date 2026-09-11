@@ -11,6 +11,7 @@ use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,10 +48,11 @@ class AdminController extends Controller
             'summary' => ['nullable', 'string', 'max:500'],
             'bio' => ['nullable', 'string', 'max:3000'],
             'email' => ['nullable', 'email', 'max:150'],
+            'whatsapp_number' => ['nullable', 'regex:/^\+[1-9][0-9]{7,14}$/'],
             'linkedin_url' => ['nullable', 'url:http,https', 'max:255'],
             'github_url' => ['nullable', 'url:http,https', 'max:255'],
-            'availability' => ['required', 'string', 'max:150'],
-            'years_experience' => ['required', 'integer', 'min:0', 'max:60'],
+            'availability' => ['nullable', 'string', 'max:150'],
+            'years_experience' => ['nullable', 'integer', 'min:0', 'max:60'],
             'photo' => ['nullable', 'image', 'max:5120'],
             'resume_headline' => ['nullable', 'string', 'max:150'],
             'resume_summary' => ['nullable', 'string', 'max:1000'],
@@ -59,7 +61,12 @@ class AdminController extends Controller
             'education_period' => ['nullable', 'string', 'max:80'],
         ]);
 
+        $validated['availability'] = $validated['availability'] ?: ($profile->availability ?? 'Available for selected projects');
+        $validated['years_experience'] = $validated['years_experience'] ?? $profile->years_experience ?? 0;
         if ($request->hasFile('photo')) {
+            if ($profile->photo_path && str_starts_with($profile->photo_path, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $profile->photo_path));
+            }
             $validated['photo_path'] = '/storage/'.$request->file('photo')->store('portfolio/profile', 'public');
         }
 
@@ -113,13 +120,16 @@ class AdminController extends Controller
 
     public function updateExperience(Request $request, Experience $experience): RedirectResponse
     {
-        $experience->update($this->experienceData($request));
+        $experience->update($this->experienceData($request, $experience));
 
         return back()->with('success', 'Experience updated successfully.');
     }
 
     public function destroyExperience(Experience $experience): RedirectResponse
     {
+        if ($experience->logo_path && str_starts_with($experience->logo_path, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $experience->logo_path));
+        }
         $experience->delete();
 
         return back()->with('success', 'Experience deleted.');
@@ -216,6 +226,7 @@ class AdminController extends Controller
         ]);
 
         $validated['featured'] = $request->boolean('featured');
+        $validated['include_in_resume'] = $request->boolean('include_in_resume');
         $validated['tech_stack'] = collect(explode(',', $validated['tech_stack'] ?? ''))
             ->map(fn (string $item) => trim($item))
             ->filter()
@@ -223,6 +234,9 @@ class AdminController extends Controller
             ->all();
 
         if ($request->hasFile('image')) {
+            if ($project?->image_path && str_starts_with($project->image_path, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $project->image_path));
+            }
             $validated['image_path'] = '/storage/'.$request->file('image')->store('portfolio/projects', 'public');
         }
 
@@ -231,12 +245,13 @@ class AdminController extends Controller
         return $validated;
     }
 
-    private function experienceData(Request $request): array
+    private function experienceData(Request $request, ?Experience $experience = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'include_in_resume' => ['sometimes', 'boolean'],
             'role' => ['required', 'string', 'max:180'],
             'company' => ['required', 'string', 'max:180'],
+            'company_url' => ['nullable', 'url:http,https', 'max:255'],
             'employment_type' => ['nullable', 'string', 'max:80'],
             'work_mode' => ['nullable', Rule::in(['Remote', 'On-site', 'Hybrid'])],
             'location' => ['nullable', 'string', 'max:120'],
@@ -244,7 +259,21 @@ class AdminController extends Controller
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'description' => ['nullable', 'string', 'max:3000'],
             'order' => ['required', 'integer', 'min:0'],
+            'logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ]);
+
+        $validated['include_in_resume'] = $request->boolean('include_in_resume');
+
+        if ($request->hasFile('logo')) {
+            if ($experience?->logo_path && str_starts_with($experience->logo_path, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $experience->logo_path));
+            }
+            $validated['logo_path'] = '/storage/'.$request->file('logo')->store('portfolio/companies', 'public');
+        }
+
+        unset($validated['logo']);
+
+        return $validated;
     }
 
     private function skillData(Request $request): array

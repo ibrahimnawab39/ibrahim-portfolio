@@ -15,11 +15,32 @@
   "resources/js/Components/Modal.vue": [
     "/build/assets/DeleteUserForm-DmgA4Ol8.js"
   ],
+  "resources/js/Components/Portfolio/AmbientScene.vue": [
+    "/build/assets/AmbientScene-CdqcK6xN.js"
+  ],
   "resources/js/Components/Portfolio/ArchitectureScene.vue": [
-    "/build/assets/Home-_3sJp5ih.js"
+    "/build/assets/Home-B3q-9nW-.js"
+  ],
+  "resources/js/Components/Portfolio/BrandMark.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/CompanyLogo.vue": [
+    "/build/assets/CompanyLogo-DBsmU8oY.js"
+  ],
+  "resources/js/Components/Portfolio/PageAtmosphere.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/ProjectCover.vue": [
+    "/build/assets/ProjectCover-D_pFmt3q.js"
+  ],
+  "resources/js/Components/Portfolio/Reveal.vue": [
+    "/build/assets/Reveal-COkcuhhh.js"
   ],
   "resources/js/Components/Portfolio/SeoHead.vue": [
-    "/build/assets/PortfolioLayout-C4yABIDF.js"
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/TiltCard.vue": [
+    "/build/assets/TiltCard-BCpF3Iif.js"
   ],
   "resources/js/Components/PrimaryButton.vue": [
     "/build/assets/PrimaryButton-CIooT64n.js"
@@ -37,10 +58,10 @@
     "/build/assets/GuestLayout-B5DkTAnn.js"
   ],
   "resources/js/Layouts/PortfolioLayout.vue": [
-    "/build/assets/PortfolioLayout-C4yABIDF.js"
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
   ],
   "resources/js/Pages/Admin/Index.vue": [
-    "/build/assets/Index-C6qoL0dX.js"
+    "/build/assets/Index-CdbA_gaU.js"
   ],
   "resources/js/Pages/Auth/ConfirmPassword.vue": [
     "/build/assets/ConfirmPassword-D6_B41d3.js"
@@ -49,7 +70,7 @@
     "/build/assets/ForgotPassword-DEwk6qKt.js"
   ],
   "resources/js/Pages/Auth/Login.vue": [
-    "/build/assets/Login-BZ7Anw9R.js"
+    "/build/assets/Login-BcbRxYgw.js"
   ],
   "resources/js/Pages/Auth/Register.vue": [
     "/build/assets/Register-DapTKthh.js"
@@ -64,22 +85,22 @@
     "/build/assets/Dashboard-B6Fx7LC9.js"
   ],
   "resources/js/Pages/Home.vue": [
-    "/build/assets/Home-_3sJp5ih.js"
+    "/build/assets/Home-B3q-9nW-.js"
   ],
   "resources/js/Pages/Portfolio/About.vue": [
-    "/build/assets/About-CmVAwdZ2.js"
+    "/build/assets/About-DBX0MN0l.js"
   ],
   "resources/js/Pages/Portfolio/Contact.vue": [
-    "/build/assets/Contact-CLXzKdWt.js"
+    "/build/assets/Contact-CEqCu1uk.js"
   ],
   "resources/js/Pages/Portfolio/Experience.vue": [
-    "/build/assets/Experience-BehbcokS.js"
+    "/build/assets/Experience-CDHS3tpi.js"
   ],
   "resources/js/Pages/Portfolio/ProjectShow.vue": [
-    "/build/assets/ProjectShow-BjqDpmqN.js"
+    "/build/assets/ProjectShow-9UhnNCZX.js"
   ],
   "resources/js/Pages/Portfolio/Work.vue": [
-    "/build/assets/Work-FdBS1gkJ.js"
+    "/build/assets/Work-INgG_Me1.js"
   ],
   "resources/js/Pages/Profile/Edit.vue": [
     "/build/assets/Edit-D5YX8A2M.js"

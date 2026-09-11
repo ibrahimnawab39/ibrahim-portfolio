@@ -1,8 +1,10 @@
-import { computed, unref, withCtx, createVNode, createTextVNode, toDisplayString, openBlock, createBlock, createCommentVNode, withDirectives, vModelText, vModelSelect, withModifiers, useSSRContext } from "vue";
+import { computed, unref, withCtx, createVNode, toDisplayString, createTextVNode, openBlock, createBlock, createCommentVNode, withDirectives, vModelText, vModelSelect, withModifiers, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderAttr, ssrInterpolate, ssrIncludeBooleanAttr, ssrLooseContain, ssrLooseEqual } from "vue/server-renderer";
-import { _ as _sfc_main$1 } from "./PortfolioLayout-C4yABIDF.js";
+import { _ as _sfc_main$1, a as _sfc_main$2 } from "./PageAtmosphere-tZ9iTIjN.js";
+import { _ as _sfc_main$3 } from "./AmbientScene-CdqcK6xN.js";
 import { usePage, useForm, Head } from "@inertiajs/vue3";
 import { motion } from "motion-v";
+import "./_plugin-vue_export-helper-1tPrXgE0.js";
 const _sfc_main = {
   __name: "Contact",
   __ssrInlineRender: true,
@@ -34,14 +36,109 @@ const _sfc_main = {
       _push(ssrRenderComponent(_sfc_main$1, { profile: __props.profile }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div class="contact-page"${_scopeId}>`);
+            _push2(`<div class="contact-page has-atmosphere"${_scopeId}>`);
+            _push2(ssrRenderComponent(_sfc_main$2, {
+              tone: "contact",
+              mode: "orbs"
+            }, null, _parent2, _scopeId));
             _push2(ssrRenderComponent(unref(motion).aside, {
-              initial: { opacity: 0, x: -25 },
-              animate: { opacity: 1, x: 0 }
+              initial: { opacity: 0, x: -28 },
+              animate: { opacity: 1, x: 0 },
+              transition: { duration: 0.55 }
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`<span class="section-kicker"${_scopeId2}>04 / Start a conversation</span><h1${_scopeId2}>Let’s build something <em${_scopeId2}>worth relying on.</em></h1><p${_scopeId2}>Tell me what you are solving, where the friction lives and what a successful outcome looks like.</p><div class="contact-details"${_scopeId2}><div${_scopeId2}><small${_scopeId2}>Email</small><a${ssrRenderAttr("href", `mailto:${__props.profile?.email}`)}${_scopeId2}>${ssrInterpolate(__props.profile?.email)}</a></div><div${_scopeId2}><small${_scopeId2}>Location</small><span${_scopeId2}>${ssrInterpolate(__props.profile?.location ?? "Karachi, Pakistan")} · Working globally</span></div><div${_scopeId2}><small${_scopeId2}>Availability</small><span class="available"${_scopeId2}><i${_scopeId2}></i>${ssrInterpolate(__props.profile?.availability)}</span></div></div>`);
+                  _push3(`<span class="section-kicker"${_scopeId2}>04 / Start a conversation</span><h1${_scopeId2}>Let’s build something <em${_scopeId2}>worth relying on.</em></h1><p${_scopeId2}>Tell me what you are solving, where the friction lives and what a successful outcome looks like.</p>`);
+                  _push3(ssrRenderComponent(unref(motion).div, {
+                    class: "contact-scene",
+                    initial: { opacity: 0, y: 16 },
+                    animate: { opacity: 1, y: 0 },
+                    transition: { delay: 0.15, duration: 0.6 }
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(ssrRenderComponent(_sfc_main$3, {
+                          tone: "contact",
+                          variant: "knot"
+                        }, null, _parent4, _scopeId3));
+                      } else {
+                        return [
+                          createVNode(_sfc_main$3, {
+                            tone: "contact",
+                            variant: "knot"
+                          })
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(`<div class="contact-details"${_scopeId2}>`);
+                  _push3(ssrRenderComponent(unref(motion).div, { "while-hover": { x: 4 } }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`<small${_scopeId3}>Email</small><a${ssrRenderAttr("href", `mailto:${__props.profile?.email}`)}${_scopeId3}>${ssrInterpolate(__props.profile?.email)}</a>`);
+                      } else {
+                        return [
+                          createVNode("small", null, "Email"),
+                          createVNode("a", {
+                            href: `mailto:${__props.profile?.email}`
+                          }, toDisplayString(__props.profile?.email), 9, ["href"])
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  if (__props.profile?.whatsapp_number) {
+                    _push3(ssrRenderComponent(unref(motion).div, { "while-hover": { x: 4 } }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(`<small${_scopeId3}>WhatsApp</small><a${ssrRenderAttr("href", `https://wa.me/${__props.profile.whatsapp_number.replace(/\D/g, "")}`)} target="_blank" rel="noreferrer"${_scopeId3}>Chat on WhatsApp ↗</a>`);
+                        } else {
+                          return [
+                            createVNode("small", null, "WhatsApp"),
+                            createVNode("a", {
+                              href: `https://wa.me/${__props.profile.whatsapp_number.replace(/\D/g, "")}`,
+                              target: "_blank",
+                              rel: "noreferrer"
+                            }, "Chat on WhatsApp ↗", 8, ["href"])
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                  _push3(ssrRenderComponent(unref(motion).div, { "while-hover": { x: 4 } }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`<small${_scopeId3}>Location</small><span${_scopeId3}>${ssrInterpolate(__props.profile?.location ?? "Karachi, Pakistan")} · Working globally</span>`);
+                      } else {
+                        return [
+                          createVNode("small", null, "Location"),
+                          createVNode("span", null, toDisplayString(__props.profile?.location ?? "Karachi, Pakistan") + " · Working globally", 1)
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(ssrRenderComponent(unref(motion).div, { "while-hover": { x: 4 } }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`<small${_scopeId3}>Availability</small><span class="available"${_scopeId3}><i${_scopeId3}></i>${ssrInterpolate(__props.profile?.availability)}</span>`);
+                      } else {
+                        return [
+                          createVNode("small", null, "Availability"),
+                          createVNode("span", { class: "available" }, [
+                            createVNode("i"),
+                            createTextVNode(toDisplayString(__props.profile?.availability), 1)
+                          ])
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(`</div>`);
                 } else {
                   return [
                     createVNode("span", { class: "section-kicker" }, "04 / Start a conversation"),
@@ -50,24 +147,61 @@ const _sfc_main = {
                       createVNode("em", null, "worth relying on.")
                     ]),
                     createVNode("p", null, "Tell me what you are solving, where the friction lives and what a successful outcome looks like."),
+                    createVNode(unref(motion).div, {
+                      class: "contact-scene",
+                      initial: { opacity: 0, y: 16 },
+                      animate: { opacity: 1, y: 0 },
+                      transition: { delay: 0.15, duration: 0.6 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_sfc_main$3, {
+                          tone: "contact",
+                          variant: "knot"
+                        })
+                      ]),
+                      _: 1
+                    }),
                     createVNode("div", { class: "contact-details" }, [
-                      createVNode("div", null, [
-                        createVNode("small", null, "Email"),
-                        createVNode("a", {
-                          href: `mailto:${__props.profile?.email}`
-                        }, toDisplayString(__props.profile?.email), 9, ["href"])
-                      ]),
-                      createVNode("div", null, [
-                        createVNode("small", null, "Location"),
-                        createVNode("span", null, toDisplayString(__props.profile?.location ?? "Karachi, Pakistan") + " · Working globally", 1)
-                      ]),
-                      createVNode("div", null, [
-                        createVNode("small", null, "Availability"),
-                        createVNode("span", { class: "available" }, [
-                          createVNode("i"),
-                          createTextVNode(toDisplayString(__props.profile?.availability), 1)
-                        ])
-                      ])
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Email"),
+                          createVNode("a", {
+                            href: `mailto:${__props.profile?.email}`
+                          }, toDisplayString(__props.profile?.email), 9, ["href"])
+                        ]),
+                        _: 1
+                      }),
+                      __props.profile?.whatsapp_number ? (openBlock(), createBlock(unref(motion).div, {
+                        key: 0,
+                        "while-hover": { x: 4 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "WhatsApp"),
+                          createVNode("a", {
+                            href: `https://wa.me/${__props.profile.whatsapp_number.replace(/\D/g, "")}`,
+                            target: "_blank",
+                            rel: "noreferrer"
+                          }, "Chat on WhatsApp ↗", 8, ["href"])
+                        ]),
+                        _: 1
+                      })) : createCommentVNode("", true),
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Location"),
+                          createVNode("span", null, toDisplayString(__props.profile?.location ?? "Karachi, Pakistan") + " · Working globally", 1)
+                        ]),
+                        _: 1
+                      }),
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Availability"),
+                          createVNode("span", { class: "available" }, [
+                            createVNode("i"),
+                            createTextVNode(toDisplayString(__props.profile?.availability), 1)
+                          ])
+                        ]),
+                        _: 1
+                      })
                     ])
                   ];
                 }
@@ -77,9 +211,9 @@ const _sfc_main = {
             _push2(ssrRenderComponent(unref(motion).form, {
               class: "project-form",
               onSubmit: submit,
-              initial: { opacity: 0, y: 30 },
+              initial: { opacity: 0, y: 34 },
               animate: { opacity: 1, y: 0 },
-              transition: { delay: 0.15 },
+              transition: { delay: 0.12, duration: 0.55 },
               novalidate: ""
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
@@ -213,10 +347,15 @@ const _sfc_main = {
             _push2(`</div>`);
           } else {
             return [
-              createVNode("div", { class: "contact-page" }, [
+              createVNode("div", { class: "contact-page has-atmosphere" }, [
+                createVNode(_sfc_main$2, {
+                  tone: "contact",
+                  mode: "orbs"
+                }),
                 createVNode(unref(motion).aside, {
-                  initial: { opacity: 0, x: -25 },
-                  animate: { opacity: 1, x: 0 }
+                  initial: { opacity: 0, x: -28 },
+                  animate: { opacity: 1, x: 0 },
+                  transition: { duration: 0.55 }
                 }, {
                   default: withCtx(() => [
                     createVNode("span", { class: "section-kicker" }, "04 / Start a conversation"),
@@ -225,24 +364,61 @@ const _sfc_main = {
                       createVNode("em", null, "worth relying on.")
                     ]),
                     createVNode("p", null, "Tell me what you are solving, where the friction lives and what a successful outcome looks like."),
+                    createVNode(unref(motion).div, {
+                      class: "contact-scene",
+                      initial: { opacity: 0, y: 16 },
+                      animate: { opacity: 1, y: 0 },
+                      transition: { delay: 0.15, duration: 0.6 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_sfc_main$3, {
+                          tone: "contact",
+                          variant: "knot"
+                        })
+                      ]),
+                      _: 1
+                    }),
                     createVNode("div", { class: "contact-details" }, [
-                      createVNode("div", null, [
-                        createVNode("small", null, "Email"),
-                        createVNode("a", {
-                          href: `mailto:${__props.profile?.email}`
-                        }, toDisplayString(__props.profile?.email), 9, ["href"])
-                      ]),
-                      createVNode("div", null, [
-                        createVNode("small", null, "Location"),
-                        createVNode("span", null, toDisplayString(__props.profile?.location ?? "Karachi, Pakistan") + " · Working globally", 1)
-                      ]),
-                      createVNode("div", null, [
-                        createVNode("small", null, "Availability"),
-                        createVNode("span", { class: "available" }, [
-                          createVNode("i"),
-                          createTextVNode(toDisplayString(__props.profile?.availability), 1)
-                        ])
-                      ])
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Email"),
+                          createVNode("a", {
+                            href: `mailto:${__props.profile?.email}`
+                          }, toDisplayString(__props.profile?.email), 9, ["href"])
+                        ]),
+                        _: 1
+                      }),
+                      __props.profile?.whatsapp_number ? (openBlock(), createBlock(unref(motion).div, {
+                        key: 0,
+                        "while-hover": { x: 4 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "WhatsApp"),
+                          createVNode("a", {
+                            href: `https://wa.me/${__props.profile.whatsapp_number.replace(/\D/g, "")}`,
+                            target: "_blank",
+                            rel: "noreferrer"
+                          }, "Chat on WhatsApp ↗", 8, ["href"])
+                        ]),
+                        _: 1
+                      })) : createCommentVNode("", true),
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Location"),
+                          createVNode("span", null, toDisplayString(__props.profile?.location ?? "Karachi, Pakistan") + " · Working globally", 1)
+                        ]),
+                        _: 1
+                      }),
+                      createVNode(unref(motion).div, { "while-hover": { x: 4 } }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, "Availability"),
+                          createVNode("span", { class: "available" }, [
+                            createVNode("i"),
+                            createTextVNode(toDisplayString(__props.profile?.availability), 1)
+                          ])
+                        ]),
+                        _: 1
+                      })
                     ])
                   ]),
                   _: 1
@@ -250,9 +426,9 @@ const _sfc_main = {
                 createVNode(unref(motion).form, {
                   class: "project-form",
                   onSubmit: withModifiers(submit, ["prevent"]),
-                  initial: { opacity: 0, y: 30 },
+                  initial: { opacity: 0, y: 34 },
                   animate: { opacity: 1, y: 0 },
-                  transition: { delay: 0.15 },
+                  transition: { delay: 0.12, duration: 0.55 },
                   novalidate: ""
                 }, {
                   default: withCtx(() => [

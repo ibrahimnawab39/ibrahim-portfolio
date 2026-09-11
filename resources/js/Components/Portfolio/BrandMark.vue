@@ -1,0 +1,1 @@
+<template><span class="brand-lockup"><svg viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 8h7v28H7zM20 36V8h6l11 17V8h-6v28h-5L14 18" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg><span>ibrahim<span class="brand-last">nawab<span class="brand-dot">·</span></span></span></span></template>

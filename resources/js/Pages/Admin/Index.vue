@@ -24,9 +24,22 @@ const sectionForm = useForm({ id: null, eyebrow: '', title: '', body: '', link_l
 const editSection = (section = null) => { sectionForm.reset(); if (section) Object.assign(sectionForm, section); };
 const saveSection = () => sectionForm[sectionForm.id ? 'patch' : 'post'](sectionForm.id ? `/admin/sections/${sectionForm.id}` : '/admin/sections', { preserveScroll: true, onSuccess: () => sectionForm.reset() });
 const projectImage = ref(null);
+const projectImagePreview = ref(null);
+const photoPreview = ref(null);
+
+watch(projectImage, (file) => {
+    if (projectImagePreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(projectImagePreview.value);
+    projectImagePreview.value = file ? URL.createObjectURL(file) : null;
+});
+
+watch(photo, (file) => {
+    if (photoPreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(photoPreview.value);
+    photoPreview.value = file ? URL.createObjectURL(file) : null;
+});
 
 const flash = computed(() => page.props.flash?.success);
 const errors = computed(() => page.props.errors ?? {});
+const errorList = computed(() => Object.entries(errors.value).map(([field, message]) => ({ field, message: Array.isArray(message) ? message[0] : message })));
 const projectRows = ref([...props.projects]);
 const experienceRows = ref([...props.experiences]);
 const certificateRows = ref([...props.certificates]);
@@ -39,6 +52,7 @@ const profileForm = useForm({
     summary: props.profile?.summary ?? '',
     bio: props.profile?.bio ?? '',
     email: props.profile?.email ?? '',
+    whatsapp_number: props.profile?.whatsapp_number ?? '',
     linkedin_url: props.profile?.linkedin_url ?? '',
     github_url: props.profile?.github_url ?? '',
     availability: props.profile?.availability ?? '',
@@ -53,11 +67,19 @@ const profileForm = useForm({
 
 const blankProject = () => ({
     id: null, title: '', slug: '', category: '', company: '', start_date: '', end_date: '', summary: '', description: '',
-    tech_stack: '', live_url: '', repo_url: '', featured: false, include_in_resume: false, order: props.projects.length,
+    tech_stack: '', live_url: '', repo_url: '', featured: false, include_in_resume: false, order: props.projects.length, image_path: null,
 });
 const blankExperience = () => ({
-    id: null, include_in_resume: true, role: '', company: '', employment_type: '', work_mode: '', location: '', start_date: '', end_date: '', description: '', order: props.experiences.length,
+    id: null, include_in_resume: true, role: '', company: '', company_url: '', logo_path: null, employment_type: '', work_mode: '', location: '', start_date: '', end_date: '', description: '', order: props.experiences.length,
 });
+const experienceLogo = ref(null);
+const experienceLogoPreview = ref(null);
+
+watch(experienceLogo, (file) => {
+    if (experienceLogoPreview.value?.startsWith?.('blob:')) URL.revokeObjectURL(experienceLogoPreview.value);
+    experienceLogoPreview.value = file ? URL.createObjectURL(file) : null;
+});
+
 const blankSkill = () => ({ id: null, name: '', category: '', proficiency: 80, order: props.skills.length });
 const blankCertificate = () => ({ id: null, title: '', issuer: '', issue_date: '', credential_url: '', description: '', order: props.certificates.length });
 
@@ -80,7 +102,24 @@ const setTab = (tab) => {
 
 const editProject = (project = null) => {
     projectForm.value = project
-        ? { ...project, tech_stack: (project.tech_stack ?? []).join(', '), start_date: project.start_date?.slice(0,10) ?? '', end_date: project.end_date?.slice(0,10) ?? '' }
+        ? {
+            id: project.id,
+            title: project.title ?? '',
+            slug: project.slug ?? '',
+            category: project.category ?? '',
+            company: project.company ?? '',
+            start_date: project.start_date?.slice(0, 10) ?? '',
+            end_date: project.end_date?.slice(0, 10) ?? '',
+            summary: project.summary ?? '',
+            description: project.description ?? '',
+            tech_stack: (project.tech_stack ?? []).join(', '),
+            live_url: project.live_url ?? '',
+            repo_url: project.repo_url ?? '',
+            featured: !!project.featured,
+            include_in_resume: !!project.include_in_resume,
+            order: project.order ?? 0,
+            image_path: project.image_path ?? null,
+        }
         : blankProject();
     editingProject.value = project?.id ?? 'new';
     projectImage.value = null;
@@ -88,8 +127,10 @@ const editProject = (project = null) => {
 
 const editExperience = (item = null) => {
     experienceForm.value = item
-        ? { ...item, start_date: item.start_date?.slice(0, 10), end_date: item.end_date?.slice(0, 10) ?? '' }
+        ? { ...item, start_date: item.start_date?.slice(0, 10) ?? '', end_date: item.end_date?.slice(0, 10) ?? '' }
         : blankExperience();
+    experienceLogo.value = null;
+    experienceLogoPreview.value = null;
     editingExperience.value = item?.id ?? 'new';
 };
 
@@ -144,16 +185,64 @@ const saveProfile = () => {
 };
 
 const saveProject = () => {
-    const payload = { ...projectForm.value, image: projectImage.value };
-    const url = projectForm.value.id ? `/admin/projects/${projectForm.value.id}` : '/admin/projects';
-    router.post(url, payload, { forceFormData: true, preserveScroll: true, onSuccess: () => editingProject.value = null });
+    const item = projectForm.value;
+    const payload = {
+        title: item.title,
+        slug: item.slug,
+        category: item.category || null,
+        company: item.company || null,
+        start_date: item.start_date || null,
+        end_date: item.end_date || null,
+        summary: item.summary,
+        description: item.description || null,
+        tech_stack: item.tech_stack || '',
+        live_url: item.live_url || null,
+        repo_url: item.repo_url || null,
+        featured: !!item.featured,
+        include_in_resume: !!item.include_in_resume,
+        order: item.order ?? 0,
+        image: projectImage.value,
+    };
+    const url = item.id ? `/admin/projects/${item.id}` : '/admin/projects';
+    router.post(url, payload, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            editingProject.value = null;
+            projectImage.value = null;
+        },
+    });
 };
 
 const saveExperience = () => {
     const item = experienceForm.value;
-    const url = item.id ? `/admin/experiences/${item.id}` : '/admin/experiences';
-    const method = item.id ? 'patch' : 'post';
-    router[method](url, item, { preserveScroll: true, onSuccess: () => editingExperience.value = null });
+    const payload = {
+        include_in_resume: !!item.include_in_resume,
+        role: item.role,
+        company: item.company,
+        company_url: item.company_url || null,
+        employment_type: item.employment_type || null,
+        work_mode: item.work_mode || null,
+        location: item.location || null,
+        start_date: item.start_date || null,
+        end_date: item.end_date || null,
+        description: item.description || null,
+        order: item.order ?? 0,
+        logo: experienceLogo.value,
+    };
+    if (item.id) {
+        router.post(`/admin/experiences/${item.id}`, { ...payload, _method: 'patch' }, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => { editingExperience.value = null; experienceLogo.value = null; },
+        });
+        return;
+    }
+    router.post('/admin/experiences', payload, {
+        forceFormData: true,
+        preserveScroll: true,
+        onSuccess: () => { editingExperience.value = null; experienceLogo.value = null; },
+    });
 };
 
 const saveSkill = () => {
@@ -199,11 +288,18 @@ const remove = (url, label) => {
         <main class="admin-main">
             <header class="admin-topbar">
                 <div><small>Content management</small><h1>{{ active }}</h1></div>
-                <span class="admin-status"><i></i>Website live</span>
+                <div class="admin-topbar-actions">
+                    <span class="admin-status"><i></i>Website live</span>
+                    <Link class="admin-top-link" href="/" target="_blank">View site ↗</Link>
+                    <Link class="admin-top-link admin-top-logout" href="/logout" method="post" as="button">Sign out</Link>
+                </div>
             </header>
 
             <div v-if="flash" class="admin-flash">{{ flash }}</div>
-            <div v-if="Object.keys(errors).length" class="admin-errors"><strong>Please fix the highlighted fields.</strong><span v-for="error in errors" :key="error">{{ error }}</span></div>
+            <div v-if="errorList.length" class="admin-errors">
+                <strong>Please fix these fields.</strong>
+                <span v-for="error in errorList" :key="error.field"><b>{{ error.field }}</b> — {{ error.message }}</span>
+            </div>
 
             <section v-if="active === 'overview'" class="admin-view">
                 <div class="admin-welcome"><div><span>Welcome back</span><h2>Manage your complete portfolio from one place.</h2><p>Every change here updates the public Laravel + Inertia website immediately.</p></div><img v-if="profile?.photo_path" :src="profile.photo_path" alt=""></div>
@@ -228,12 +324,12 @@ const remove = (url, label) => {
                 <div class="admin-heading"><div><span>Public identity</span><h2>Profile & biography</h2></div><button class="admin-primary" @click="saveProfile" :disabled="profileForm.processing">{{ profileForm.processing ? 'Saving…' : 'Save profile' }}</button></div>
                 <form class="admin-form profile-admin-form" @submit.prevent="saveProfile">
                     <div class="admin-photo">
-                        <img v-if="profile?.photo_path" :src="profile.photo_path" alt="Current profile">
+                        <img v-if="photoPreview || profile?.photo_path" :src="photoPreview || profile.photo_path" alt="Current profile">
                         <div><strong>Profile photo</strong><p>Portrait JPEG, PNG or WebP. Maximum 5 MB.</p><input type="file" accept="image/*" @change="photo = $event.target.files[0]"></div>
                     </div>
                     <div class="admin-grid"><label><span>Display name</span><input v-model="profileForm.name"></label><label><span>Professional headline</span><input v-model="profileForm.headline"></label></div>
                     <div class="admin-grid"><label><span>Location</span><input v-model="profileForm.location"></label><label><span>Public email</span><input v-model="profileForm.email" type="email"></label></div>
-                    <label><span>Short summary</span><textarea v-model="profileForm.summary" rows="3"></textarea></label>
+                    <label><span>WhatsApp number (international format, e.g. +92…)</span><input v-model="profileForm.whatsapp_number" type="tel"></label><label><span>Short summary</span><textarea v-model="profileForm.summary" rows="3"></textarea></label>
                     <label><span>Full biography</span><textarea v-model="profileForm.bio" rows="7"></textarea></label>
                     <div class="admin-grid"><label><span>LinkedIn URL</span><input v-model="profileForm.linkedin_url" type="url"></label><label><span>GitHub URL</span><input v-model="profileForm.github_url" type="url"></label></div>
                     <div class="admin-grid"><label><span>Availability</span><input v-model="profileForm.availability"></label><label><span>Years experience</span><input v-model="profileForm.years_experience" type="number" min="0"></label></div>
@@ -253,11 +349,19 @@ const remove = (url, label) => {
                     <label><span>Full description</span><textarea v-model="projectForm.description" rows="6"></textarea></label>
                     <label><span>Technology stack (comma separated)</span><input v-model="projectForm.tech_stack" placeholder="Laravel, Vue 3, MySQL"></label>
                     <div class="admin-grid"><label><span>Live URL</span><input v-model="projectForm.live_url" type="url"></label><label><span>Repository URL</span><input v-model="projectForm.repo_url" type="url"></label></div>
-                    <div class="admin-grid"><label><span>Project image</span><input type="file" accept="image/*" @change="projectImage = $event.target.files[0]"></label><label class="admin-check"><input v-model="projectForm.featured" type="checkbox"><span>Feature on homepage</span></label></div>
+                    <label>
+                        <span>Project cover image</span>
+                        <div v-if="projectImagePreview || projectForm.image_path" class="admin-cover-preview">
+                            <img :src="projectImagePreview || projectForm.image_path" alt="">
+                        </div>
+                        <input type="file" accept="image/*" @change="projectImage = $event.target.files?.[0] ?? null">
+                        <small class="field-hint">Shown on Work and homepage cards. JPEG/PNG/WebP, max 5 MB.</small>
+                    </label>
+                    <label class="admin-check"><input v-model="projectForm.featured" type="checkbox"><span>Feature on homepage</span></label>
                     <button class="admin-primary" type="submit">Save project</button>
                 </form>
                 <p class="sort-help">Drag records using the handle to control their public display order. Arrow buttons work on touch devices.</p>
-                <div class="admin-records sortable-records">
+                <div class="admin-records sortable-records sortable-records--projects">
                     <article
                         v-for="project in projectRows"
                         :key="project.id"
@@ -281,6 +385,15 @@ const remove = (url, label) => {
                 <form v-if="editingExperience !== null" class="admin-form admin-editor" @submit.prevent="saveExperience"><label><input v-model="experienceForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
                     <div class="editor-head"><h3>{{ experienceForm.id ? 'Edit experience' : 'New experience' }}</h3><button type="button" @click="editingExperience = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Role</span><input v-model="experienceForm.role" required></label><label><span>Company</span><input v-model="experienceForm.company" required></label></div>
+                    <label><span>Company URL</span><input v-model="experienceForm.company_url" type="url" placeholder="https://"></label>
+                    <label>
+                        <span>Company logo</span>
+                        <div v-if="experienceForm.logo_path || experienceLogoPreview" class="admin-logo-preview">
+                            <img :src="experienceLogoPreview || experienceForm.logo_path" alt="">
+                        </div>
+                        <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" @change="experienceLogo = $event.target.files?.[0] ?? null">
+                        <small class="field-hint">Square PNG/JPG/WebP preferred. Shown on the Experience page.</small>
+                    </label>
                     <div class="admin-grid">
                         <label><span>Employment type</span><select v-model="experienceForm.employment_type"><option value="">Select type</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Contract</option><option>Internship</option></select></label>
                         <label><span>Work mode</span><select v-model="experienceForm.work_mode"><option value="">Select mode</option><option>Remote</option><option>On-site</option><option>Hybrid</option></select></label>
@@ -292,7 +405,7 @@ const remove = (url, label) => {
                     <button class="admin-primary" type="submit">Save experience</button>
                 </form>
                 <p class="sort-help">Drag roles into the exact order you want visitors to see them.</p>
-                <div class="admin-records compact sortable-records">
+                <div class="admin-records sortable-records sortable-records--experiences">
                     <article
                         v-for="item in experienceRows"
                         :key="item.id"
@@ -305,6 +418,8 @@ const remove = (url, label) => {
                     >
                         <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
                         <div class="record-order">{{ String(item.order + 1).padStart(2,'0') }}</div>
+                        <img v-if="item.logo_path" class="admin-exp-logo" :src="item.logo_path" :alt="item.company">
+                        <span v-else class="admin-exp-logo admin-exp-logo--empty" aria-hidden="true"></span>
                         <div><small>{{ item.company }}<template v-if="item.employment_type"> · {{ item.employment_type }}</template><template v-if="item.work_mode"> · {{ item.work_mode }}</template> · {{ item.location }}</small><h3>{{ item.role }}</h3><p>{{ item.description }}</p></div>
                         <div class="record-actions"><button title="Move up" @click="moveRecord('experiences', item.id, -1)">↑</button><button title="Move down" @click="moveRecord('experiences', item.id, 1)">↓</button><button @click="editExperience(item)">Edit</button><button class="danger" @click="remove(`/admin/experiences/${item.id}`, item.role)">Delete</button></div>
                     </article>

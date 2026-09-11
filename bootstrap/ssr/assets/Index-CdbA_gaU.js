@@ -1,4 +1,4 @@
-import { ref, computed, watch, unref, withCtx, createTextVNode, createVNode, useSSRContext } from "vue";
+import { ref, watch, computed, unref, withCtx, createTextVNode, createVNode, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderList, ssrRenderClass, ssrInterpolate, ssrRenderAttr, ssrIncludeBooleanAttr, ssrLooseContain, ssrLooseEqual, ssrRenderStyle } from "vue/server-renderer";
 import { usePage, useForm, Head, Link } from "@inertiajs/vue3";
 const _sfc_main = {
@@ -22,11 +22,22 @@ const _sfc_main = {
     const editingExperience = ref(null);
     const editingSkill = ref(null);
     const editingCertificate = ref(null);
-    ref(null);
+    const photo = ref(null);
     const sectionForm = useForm({ id: null, eyebrow: "", title: "", body: "", link_label: "", link_url: "", published: false, order: 0 });
-    ref(null);
+    const projectImage = ref(null);
+    const projectImagePreview = ref(null);
+    const photoPreview = ref(null);
+    watch(projectImage, (file) => {
+      if (projectImagePreview.value?.startsWith?.("blob:")) URL.revokeObjectURL(projectImagePreview.value);
+      projectImagePreview.value = file ? URL.createObjectURL(file) : null;
+    });
+    watch(photo, (file) => {
+      if (photoPreview.value?.startsWith?.("blob:")) URL.revokeObjectURL(photoPreview.value);
+      photoPreview.value = file ? URL.createObjectURL(file) : null;
+    });
     const flash = computed(() => page.props.flash?.success);
     const errors = computed(() => page.props.errors ?? {});
+    const errorList = computed(() => Object.entries(errors.value).map(([field, message]) => ({ field, message: Array.isArray(message) ? message[0] : message })));
     const projectRows = ref([...props.projects]);
     const experienceRows = ref([...props.experiences]);
     const certificateRows = ref([...props.certificates]);
@@ -38,6 +49,7 @@ const _sfc_main = {
       summary: props.profile?.summary ?? "",
       bio: props.profile?.bio ?? "",
       email: props.profile?.email ?? "",
+      whatsapp_number: props.profile?.whatsapp_number ?? "",
       linkedin_url: props.profile?.linkedin_url ?? "",
       github_url: props.profile?.github_url ?? "",
       availability: props.profile?.availability ?? "",
@@ -64,13 +76,16 @@ const _sfc_main = {
       repo_url: "",
       featured: false,
       include_in_resume: false,
-      order: props.projects.length
+      order: props.projects.length,
+      image_path: null
     });
     const blankExperience = () => ({
       id: null,
       include_in_resume: true,
       role: "",
       company: "",
+      company_url: "",
+      logo_path: null,
       employment_type: "",
       work_mode: "",
       location: "",
@@ -78,6 +93,12 @@ const _sfc_main = {
       end_date: "",
       description: "",
       order: props.experiences.length
+    });
+    const experienceLogo = ref(null);
+    const experienceLogoPreview = ref(null);
+    watch(experienceLogo, (file) => {
+      if (experienceLogoPreview.value?.startsWith?.("blob:")) URL.revokeObjectURL(experienceLogoPreview.value);
+      experienceLogoPreview.value = file ? URL.createObjectURL(file) : null;
     });
     const blankSkill = () => ({ id: null, name: "", category: "", proficiency: 80, order: props.skills.length });
     const blankCertificate = () => ({ id: null, title: "", issuer: "", issue_date: "", credential_url: "", description: "", order: props.certificates.length });
@@ -173,16 +194,50 @@ const _sfc_main = {
         }),
         _: 1
       }, _parent));
-      _push(`</div></aside><main class="admin-main"><header class="admin-topbar"><div><small>Content management</small><h1>${ssrInterpolate(active.value)}</h1></div><span class="admin-status"><i></i>Website live</span></header>`);
+      _push(`</div></aside><main class="admin-main"><header class="admin-topbar"><div><small>Content management</small><h1>${ssrInterpolate(active.value)}</h1></div><div class="admin-topbar-actions"><span class="admin-status"><i></i>Website live</span>`);
+      _push(ssrRenderComponent(unref(Link), {
+        class: "admin-top-link",
+        href: "/",
+        target: "_blank"
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`View site ↗`);
+          } else {
+            return [
+              createTextVNode("View site ↗")
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(ssrRenderComponent(unref(Link), {
+        class: "admin-top-link admin-top-logout",
+        href: "/logout",
+        method: "post",
+        as: "button"
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`Sign out`);
+          } else {
+            return [
+              createTextVNode("Sign out")
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`</div></header>`);
       if (flash.value) {
         _push(`<div class="admin-flash">${ssrInterpolate(flash.value)}</div>`);
       } else {
         _push(`<!---->`);
       }
-      if (Object.keys(errors.value).length) {
-        _push(`<div class="admin-errors"><strong>Please fix the highlighted fields.</strong><!--[-->`);
-        ssrRenderList(errors.value, (error) => {
-          _push(`<span>${ssrInterpolate(error)}</span>`);
+      if (errorList.value.length) {
+        _push(`<div class="admin-errors"><strong>Please fix these fields.</strong><!--[-->`);
+        ssrRenderList(errorList.value, (error) => {
+          _push(`<span><b>${ssrInterpolate(error.field)}</b> — ${ssrInterpolate(error.message)}</span>`);
         });
         _push(`<!--]--></div>`);
       } else {
@@ -219,23 +274,29 @@ const _sfc_main = {
       }
       if (active.value === "profile") {
         _push(`<section class="admin-view"><div class="admin-heading"><div><span>Public identity</span><h2>Profile &amp; biography</h2></div><button class="admin-primary"${ssrIncludeBooleanAttr(unref(profileForm).processing) ? " disabled" : ""}>${ssrInterpolate(unref(profileForm).processing ? "Saving…" : "Save profile")}</button></div><form class="admin-form profile-admin-form"><div class="admin-photo">`);
-        if (__props.profile?.photo_path) {
-          _push(`<img${ssrRenderAttr("src", __props.profile.photo_path)} alt="Current profile">`);
+        if (photoPreview.value || __props.profile?.photo_path) {
+          _push(`<img${ssrRenderAttr("src", photoPreview.value || __props.profile.photo_path)} alt="Current profile">`);
         } else {
           _push(`<!---->`);
         }
-        _push(`<div><strong>Profile photo</strong><p>Portrait JPEG, PNG or WebP. Maximum 5 MB.</p><input type="file" accept="image/*"></div></div><div class="admin-grid"><label><span>Display name</span><input${ssrRenderAttr("value", unref(profileForm).name)}></label><label><span>Professional headline</span><input${ssrRenderAttr("value", unref(profileForm).headline)}></label></div><div class="admin-grid"><label><span>Location</span><input${ssrRenderAttr("value", unref(profileForm).location)}></label><label><span>Public email</span><input${ssrRenderAttr("value", unref(profileForm).email)} type="email"></label></div><label><span>Short summary</span><textarea rows="3">${ssrInterpolate(unref(profileForm).summary)}</textarea></label><label><span>Full biography</span><textarea rows="7">${ssrInterpolate(unref(profileForm).bio)}</textarea></label><div class="admin-grid"><label><span>LinkedIn URL</span><input${ssrRenderAttr("value", unref(profileForm).linkedin_url)} type="url"></label><label><span>GitHub URL</span><input${ssrRenderAttr("value", unref(profileForm).github_url)} type="url"></label></div><div class="admin-grid"><label><span>Availability</span><input${ssrRenderAttr("value", unref(profileForm).availability)}></label><label><span>Years experience</span><input${ssrRenderAttr("value", unref(profileForm).years_experience)} type="number" min="0"></label></div><button class="admin-primary mobile-save" type="submit">Save profile</button></form></section>`);
+        _push(`<div><strong>Profile photo</strong><p>Portrait JPEG, PNG or WebP. Maximum 5 MB.</p><input type="file" accept="image/*"></div></div><div class="admin-grid"><label><span>Display name</span><input${ssrRenderAttr("value", unref(profileForm).name)}></label><label><span>Professional headline</span><input${ssrRenderAttr("value", unref(profileForm).headline)}></label></div><div class="admin-grid"><label><span>Location</span><input${ssrRenderAttr("value", unref(profileForm).location)}></label><label><span>Public email</span><input${ssrRenderAttr("value", unref(profileForm).email)} type="email"></label></div><label><span>WhatsApp number (international format, e.g. +92…)</span><input${ssrRenderAttr("value", unref(profileForm).whatsapp_number)} type="tel"></label><label><span>Short summary</span><textarea rows="3">${ssrInterpolate(unref(profileForm).summary)}</textarea></label><label><span>Full biography</span><textarea rows="7">${ssrInterpolate(unref(profileForm).bio)}</textarea></label><div class="admin-grid"><label><span>LinkedIn URL</span><input${ssrRenderAttr("value", unref(profileForm).linkedin_url)} type="url"></label><label><span>GitHub URL</span><input${ssrRenderAttr("value", unref(profileForm).github_url)} type="url"></label></div><div class="admin-grid"><label><span>Availability</span><input${ssrRenderAttr("value", unref(profileForm).availability)}></label><label><span>Years experience</span><input${ssrRenderAttr("value", unref(profileForm).years_experience)} type="number" min="0"></label></div><button class="admin-primary mobile-save" type="submit">Save profile</button></form></section>`);
       } else {
         _push(`<!---->`);
       }
       if (active.value === "projects") {
         _push(`<section class="admin-view"><div class="admin-heading"><div><span>Portfolio records</span><h2>Projects</h2></div><button class="admin-primary">+ Add project</button></div>`);
         if (editingProject.value !== null) {
-          _push(`<form class="admin-form admin-editor"><label><input${ssrIncludeBooleanAttr(Array.isArray(projectForm.value.include_in_resume) ? ssrLooseContain(projectForm.value.include_in_resume, null) : projectForm.value.include_in_resume) ? " checked" : ""} type="checkbox"> Include in resume PDF</label><div class="editor-head"><h3>${ssrInterpolate(projectForm.value.id ? "Edit project" : "New project")}</h3><button type="button">Close ×</button></div><div class="admin-grid"><label><span>Title</span><input${ssrRenderAttr("value", projectForm.value.title)} required></label><label><span>Slug</span><input${ssrRenderAttr("value", projectForm.value.slug)} placeholder="project-url-slug" required></label></div><div class="admin-grid"><label><span>Category</span><input${ssrRenderAttr("value", projectForm.value.category)}></label><label><span>Associated company</span><input${ssrRenderAttr("value", projectForm.value.company)}></label></div><div class="admin-grid"><label><span>Start date</span><input${ssrRenderAttr("value", projectForm.value.start_date)} type="date"></label><label><span>End date</span><input${ssrRenderAttr("value", projectForm.value.end_date)} type="date"></label></div><label><span>Display order</span><input${ssrRenderAttr("value", projectForm.value.order)} type="number" min="0"></label><label><span>Summary</span><textarea rows="3" required>${ssrInterpolate(projectForm.value.summary)}</textarea></label><label><span>Full description</span><textarea rows="6">${ssrInterpolate(projectForm.value.description)}</textarea></label><label><span>Technology stack (comma separated)</span><input${ssrRenderAttr("value", projectForm.value.tech_stack)} placeholder="Laravel, Vue 3, MySQL"></label><div class="admin-grid"><label><span>Live URL</span><input${ssrRenderAttr("value", projectForm.value.live_url)} type="url"></label><label><span>Repository URL</span><input${ssrRenderAttr("value", projectForm.value.repo_url)} type="url"></label></div><div class="admin-grid"><label><span>Project image</span><input type="file" accept="image/*"></label><label class="admin-check"><input${ssrIncludeBooleanAttr(Array.isArray(projectForm.value.featured) ? ssrLooseContain(projectForm.value.featured, null) : projectForm.value.featured) ? " checked" : ""} type="checkbox"><span>Feature on homepage</span></label></div><button class="admin-primary" type="submit">Save project</button></form>`);
+          _push(`<form class="admin-form admin-editor"><label><input${ssrIncludeBooleanAttr(Array.isArray(projectForm.value.include_in_resume) ? ssrLooseContain(projectForm.value.include_in_resume, null) : projectForm.value.include_in_resume) ? " checked" : ""} type="checkbox"> Include in resume PDF</label><div class="editor-head"><h3>${ssrInterpolate(projectForm.value.id ? "Edit project" : "New project")}</h3><button type="button">Close ×</button></div><div class="admin-grid"><label><span>Title</span><input${ssrRenderAttr("value", projectForm.value.title)} required></label><label><span>Slug</span><input${ssrRenderAttr("value", projectForm.value.slug)} placeholder="project-url-slug" required></label></div><div class="admin-grid"><label><span>Category</span><input${ssrRenderAttr("value", projectForm.value.category)}></label><label><span>Associated company</span><input${ssrRenderAttr("value", projectForm.value.company)}></label></div><div class="admin-grid"><label><span>Start date</span><input${ssrRenderAttr("value", projectForm.value.start_date)} type="date"></label><label><span>End date</span><input${ssrRenderAttr("value", projectForm.value.end_date)} type="date"></label></div><label><span>Display order</span><input${ssrRenderAttr("value", projectForm.value.order)} type="number" min="0"></label><label><span>Summary</span><textarea rows="3" required>${ssrInterpolate(projectForm.value.summary)}</textarea></label><label><span>Full description</span><textarea rows="6">${ssrInterpolate(projectForm.value.description)}</textarea></label><label><span>Technology stack (comma separated)</span><input${ssrRenderAttr("value", projectForm.value.tech_stack)} placeholder="Laravel, Vue 3, MySQL"></label><div class="admin-grid"><label><span>Live URL</span><input${ssrRenderAttr("value", projectForm.value.live_url)} type="url"></label><label><span>Repository URL</span><input${ssrRenderAttr("value", projectForm.value.repo_url)} type="url"></label></div><label><span>Project cover image</span>`);
+          if (projectImagePreview.value || projectForm.value.image_path) {
+            _push(`<div class="admin-cover-preview"><img${ssrRenderAttr("src", projectImagePreview.value || projectForm.value.image_path)} alt=""></div>`);
+          } else {
+            _push(`<!---->`);
+          }
+          _push(`<input type="file" accept="image/*"><small class="field-hint">Shown on Work and homepage cards. JPEG/PNG/WebP, max 5 MB.</small></label><label class="admin-check"><input${ssrIncludeBooleanAttr(Array.isArray(projectForm.value.featured) ? ssrLooseContain(projectForm.value.featured, null) : projectForm.value.featured) ? " checked" : ""} type="checkbox"><span>Feature on homepage</span></label><button class="admin-primary" type="submit">Save project</button></form>`);
         } else {
           _push(`<!---->`);
         }
-        _push(`<p class="sort-help">Drag records using the handle to control their public display order. Arrow buttons work on touch devices.</p><div class="admin-records sortable-records"><!--[-->`);
+        _push(`<p class="sort-help">Drag records using the handle to control their public display order. Arrow buttons work on touch devices.</p><div class="admin-records sortable-records sortable-records--projects"><!--[-->`);
         ssrRenderList(projectRows.value, (project) => {
           _push(`<article draggable="true" class="${ssrRenderClass({ dragging: dragging.value.type === "projects" && dragging.value.id === project.id })}"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="record-order">${ssrInterpolate(String(project.order + 1).padStart(2, "0"))}</div><div><small>${ssrInterpolate(project.category)}`);
           if (project.company) {
@@ -268,13 +329,25 @@ const _sfc_main = {
       if (active.value === "experience") {
         _push(`<section class="admin-view"><div class="admin-heading"><div><span>Career history</span><h2>Experience</h2></div><button class="admin-primary">+ Add experience</button></div>`);
         if (editingExperience.value !== null) {
-          _push(`<form class="admin-form admin-editor"><label><input${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.include_in_resume) ? ssrLooseContain(experienceForm.value.include_in_resume, null) : experienceForm.value.include_in_resume) ? " checked" : ""} type="checkbox"> Include in resume PDF</label><div class="editor-head"><h3>${ssrInterpolate(experienceForm.value.id ? "Edit experience" : "New experience")}</h3><button type="button">Close ×</button></div><div class="admin-grid"><label><span>Role</span><input${ssrRenderAttr("value", experienceForm.value.role)} required></label><label><span>Company</span><input${ssrRenderAttr("value", experienceForm.value.company)} required></label></div><div class="admin-grid"><label><span>Employment type</span><select><option value=""${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, "") : ssrLooseEqual(experienceForm.value.employment_type, "")) ? " selected" : ""}>Select type</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Full-time</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Part-time</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Freelance</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Contract</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Internship</option></select></label><label><span>Work mode</span><select><option value=""${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, "") : ssrLooseEqual(experienceForm.value.work_mode, "")) ? " selected" : ""}>Select mode</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>Remote</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>On-site</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>Hybrid</option></select></label></div><label><span>Location</span><input${ssrRenderAttr("value", experienceForm.value.location)} placeholder="Karachi, Sindh, Pakistan"></label><label><span>Display order</span><input${ssrRenderAttr("value", experienceForm.value.order)} type="number" min="0"></label><div class="admin-grid"><label><span>Start date (optional)</span><input${ssrRenderAttr("value", experienceForm.value.start_date)} type="date"></label><label><span>End date (empty = present)</span><input${ssrRenderAttr("value", experienceForm.value.end_date)} type="date"></label></div><label><span>Description</span><textarea rows="5">${ssrInterpolate(experienceForm.value.description)}</textarea></label><button class="admin-primary" type="submit">Save experience</button></form>`);
+          _push(`<form class="admin-form admin-editor"><label><input${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.include_in_resume) ? ssrLooseContain(experienceForm.value.include_in_resume, null) : experienceForm.value.include_in_resume) ? " checked" : ""} type="checkbox"> Include in resume PDF</label><div class="editor-head"><h3>${ssrInterpolate(experienceForm.value.id ? "Edit experience" : "New experience")}</h3><button type="button">Close ×</button></div><div class="admin-grid"><label><span>Role</span><input${ssrRenderAttr("value", experienceForm.value.role)} required></label><label><span>Company</span><input${ssrRenderAttr("value", experienceForm.value.company)} required></label></div><label><span>Company URL</span><input${ssrRenderAttr("value", experienceForm.value.company_url)} type="url" placeholder="https://"></label><label><span>Company logo</span>`);
+          if (experienceForm.value.logo_path || experienceLogoPreview.value) {
+            _push(`<div class="admin-logo-preview"><img${ssrRenderAttr("src", experienceLogoPreview.value || experienceForm.value.logo_path)} alt=""></div>`);
+          } else {
+            _push(`<!---->`);
+          }
+          _push(`<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><small class="field-hint">Square PNG/JPG/WebP preferred. Shown on the Experience page.</small></label><div class="admin-grid"><label><span>Employment type</span><select><option value=""${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, "") : ssrLooseEqual(experienceForm.value.employment_type, "")) ? " selected" : ""}>Select type</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Full-time</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Part-time</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Freelance</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Contract</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.employment_type) ? ssrLooseContain(experienceForm.value.employment_type, null) : ssrLooseEqual(experienceForm.value.employment_type, null)) ? " selected" : ""}>Internship</option></select></label><label><span>Work mode</span><select><option value=""${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, "") : ssrLooseEqual(experienceForm.value.work_mode, "")) ? " selected" : ""}>Select mode</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>Remote</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>On-site</option><option${ssrIncludeBooleanAttr(Array.isArray(experienceForm.value.work_mode) ? ssrLooseContain(experienceForm.value.work_mode, null) : ssrLooseEqual(experienceForm.value.work_mode, null)) ? " selected" : ""}>Hybrid</option></select></label></div><label><span>Location</span><input${ssrRenderAttr("value", experienceForm.value.location)} placeholder="Karachi, Sindh, Pakistan"></label><label><span>Display order</span><input${ssrRenderAttr("value", experienceForm.value.order)} type="number" min="0"></label><div class="admin-grid"><label><span>Start date (optional)</span><input${ssrRenderAttr("value", experienceForm.value.start_date)} type="date"></label><label><span>End date (empty = present)</span><input${ssrRenderAttr("value", experienceForm.value.end_date)} type="date"></label></div><label><span>Description</span><textarea rows="5">${ssrInterpolate(experienceForm.value.description)}</textarea></label><button class="admin-primary" type="submit">Save experience</button></form>`);
         } else {
           _push(`<!---->`);
         }
-        _push(`<p class="sort-help">Drag roles into the exact order you want visitors to see them.</p><div class="admin-records compact sortable-records"><!--[-->`);
+        _push(`<p class="sort-help">Drag roles into the exact order you want visitors to see them.</p><div class="admin-records sortable-records sortable-records--experiences"><!--[-->`);
         ssrRenderList(experienceRows.value, (item) => {
-          _push(`<article draggable="true" class="${ssrRenderClass({ dragging: dragging.value.type === "experiences" && dragging.value.id === item.id })}"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="record-order">${ssrInterpolate(String(item.order + 1).padStart(2, "0"))}</div><div><small>${ssrInterpolate(item.company)}`);
+          _push(`<article draggable="true" class="${ssrRenderClass({ dragging: dragging.value.type === "experiences" && dragging.value.id === item.id })}"><div class="drag-handle" title="Drag to reorder">⋮⋮</div><div class="record-order">${ssrInterpolate(String(item.order + 1).padStart(2, "0"))}</div>`);
+          if (item.logo_path) {
+            _push(`<img class="admin-exp-logo"${ssrRenderAttr("src", item.logo_path)}${ssrRenderAttr("alt", item.company)}>`);
+          } else {
+            _push(`<span class="admin-exp-logo admin-exp-logo--empty" aria-hidden="true"></span>`);
+          }
+          _push(`<div><small>${ssrInterpolate(item.company)}`);
           if (item.employment_type) {
             _push(`<!--[--> · ${ssrInterpolate(item.employment_type)}<!--]-->`);
           } else {

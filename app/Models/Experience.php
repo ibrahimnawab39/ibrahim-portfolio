@@ -10,6 +10,8 @@ class Experience extends Model
         'include_in_resume',
         'role',
         'company',
+        'logo_path',
+        'company_url',
         'employment_type',
         'work_mode',
         'location',

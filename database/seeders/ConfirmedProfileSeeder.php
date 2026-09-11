@@ -6,6 +6,7 @@ class ConfirmedProfileSeeder extends Seeder
 {
     public function run(): void {
         Profile::query()->first()?->update([
+            'whatsapp_number' => '+923145212938',
             'email' => 'ibrahimnawab2879@gmail.com',
             'linkedin_url' => 'https://www.linkedin.com/in/ibrahim-nawab/',
             'github_url' => 'https://github.com/ibrahimnawab39',

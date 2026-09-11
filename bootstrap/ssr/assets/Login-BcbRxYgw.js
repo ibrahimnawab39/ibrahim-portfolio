@@ -7,7 +7,7 @@ const _sfc_main = {
   __ssrInlineRender: true,
   props: { canResetPassword: Boolean, status: String },
   setup(__props) {
-    const form = useForm({ email: "", password: "", remember: false });
+    const form = useForm({ email: "", password: "", remember: true });
     const submit = () => form.post(route("login"), { onFinish: () => form.reset("password") });
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(_sfc_main$1, _attrs, {
@@ -20,7 +20,7 @@ const _sfc_main = {
             } else {
               _push2(`<!---->`);
             }
-            _push2(`<form class="auth-form"${_scopeId}><label${_scopeId}><span${_scopeId}>Email address</span><input${ssrRenderAttr("value", unref(form).email)} type="email" required autofocus autocomplete="username" placeholder="admin@example.com"${_scopeId}>`);
+            _push2(`<form class="auth-form"${_scopeId}><label${_scopeId}><span${_scopeId}>Email address</span><input${ssrRenderAttr("value", unref(form).email)} type="email" required autofocus autocomplete="username" placeholder="you@example.com"${_scopeId}>`);
             if (unref(form).errors.email) {
               _push2(`<small${_scopeId}>${ssrInterpolate(unref(form).errors.email)}</small>`);
             } else {
@@ -74,7 +74,7 @@ const _sfc_main = {
                     required: "",
                     autofocus: "",
                     autocomplete: "username",
-                    placeholder: "admin@example.com"
+                    placeholder: "you@example.com"
                   }, null, 8, ["onUpdate:modelValue"]), [
                     [vModelText, unref(form).email]
                   ]),

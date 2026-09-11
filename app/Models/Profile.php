@@ -14,7 +14,7 @@ class Profile extends Model
         'photo_path',
         'summary',
         'bio',
-        'email',
+        'email', 'whatsapp_number',
         'linkedin_url',
         'github_url',
         'availability',
