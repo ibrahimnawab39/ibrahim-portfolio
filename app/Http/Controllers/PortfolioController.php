@@ -13,18 +13,15 @@ use Inertia\Response;
 
 class PortfolioController extends Controller
 {
+    public function __construct(private \App\Services\PortfolioService $portfolio) {}
+
     public function home(): Response
     {
-        $firstExperience = Experience::query()->whereNotNull('start_date')->min('start_date');
-        $experienceMonths = $firstExperience
-            ? (int) Carbon::parse($firstExperience)->diffInMonths(now()) + 1
-            : 0;
-
         return Inertia::render('Home', [
             ...$this->sharedData(),
-            'projects' => $this->projects()->where('featured', true)->take(6),
+            'projects' => $this->portfolio->projects()->where('featured', true)->limit(4)->get(),
             'projectCount' => Project::query()->count(),
-            'experienceDuration' => sprintf('%dy %dm', intdiv($experienceMonths, 12), $experienceMonths % 12),
+            'experienceDuration' => $this->portfolio->experienceDuration(),
             'experiences' => Experience::query()->orderBy('order')->get(),
         ]);
     }
@@ -33,7 +30,7 @@ class PortfolioController extends Controller
     {
         return Inertia::render('Portfolio/Work', [
             ...$this->sharedData(),
-            'projects' => $this->projects(),
+            'projects' => $this->portfolio->projects()->get(),
         ]);
     }
 
@@ -72,15 +69,6 @@ class PortfolioController extends Controller
 
     private function sharedData(): array
     {
-        return [
-            'profile' => Profile::query()->first(),
-            'skills' => Skill::query()->orderBy('order')->get()->groupBy('category'),
-            'certificates' => Certificate::query()->orderBy('order')->get(),
-        ];
-    }
-
-    private function projects()
-    {
-        return Project::query()->orderByDesc('featured')->orderBy('order')->get();
+        return $this->portfolio->shared();
     }
 }

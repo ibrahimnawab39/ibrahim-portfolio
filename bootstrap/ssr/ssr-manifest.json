@@ -1,0 +1,122 @@
+{
+  "\u0000plugin-vue:export-helper": [
+    "/build/assets/_plugin-vue_export-helper-1tPrXgE0.js"
+  ],
+  "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
+  "resources/js/Components/DangerButton.vue": [
+    "/build/assets/DeleteUserForm-DmgA4Ol8.js"
+  ],
+  "resources/js/Components/InputError.vue": [
+    "/build/assets/TextInput-A0-GkXWF.js"
+  ],
+  "resources/js/Components/InputLabel.vue": [
+    "/build/assets/TextInput-A0-GkXWF.js"
+  ],
+  "resources/js/Components/Modal.vue": [
+    "/build/assets/DeleteUserForm-DmgA4Ol8.js"
+  ],
+  "resources/js/Components/Portfolio/AmbientScene.vue": [
+    "/build/assets/AmbientScene-CdqcK6xN.js"
+  ],
+  "resources/js/Components/Portfolio/ArchitectureScene.vue": [
+    "/build/assets/Home-B3q-9nW-.js"
+  ],
+  "resources/js/Components/Portfolio/BrandMark.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/CompanyLogo.vue": [
+    "/build/assets/CompanyLogo-DBsmU8oY.js"
+  ],
+  "resources/js/Components/Portfolio/PageAtmosphere.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/ProjectCover.vue": [
+    "/build/assets/ProjectCover-D_pFmt3q.js"
+  ],
+  "resources/js/Components/Portfolio/Reveal.vue": [
+    "/build/assets/Reveal-COkcuhhh.js"
+  ],
+  "resources/js/Components/Portfolio/SeoHead.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Components/Portfolio/TiltCard.vue": [
+    "/build/assets/TiltCard-BCpF3Iif.js"
+  ],
+  "resources/js/Components/PrimaryButton.vue": [
+    "/build/assets/PrimaryButton-CIooT64n.js"
+  ],
+  "resources/js/Components/SecondaryButton.vue": [
+    "/build/assets/DeleteUserForm-DmgA4Ol8.js"
+  ],
+  "resources/js/Components/TextInput.vue": [
+    "/build/assets/TextInput-A0-GkXWF.js"
+  ],
+  "resources/js/Layouts/AuthenticatedLayout.vue": [
+    "/build/assets/AuthenticatedLayout-gFy7Fq2q.js"
+  ],
+  "resources/js/Layouts/GuestLayout.vue": [
+    "/build/assets/GuestLayout-B5DkTAnn.js"
+  ],
+  "resources/js/Layouts/PortfolioLayout.vue": [
+    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+  ],
+  "resources/js/Pages/Admin/Index.vue": [
+    "/build/assets/Index-BQh9W0hv.js"
+  ],
+  "resources/js/Pages/Auth/ConfirmPassword.vue": [
+    "/build/assets/ConfirmPassword-D6_B41d3.js"
+  ],
+  "resources/js/Pages/Auth/ForgotPassword.vue": [
+    "/build/assets/ForgotPassword-DEwk6qKt.js"
+  ],
+  "resources/js/Pages/Auth/Login.vue": [
+    "/build/assets/Login-BcbRxYgw.js"
+  ],
+  "resources/js/Pages/Auth/Register.vue": [
+    "/build/assets/Register-DapTKthh.js"
+  ],
+  "resources/js/Pages/Auth/ResetPassword.vue": [
+    "/build/assets/ResetPassword-DvTY-FzR.js"
+  ],
+  "resources/js/Pages/Auth/VerifyEmail.vue": [
+    "/build/assets/VerifyEmail-CFO4VETK.js"
+  ],
+  "resources/js/Pages/Dashboard.vue": [
+    "/build/assets/Dashboard-B6Fx7LC9.js"
+  ],
+  "resources/js/Pages/Home.vue": [
+    "/build/assets/Home-B3q-9nW-.js"
+  ],
+  "resources/js/Pages/Portfolio/About.vue": [
+    "/build/assets/About-DBX0MN0l.js"
+  ],
+  "resources/js/Pages/Portfolio/Contact.vue": [
+    "/build/assets/Contact-CEqCu1uk.js"
+  ],
+  "resources/js/Pages/Portfolio/Experience.vue": [
+    "/build/assets/Experience-CDHS3tpi.js"
+  ],
+  "resources/js/Pages/Portfolio/ProjectShow.vue": [
+    "/build/assets/ProjectShow-9UhnNCZX.js"
+  ],
+  "resources/js/Pages/Portfolio/Work.vue": [
+    "/build/assets/Work-INgG_Me1.js"
+  ],
+  "resources/js/Pages/Profile/Edit.vue": [
+    "/build/assets/Edit-D5YX8A2M.js"
+  ],
+  "resources/js/Pages/Profile/Partials/DeleteUserForm.vue": [
+    "/build/assets/DeleteUserForm-DmgA4Ol8.js"
+  ],
+  "resources/js/Pages/Profile/Partials/UpdatePasswordForm.vue": [
+    "/build/assets/UpdatePasswordForm-Bxe9xPET.js"
+  ],
+  "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue": [
+    "/build/assets/UpdateProfileInformationForm-C-sTB8dc.js"
+  ],
+  "resources/js/Pages/Welcome.vue": [
+    "/build/assets/Welcome-DMaBece4.js"
+  ],
+  "resources/js/ssr.js": [],
+  "vendor/tightenco/ziggy/dist/index.js": []
+}
