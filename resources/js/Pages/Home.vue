@@ -1,163 +1,30 @@
 <script setup>
 import PortfolioLayout from '@/Layouts/PortfolioLayout.vue';
+import ArchitectureScene from '@/Components/Portfolio/ArchitectureScene.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { motion } from 'motion-v';
-
-defineProps({ profile: Object, skills: Object, projects: Array, experiences: Array, certificates: Array, projectCount: Number, experienceDuration: String });
-
-const year = (item) => item.start_date
-    ? `${new Date(item.start_date).getFullYear()} — ${item.end_date ? new Date(item.end_date).getFullYear() : 'Now'}`
-    : 'Professional experience';
-const reveal = { initial: { opacity: 1, y: 36 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: .18 }, transition: { duration: .7 } };
+import { computed } from 'vue';
+const props = defineProps({ profile: Object, skills: Object, projects: Array, experiences: Array, certificates: Array, sections: Array, projectCount: Number, experienceDuration: String });
+const currentRoles = computed(() => (props.experiences ?? []).filter(item => !item.end_date && item.employment_type !== 'Freelance'));
 </script>
-
 <template>
-    <Head>
-        <title>{{ profile?.name }} — Laravel Product Engineer</title>
-        <meta name="description" :content="profile?.summary">
-    </Head>
-
+    <Head><title>{{ profile?.name ?? 'Ibrahim Nawab' }} — Laravel & Full Stack Developer</title><meta head-key="description" name="description" :content="profile?.summary"></Head>
     <PortfolioLayout :profile="profile">
-        <div class="portfolio-grid">
-            <motion.aside
-                class="identity-card"
-                :initial="{ opacity: 0, x: -30 }"
-                :animate="{ opacity: 1, x: 0 }"
-                :transition="{ duration: .8 }"
-            >
-                <div class="identity-art">
-                    <img v-if="profile?.photo_path" :src="profile.photo_path" :alt="profile.name">
-                </div>
-                <div class="identity-top">
-                    <span class="seal">IN</span>
-                    <div class="social-mini">
-                        <a v-if="profile?.linkedin_url" :href="profile.linkedin_url" target="_blank" rel="noreferrer" aria-label="LinkedIn">in</a>
-                        <a v-if="profile?.github_url && !profile.github_url.endsWith('github.com/')" :href="profile.github_url" target="_blank" rel="noreferrer" aria-label="GitHub">gh</a>
-                    </div>
-                </div>
-                <div class="identity-copy">
-                    <span class="available"><i></i>{{ profile?.availability ?? 'Available for selected work' }}</span>
-                    <h2>Hey, I’m Ibrahim.</h2>
-                    <p>{{ profile?.headline ?? 'Laravel product engineer and technology consultant based in Karachi, working globally.' }}</p>
-                    <div class="identity-actions">
-                        <Link href="/contact" class="pill">Let’s talk ↗</Link>
-                        <Link href="/experience" class="pill alt">Experience</Link>
-                    </div>
-                </div>
-            </motion.aside>
-
-            <div class="portfolio-content">
-                <section class="hero-panel">
-                    <motion.span class="eyebrow" :initial="{ opacity: 0, y: 15 }" :animate="{ opacity: 1, y: 0 }" :transition="{ delay: .15 }">
-                        Product engineering · infrastructure
-                    </motion.span>
-                    <motion.h1 :initial="{ opacity: 0, y: 45 }" :animate="{ opacity: 1, y: 0 }" :transition="{ duration: .8, delay: .1 }">
-                        I build <em>Laravel systems</em> businesses remember.
-                    </motion.h1>
-                    <motion.p :initial="{ opacity: 0 }" :animate="{ opacity: 1 }" :transition="{ duration: .8, delay: .45 }">{{ profile?.summary }}</motion.p>
-                    <motion.div class="hero-stats" :initial="{ opacity: 0, y: 25 }" :animate="{ opacity: 1, y: 0 }" :transition="{ delay: .55 }">
-                        <div><strong>{{ experienceDuration }}</strong><span>Professional experience</span></div>
-                        <div><strong>{{ projectCount }}</strong><span>Portfolio projects</span></div>
-                        <div><strong>360°</strong><span>Product to infrastructure</span></div>
-                    </motion.div>
-                    <a href="#about" class="scroll-cue"><span></span>Scroll to explore</a>
-                </section>
-
-                <motion.section id="about" class="pf-section" v-bind="reveal">
-                    <span class="section-kicker">01 / About</span>
-                    <h2>Engineering clarity into complex operations.</h2>
-                    <p class="about-copy">{{ profile?.bio }}</p>
-                    <Link href="/about" class="text-link">More about my approach <span>↗</span></Link>
-                </motion.section>
-
-                <section id="experience" class="pf-section">
-                    <span class="section-kicker">02 / Education & experience</span>
-                    <h2>Built inside real businesses.</h2>
-                    <div class="timeline">
-                        <motion.article
-                            v-for="(item, index) in experiences"
-                            :key="item.id"
-                            :initial="{ opacity: 1, x: 30 }"
-                            :while-in-view="{ opacity: 1, x: 0 }"
-                            :viewport="{ once: true, amount: .3 }"
-                            :transition="{ delay: index * .08 }"
-                        >
-                            <time>{{ year(item) }}</time>
-                            <div><small>{{ item.company }}<template v-if="item.employment_type"> · {{ item.employment_type }}</template><template v-if="item.work_mode"> · {{ item.work_mode }}</template> · {{ item.location }}</small><h3>{{ item.role }}</h3><p>{{ item.description }}</p></div>
-                        </motion.article>
-                    </div>
-                    <Link href="/experience" class="text-link">View complete experience <span>↗</span></Link>
-                </section>
-
-                <section id="work" class="pf-section">
-                    <span class="section-kicker">03 / Work highlights</span>
-                    <h2>Systems designed for the real world.</h2>
-                    <div class="projects">
-                        <motion.article
-                            v-for="(project, index) in projects"
-                            :key="project.id"
-                            class="project"
-                            :initial="{ opacity: 1, y: 50 }"
-                            :while-in-view="{ opacity: 1, y: 0 }"
-                            :while-hover="{ y: -6 }"
-                            :viewport="{ once: true, amount: .15 }"
-                            :transition="{ duration: .55 }"
-                        >
-                            <div class="project-copy">
-                                <small>0{{ index + 1 }} · {{ project.category }}<template v-if="project.company"> · {{ project.company }}</template></small>
-                                <h3>{{ project.title }}</h3>
-                                <p>{{ project.summary }}</p>
-                                <div class="tags"><span v-for="tech in project.tech_stack" :key="tech">{{ tech }}</span></div>
-                                <Link :href="`/work/${project.slug}`" class="project-link" :aria-label="`Explore ${project.title} case study`">Explore case study <b>↗</b></Link>
-                            </div>
-                            <Link :href="`/work/${project.slug}`" class="project-visual" tabindex="-1" aria-hidden="true">
-                                <img v-if="project.image_path" :src="project.image_path" alt="">
-                                <span class="project-number">0{{ index + 1 }}</span>
-                                <span class="visual-title">{{ project.title }}</span>
-                            </Link>
-                        </motion.article>
-                    </div>
-                    <Link href="/work" class="all-work">View all selected work <span>{{ projectCount }} projects</span> ↗</Link>
-                </section>
-
-                <section id="skills" class="pf-section">
-                    <span class="section-kicker">04 / Technology stack</span>
-                    <h2>Depth across every critical layer.</h2>
-                    <div class="skills-grid">
-                        <motion.div
-                            v-for="(items, category, index) in skills"
-                            :key="category"
-                            class="skill-group"
-                            :initial="{ opacity: 1, y: 25 }"
-                            :while-in-view="{ opacity: 1, y: 0 }"
-                            :viewport="{ once: true }"
-                            :transition="{ delay: index * .08 }"
-                        >
-                            <h3>{{ category }}</h3>
-                            <ul><li v-for="skill in items" :key="skill.id"><span>{{ skill.name }}</span><b>{{ skill.proficiency }}%</b></li></ul>
-                        </motion.div>
-                    </div>
-                </section>
-
-                <section id="certificates" class="pf-section">
-                    <span class="section-kicker">05 / Education & recognition</span>
-                    <h2>Learning backed by practical delivery.</h2>
-                    <div class="certificate-grid">
-                        <motion.article v-for="(certificate, index) in certificates" :key="certificate.id" :initial="{ opacity: 1, y: 25 }" :while-in-view="{ opacity: 1, y: 0 }" :viewport="{ once: true }">
-                            <span>0{{ index + 1 }}</span><small>{{ certificate.issuer }}</small><h3>{{ certificate.title }}</h3><p>{{ certificate.description }}</p><a v-if="certificate.credential_url" :href="certificate.credential_url" target="_blank" rel="noreferrer">View credential ↗</a>
-                        </motion.article>
-                    </div>
-                </section>
-
-                <motion.section id="contact" class="pf-section" v-bind="reveal">
-                    <div class="contact-box">
-                        <span class="section-kicker">06 / Available now</span>
-                        <h2>Have a product or operation that needs stronger engineering?</h2>
-                        <p>Let’s turn complexity into a dependable product your team can grow with.</p>
-                        <Link href="/contact" class="pill">Start a conversation ↗</Link>
-                    </div>
-                </motion.section>
-            </div>
+        <div class="folio-home">
+            <section class="editorial-hero">
+                <div class="hero-byline"><span><i></i> {{ profile?.availability || 'Full stack developer' }}</span><span>{{ profile?.location || 'Karachi, Pakistan' }} · Working globally</span></div>
+                <div class="hero-title-row"><h1>Engineering<br><span>the <em>next.</em></span></h1><div class="hero-side-note"><span>PORTFOLIO / 2026</span><p>Thoughtful digital experiences.<br>Dependable foundations.</p></div></div>
+                <div class="hero-stage"><div class="hero-statement"><span class="folio-label">HELLO, I’M IBRAHIM NAWAB</span><p>A full stack developer turning ambitious ideas into <strong>products that work.</strong></p><Link href="/work" class="folio-button">Discover my work <span>↗</span></Link></div><ArchitectureScene/><div class="hero-profile"><img v-if="profile?.photo_path" :src="profile.photo_path" :alt="profile.name" width="88" height="104"><span>Laravel. Vue. APIs.<br>Built with purpose.</span><a v-if="profile?.resume_available" href="/resume" class="folio-link">Download resume ↓</a><Link v-else href="/experience" class="folio-link">My experience ↗</Link></div></div>
+                <div class="hero-bottom"><span>GOOD SOFTWARE STARTS WITH A GOOD QUESTION.</span><a href="#selected-work">SCROLL TO EXPLORE ↓</a></div>
+            </section>
+            <section class="current-roles" aria-label="Current companies"><span class="folio-label">CURRENTLY BUILDING WITH</span><span v-for="item in currentRoles" :key="item.id"><strong>{{ item.company }}</strong><small>{{ item.role }}</small></span></section>
+            <section id="selected-work" class="folio-section"><header class="folio-section-heading"><span class="folio-label">01 / SELECTED WORK</span><h2>Less noise.<br><em>More impact.</em></h2><div><p>Web platforms, mobile experiences and the systems behind them.</p><Link href="/work" class="folio-link">Explore all {{ projectCount }} projects ↗</Link></div></header>
+                <div class="editorial-projects"><Link v-for="(project,index) in projects" :key="project.id" :href="`/work/${project.slug}`" class="editorial-project" :class="`work-tone-${index % 3}`"><div class="work-cover"><img v-if="project.image_path" :src="project.image_path" :alt="project.title" loading="lazy"><template v-else><span class="cover-caption">{{ project.category }} / {{ String(index + 1).padStart(2,'0') }}</span><div class="cover-art" aria-hidden="true"><span>{{ project.title }}</span><i></i><i></i><i></i></div><span class="cover-tech">{{ (project.tech_stack ?? []).slice(0,3).join(' + ') }}</span></template><b class="work-arrow-round">↗</b></div><div class="work-caption"><h3>{{ project.title }}</h3><span>{{ project.company || project.category }}</span></div><p>{{ project.summary }}</p></Link></div><p v-if="!projects?.length">Selected projects are being prepared.</p>
+            </section>
+            <section id="about" class="folio-about folio-section"><span class="folio-label">02 / BEYOND THE CODE</span><div><h2>Technical depth.<br><em>Human perspective.</em></h2><p>{{ profile?.bio }}</p><Link href="/about" class="folio-link">The story so far ↗</Link></div><aside><strong>{{ experienceDuration }}</strong><span>Since my first professional role</span><strong>{{ projectCount }}</strong><span>Projects in this portfolio</span></aside></section>
+            <section id="skills" class="folio-section"><header class="folio-section-heading"><span class="folio-label">03 / MY TOOLKIT</span><h2>From first click<br><em>to final query.</em></h2><p>One connected approach to the whole product.</p></header><div class="folio-skills"><article v-for="(items,category,index) in skills" :key="category"><span>0{{ index + 1 }}</span><h3>{{ category }}</h3><p><span v-for="skill in items" :key="skill.id">{{ skill.name }}</span></p></article></div></section>
+            <section v-for="section in sections" :key="section.id" class="folio-section custom-section"><span class="folio-label">{{ section.eyebrow }}</span><h2>{{ section.title }}</h2><p>{{ section.body }}</p><a v-if="section.link_url" :href="section.link_url" class="folio-link">{{ section.link_label || 'Read more' }} ↗</a></section>
+            <section v-if="certificates?.length" id="certificates" class="folio-section"><header class="folio-section-heading"><span class="folio-label">04 / ALWAYS LEARNING</span><h2>A foundation.<br><em>Never a finish line.</em></h2></header><div class="folio-certificates"><article v-for="certificate in certificates" :key="certificate.id"><h3>{{ certificate.title }}</h3><span>{{ certificate.issuer }}</span><a v-if="certificate.credential_url" :href="certificate.credential_url" target="_blank" rel="noreferrer" class="folio-link">View credential ↗</a></article></div></section>
+            <section class="folio-contact"><span class="folio-label">YOUR NEXT CHAPTER STARTS HERE</span><h2>Have a good<br><em>challenge?</em><span>↗</span></h2><div><Link href="/contact" class="folio-button">Let’s build something <span>↗</span></Link><a v-if="profile?.email" :href="`mailto:${profile.email}`">{{ profile.email }}</a></div></section>
         </div>
     </PortfolioLayout>
 </template>

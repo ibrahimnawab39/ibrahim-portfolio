@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Experience extends Model
 {
     protected $fillable = [
+        'include_in_resume',
         'role',
         'company',
         'employment_type',
@@ -21,6 +22,7 @@ class Experience extends Model
     protected function casts(): array
     {
         return [
+            'include_in_resume' => 'boolean',
             'start_date' => 'date',
             'end_date' => 'date',
             'order' => 'integer',

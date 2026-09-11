@@ -21,6 +21,7 @@ class AdminController extends Controller
     {
         return Inertia::render('Admin/Index', [
             'profile' => Profile::query()->first(),
+            'sections' => \App\Models\Section::query()->orderBy('order')->get(),
             'projects' => Project::query()->orderBy('order')->get(),
             'experiences' => Experience::query()->orderBy('order')->get(),
             'certificates' => Certificate::query()->orderBy('order')->get(),
@@ -46,11 +47,16 @@ class AdminController extends Controller
             'summary' => ['nullable', 'string', 'max:500'],
             'bio' => ['nullable', 'string', 'max:3000'],
             'email' => ['nullable', 'email', 'max:150'],
-            'linkedin_url' => ['nullable', 'url', 'max:255'],
-            'github_url' => ['nullable', 'url', 'max:255'],
+            'linkedin_url' => ['nullable', 'url:http,https', 'max:255'],
+            'github_url' => ['nullable', 'url:http,https', 'max:255'],
             'availability' => ['required', 'string', 'max:150'],
             'years_experience' => ['required', 'integer', 'min:0', 'max:60'],
             'photo' => ['nullable', 'image', 'max:5120'],
+            'resume_headline' => ['nullable', 'string', 'max:150'],
+            'resume_summary' => ['nullable', 'string', 'max:1000'],
+            'education_title' => ['nullable', 'string', 'max:180'],
+            'education_institution' => ['nullable', 'string', 'max:180'],
+            'education_period' => ['nullable', 'string', 'max:80'],
         ]);
 
         if ($request->hasFile('photo')) {
@@ -199,8 +205,9 @@ class AdminController extends Controller
             'summary' => ['required', 'string', 'max:700'],
             'description' => ['nullable', 'string', 'max:5000'],
             'tech_stack' => ['nullable', 'string', 'max:1000'],
-            'live_url' => ['nullable', 'url', 'max:255'],
-            'repo_url' => ['nullable', 'url', 'max:255'],
+            'live_url' => ['nullable', 'url:http,https', 'max:255'],
+            'repo_url' => ['nullable', 'url:http,https', 'max:255'],
+            'include_in_resume' => ['sometimes', 'boolean'],
             'featured' => ['nullable', 'boolean'],
             'order' => ['required', 'integer', 'min:0'],
             'start_date' => ['nullable', 'date'],
@@ -227,6 +234,7 @@ class AdminController extends Controller
     private function experienceData(Request $request): array
     {
         return $request->validate([
+            'include_in_resume' => ['sometimes', 'boolean'],
             'role' => ['required', 'string', 'max:180'],
             'company' => ['required', 'string', 'max:180'],
             'employment_type' => ['nullable', 'string', 'max:80'],
@@ -255,7 +263,7 @@ class AdminController extends Controller
             'title' => ['required', 'string', 'max:180'],
             'issuer' => ['required', 'string', 'max:180'],
             'issue_date' => ['nullable', 'date'],
-            'credential_url' => ['nullable', 'url', 'max:255'],
+            'credential_url' => ['nullable', 'url:http,https', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'order' => ['required', 'integer', 'min:0'],
         ]);

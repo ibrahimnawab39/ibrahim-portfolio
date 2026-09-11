@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     protected $fillable = [
+        'include_in_resume',
         'title',
         'slug',
         'category',
@@ -28,6 +29,7 @@ class Project extends Model
         return [
             'tech_stack' => 'array',
             'featured' => 'boolean',
+            'include_in_resume' => 'boolean',
             'order' => 'integer',
             'start_date' => 'date',
             'end_date' => 'date',

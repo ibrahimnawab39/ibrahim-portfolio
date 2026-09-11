@@ -9,7 +9,7 @@ defineProps({ profile: Object, skills: Object, experiences: Array, certificates:
 <template>
     <Head>
         <title>About — Ibrahim Nawab</title>
-        <meta name="description" :content="profile?.summary">
+        <meta head-key="description" name="description" :content="profile?.summary">
     </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page">

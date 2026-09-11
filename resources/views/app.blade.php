@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#0b0d0c">
-        <meta name="color-scheme" content="dark">
+        <meta name="theme-color" content="#f3f2ed">
+        <meta name="color-scheme" content="light dark">
 
         <title inertia>{{ config('app.name', 'Ibrahim Nawab') }}</title>
 

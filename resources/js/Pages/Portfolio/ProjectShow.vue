@@ -9,7 +9,7 @@ defineProps({ profile: Object, project: Object, nextProject: Object });
 <template>
     <Head>
         <title>{{ project.title }} — Ibrahim Nawab</title>
-        <meta name="description" :content="project.summary">
+        <meta head-key="description" name="description" :content="project.summary">
     </Head>
     <PortfolioLayout :profile="profile">
         <article class="case-study">

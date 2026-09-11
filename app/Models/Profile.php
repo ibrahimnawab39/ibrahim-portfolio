@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     protected $fillable = [
+        'resume_headline', 'resume_summary', 'education_title', 'education_institution', 'education_period',
         'name',
         'headline',
         'location',

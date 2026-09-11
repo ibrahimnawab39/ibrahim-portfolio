@@ -10,7 +10,7 @@ const date = (value, empty = 'Present') => value ? new Intl.DateTimeFormat('en',
 <template>
     <Head>
         <title>Experience — Ibrahim Nawab</title>
-        <meta name="description" content="Professional experience, roles and engineering background of Ibrahim Nawab.">
+        <meta head-key="description" name="description" content="Professional experience, roles and engineering background of Ibrahim Nawab.">
     </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page">

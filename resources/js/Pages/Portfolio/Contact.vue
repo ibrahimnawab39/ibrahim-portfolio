@@ -14,7 +14,7 @@ const submit = () => form.post('/contact', { preserveScroll: true, onSuccess: ()
 <template>
     <Head>
         <title>Start a Project — Ibrahim Nawab</title>
-        <meta name="description" content="Discuss a Laravel product, operational platform or infrastructure project with Ibrahim Nawab.">
+        <meta head-key="description" name="description" content="Discuss a Laravel product, operational platform or infrastructure project with Ibrahim Nawab.">
     </Head>
     <PortfolioLayout :profile="profile">
         <div class="contact-page">

@@ -9,7 +9,7 @@ defineProps({ profile: Object, projects: Array });
 <template>
     <Head>
         <title>Selected Work — Ibrahim Nawab</title>
-        <meta name="description" content="Selected Laravel products, operational platforms and infrastructure projects by Ibrahim Nawab.">
+        <meta head-key="description" name="description" content="Selected Laravel products, operational platforms and infrastructure projects by Ibrahim Nawab.">
     </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page">

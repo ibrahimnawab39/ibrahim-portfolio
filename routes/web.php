@@ -7,7 +7,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/sitemap.xml', \App\Http\Controllers\SitemapController::class)->name('sitemap');
 Route::get('/', [PortfolioController::class, 'home'])->name('home');
+Route::get('/resume', \App\Http\Controllers\ResumeController::class)->middleware('throttle:20,1')->name('resume');
 Route::get('/work', [PortfolioController::class, 'work'])->name('work.index');
 Route::get('/work/{project:slug}', [PortfolioController::class, 'project'])->name('work.show');
 Route::get('/about', [PortfolioController::class, 'about'])->name('about');
@@ -30,6 +32,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::post('/sections', [\App\Http\Controllers\SectionController::class, 'store']);
+    Route::patch('/sections/{section}', [\App\Http\Controllers\SectionController::class, 'update']);
+    Route::delete('/sections/{section}', [\App\Http\Controllers\SectionController::class, 'destroy']);
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::post('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
     Route::post('/projects', [AdminController::class, 'storeProject'])->name('projects.store');

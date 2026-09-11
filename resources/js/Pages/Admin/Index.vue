@@ -10,6 +10,7 @@ const props = defineProps({
     skills: Array,
     messages: Array,
     stats: Object,
+    sections: Array,
 });
 
 const page = usePage();
@@ -19,6 +20,9 @@ const editingExperience = ref(null);
 const editingSkill = ref(null);
 const editingCertificate = ref(null);
 const photo = ref(null);
+const sectionForm = useForm({ id: null, eyebrow: '', title: '', body: '', link_label: '', link_url: '', published: false, order: 0 });
+const editSection = (section = null) => { sectionForm.reset(); if (section) Object.assign(sectionForm, section); };
+const saveSection = () => sectionForm[sectionForm.id ? 'patch' : 'post'](sectionForm.id ? `/admin/sections/${sectionForm.id}` : '/admin/sections', { preserveScroll: true, onSuccess: () => sectionForm.reset() });
 const projectImage = ref(null);
 
 const flash = computed(() => page.props.flash?.success);
@@ -40,14 +44,19 @@ const profileForm = useForm({
     availability: props.profile?.availability ?? '',
     years_experience: props.profile?.years_experience ?? 4,
     photo: null,
+    resume_headline: props.profile?.resume_headline ?? '',
+    resume_summary: props.profile?.resume_summary ?? '',
+    education_title: props.profile?.education_title ?? '',
+    education_institution: props.profile?.education_institution ?? '',
+    education_period: props.profile?.education_period ?? '',
 });
 
 const blankProject = () => ({
     id: null, title: '', slug: '', category: '', company: '', start_date: '', end_date: '', summary: '', description: '',
-    tech_stack: '', live_url: '', repo_url: '', featured: false, order: props.projects.length,
+    tech_stack: '', live_url: '', repo_url: '', featured: false, include_in_resume: false, order: props.projects.length,
 });
 const blankExperience = () => ({
-    id: null, role: '', company: '', employment_type: '', work_mode: '', location: '', start_date: '', end_date: '', description: '', order: props.experiences.length,
+    id: null, include_in_resume: true, role: '', company: '', employment_type: '', work_mode: '', location: '', start_date: '', end_date: '', description: '', order: props.experiences.length,
 });
 const blankSkill = () => ({ id: null, name: '', category: '', proficiency: 80, order: props.skills.length });
 const blankCertificate = () => ({ id: null, title: '', issuer: '', issue_date: '', credential_url: '', description: '', order: props.certificates.length });
@@ -175,7 +184,7 @@ const remove = (url, label) => {
             <Link href="/" class="admin-brand">IBRAHIM<span>.</span><small>Portfolio CMS</small></Link>
             <nav>
                 <button v-for="item in [
-                    ['overview','Overview'],['profile','Profile'],['projects','Projects'],['experience','Experience'],['certificates','Certificates'],['skills','Skills'],['messages','Messages']
+                    ['overview','Overview'],['profile','Profile'],['projects','Projects'],['experience','Experience'],['certificates','Certificates'],['skills','Skills'],['sections','Custom sections'],['resume','Resume PDF'],['messages','Messages']
                 ]" :key="item[0]" :class="{ active: active === item[0] }" @click="setTab(item[0])">
                     <span>{{ item[1] }}</span><b v-if="item[0] === 'messages' && stats.unreadMessages">{{ stats.unreadMessages }}</b>
                 </button>
@@ -213,6 +222,8 @@ const remove = (url, label) => {
                 </div>
             </section>
 
+            <section v-if="active === 'sections'" class="admin-view"><div class="admin-heading"><h2>Custom sections</h2><button class="admin-primary" @click="editSection()">New section</button></div><div class="admin-records"><article v-for="section in sections" :key="section.id"><span>{{ section.order }}</span><div><h3>{{ section.title }}</h3><p>{{ section.published ? 'Published' : 'Draft' }}</p></div><div class="record-actions"><button @click="editSection(section)">Edit</button><button @click="sectionForm.delete(`/admin/sections/${section.id}`, { preserveScroll: true })">Delete</button></div></article></div><form class="admin-form" @submit.prevent="saveSection"><label><span>Eyebrow</span><input v-model="sectionForm.eyebrow"></label><label><span>Title</span><input v-model="sectionForm.title" required></label><label><span>Body</span><textarea v-model="sectionForm.body" rows="5" required></textarea></label><div class="admin-grid"><label><span>Link label</span><input v-model="sectionForm.link_label"></label><label><span>Link URL</span><input v-model="sectionForm.link_url" type="url"></label></div><label><span>Display order</span><input v-model="sectionForm.order" type="number" min="0"></label><label><input v-model="sectionForm.published" type="checkbox"> Published on homepage</label><p v-for="(error,field) in sectionForm.errors" :key="field" role="alert">{{ error }}</p><button class="admin-primary" :disabled="sectionForm.processing">Save section</button></form></section>
+            <section v-if="active === 'resume'" class="admin-view"><div class="admin-heading"><h2>Resume PDF</h2><a class="admin-primary" href="/resume">Download current PDF ↓</a></div><p>The PDF is generated from your current profile, skills and selected experience and projects. Changes appear on the next download.</p><form class="admin-form" @submit.prevent="saveProfile"><label><span>Resume headline</span><input v-model="profileForm.resume_headline"></label><label><span>Resume summary (leave blank to use profile summary)</span><textarea v-model="profileForm.resume_summary" rows="4"></textarea></label><label><span>Education title</span><input v-model="profileForm.education_title"></label><div class="admin-grid"><label><span>Institution</span><input v-model="profileForm.education_institution"></label><label><span>Period</span><input v-model="profileForm.education_period"></label></div><button class="admin-primary" :disabled="profileForm.processing">Save resume settings</button></form></section>
             <section v-if="active === 'profile'" class="admin-view">
                 <div class="admin-heading"><div><span>Public identity</span><h2>Profile & biography</h2></div><button class="admin-primary" @click="saveProfile" :disabled="profileForm.processing">{{ profileForm.processing ? 'Saving…' : 'Save profile' }}</button></div>
                 <form class="admin-form profile-admin-form" @submit.prevent="saveProfile">
@@ -232,7 +243,7 @@ const remove = (url, label) => {
 
             <section v-if="active === 'projects'" class="admin-view">
                 <div class="admin-heading"><div><span>Portfolio records</span><h2>Projects</h2></div><button class="admin-primary" @click="editProject()">+ Add project</button></div>
-                <form v-if="editingProject !== null" class="admin-form admin-editor" @submit.prevent="saveProject">
+                <form v-if="editingProject !== null" class="admin-form admin-editor" @submit.prevent="saveProject"><label><input v-model="projectForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
                     <div class="editor-head"><h3>{{ projectForm.id ? 'Edit project' : 'New project' }}</h3><button type="button" @click="editingProject = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Title</span><input v-model="projectForm.title" required></label><label><span>Slug</span><input v-model="projectForm.slug" placeholder="project-url-slug" required></label></div>
                     <div class="admin-grid"><label><span>Category</span><input v-model="projectForm.category"></label><label><span>Associated company</span><input v-model="projectForm.company"></label></div>
@@ -267,7 +278,7 @@ const remove = (url, label) => {
 
             <section v-if="active === 'experience'" class="admin-view">
                 <div class="admin-heading"><div><span>Career history</span><h2>Experience</h2></div><button class="admin-primary" @click="editExperience()">+ Add experience</button></div>
-                <form v-if="editingExperience !== null" class="admin-form admin-editor" @submit.prevent="saveExperience">
+                <form v-if="editingExperience !== null" class="admin-form admin-editor" @submit.prevent="saveExperience"><label><input v-model="experienceForm.include_in_resume" type="checkbox"> Include in resume PDF</label>
                     <div class="editor-head"><h3>{{ experienceForm.id ? 'Edit experience' : 'New experience' }}</h3><button type="button" @click="editingExperience = null">Close ×</button></div>
                     <div class="admin-grid"><label><span>Role</span><input v-model="experienceForm.role" required></label><label><span>Company</span><input v-model="experienceForm.company" required></label></div>
                     <div class="admin-grid">

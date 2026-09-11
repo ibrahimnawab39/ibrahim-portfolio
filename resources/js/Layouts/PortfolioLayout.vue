@@ -1,4 +1,5 @@
 <script setup>
+import SeoHead from '@/Components/Portfolio/SeoHead.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
@@ -45,6 +46,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+    <SeoHead />
     <div
         class="pf-site"
         :class="{ 'menu-is-open': menuOpen }"
@@ -64,8 +66,8 @@ onBeforeUnmount(() => {
                     <Link href="/about" :class="{ active: isActive('/about') }">About</Link>
                     <Link href="/experience" :class="{ active: isActive('/experience') }">Experience</Link>
                     <Link href="/work" :class="{ active: isActive('/work') }">Work</Link>
-                    <a href="/#skills">Stack</a>
-                    <a href="/#certificates">Certificates</a>
+                    <a href="/#skills">Expertise</a>
+                    <a v-if="profile?.resume_available" href="/resume">Resume ↓</a>
                     <Link href="/contact" class="nav-contact" :class="{ active: isActive('/contact') }">Let’s talk ↗</Link>
                 </nav>
 
