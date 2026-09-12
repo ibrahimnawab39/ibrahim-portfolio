@@ -4,8 +4,8 @@
 buildCommand = "npx vite build"
 
 [deploy]
-preDeployCommand = ["chmod +x ./railway/init-app.sh && ./railway/init-app.sh"]
-healthcheckPath = "/up"
-healthcheckTimeout = 120
+preDeployCommand = ["chmod +x ./railway/init-app.sh ./start-container.sh && ./railway/init-app.sh"]
+# Healthchecks can mark a healthy FrankenPHP boot as crashed during restarts.
+# Use Railway's HTTP routing; Laravel still exposes /up for manual checks.
 restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 5
+restartPolicyMaxRetries = 10
