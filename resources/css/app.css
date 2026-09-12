@@ -279,7 +279,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .experience-ledger { padding: 70px 0 120px; }
-.experience-ledger article { display: grid; grid-template-columns: 55px 185px 1fr; gap: 34px; padding: 44px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.experience-ledger article { display: grid; align-items: start; }
 .experience-ledger .ledger-number { font-size: 12px; color: var(--muted); padding-top: 6px; }
 .experience-ledger .ledger-copy a { text-decoration: underline; text-underline-offset: 3px; }
 .ledger-number { color: var(--lime); font-size: 9px; }
@@ -365,8 +365,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
     .about-editorial, .case-content { grid-template-columns: 1fr; }
     .portrait-panel { min-height: 520px; }
     .case-visual { min-height: 500px; }
-    .experience-ledger article { grid-template-columns: 45px 1fr; }
-    .ledger-copy { grid-column: 2; }
 }
 
 @media (max-width: 640px) {
@@ -402,8 +400,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
     .fact-grid > div { border-bottom: 1px solid var(--line); padding: 18px 0; }
     .capability-list > div { grid-template-columns: 35px 1fr; }
     .capability-list p { grid-column: 2; }
-    .experience-ledger article { gap: 15px; padding: 35px 0; }
-    .ledger-date { text-align: right; }
     .case-hero { padding-top: 60px; }
     .back-link { margin-bottom: 55px; }
     .case-visual { min-height: 390px; border-radius: 18px; }

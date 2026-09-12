@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 
 const props = defineProps({
     max: { type: Number, default: 8 },
+    lift: { type: Number, default: 6 },
     glare: { type: Boolean, default: true },
 });
 
@@ -20,7 +21,7 @@ const onMove = (event) => {
     const y = Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height));
     const rotateY = (x - 0.5) * props.max * 1.6;
     const rotateX = (0.5 - y) * props.max * 1.4;
-    transform.value = `perspective(1100px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(0,-6px,18px)`;
+    transform.value = `perspective(1100px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(0,${-props.lift}px,18px)`;
     glareStyle.value = {
         opacity: 0.28,
         background: `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,.4), transparent 55%)`,

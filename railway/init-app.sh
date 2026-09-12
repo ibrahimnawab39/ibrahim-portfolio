@@ -15,6 +15,8 @@ fi
 echo "Pre-deploy DB: ${DB_CONNECTION}://${DB_USERNAME}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}"
 
 php artisan optimize:clear
+mkdir -p storage/fonts storage/app/dompdf storage/app/resume storage/logs storage/framework/{cache,sessions,views} bootstrap/cache
+chmod -R ug+rwx storage bootstrap/cache || true
 php artisan storage:link --force || true
 php artisan migrate --force
 

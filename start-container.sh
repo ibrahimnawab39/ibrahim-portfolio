@@ -22,6 +22,8 @@ if [ "${IS_LARAVEL:-}" = "true" ]; then
 
   # Drop any stale cached config that may still point at sqlite/localhost.
   php artisan optimize:clear
+  mkdir -p storage/fonts storage/app/dompdf storage/app/resume storage/logs storage/framework/{cache,sessions,views} bootstrap/cache
+  chmod -R ug+rwx storage bootstrap/cache || true
 
   echo "Running migrations ..."
   php artisan migrate --force

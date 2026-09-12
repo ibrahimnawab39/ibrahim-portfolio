@@ -36,7 +36,8 @@ const date = (value, empty = 'Present') =>
                 <TiltCard
                     v-for="(item, index) in experiences"
                     :key="item.id"
-                    :max="7"
+                    :max="5"
+                    :lift="2"
                     class="experience-tilt"
                 >
                     <motion.article
