@@ -1,5 +1,7 @@
 [build]
-buildCommand = "npm ci && npx vite build"
+# Railpack already runs `npm ci` in install. Re-running it causes
+# EBUSY on the mounted node_modules/.vite cache.
+buildCommand = "npx vite build"
 
 [deploy]
 preDeployCommand = ["chmod +x ./railway/init-app.sh && ./railway/init-app.sh"]
