@@ -4,17 +4,13 @@ import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
 import ProjectCover from '@/Components/Portfolio/ProjectCover.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { motion } from 'motion-v';
 
 defineProps({ profile: Object, projects: Array });
 </script>
 
 <template>
-    <Head>
-        <title>Selected Work — Ibrahim Nawab</title>
-        <meta head-key="description" name="description" content="Selected Laravel products, operational platforms and infrastructure projects by Ibrahim Nawab.">
-    </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page has-atmosphere">
             <PageAtmosphere tone="work" mode="dots" />

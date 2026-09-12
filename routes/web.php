@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/robots.txt', \App\Http\Controllers\RobotsController::class)->name('robots');
 Route::get('/sitemap.xml', \App\Http\Controllers\SitemapController::class)->name('sitemap');
 Route::get('/', [PortfolioController::class, 'home'])->name('home');
 Route::get('/resume', \App\Http\Controllers\ResumeController::class)->middleware('throttle:20,1')->name('resume');

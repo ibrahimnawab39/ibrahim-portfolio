@@ -2,7 +2,7 @@
 import PortfolioLayout from '@/Layouts/PortfolioLayout.vue';
 import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { motion } from 'motion-v';
 
@@ -14,10 +14,6 @@ const submit = () => form.post('/contact', { preserveScroll: true, onSuccess: ()
 </script>
 
 <template>
-    <Head>
-        <title>Start a Project — Ibrahim Nawab</title>
-        <meta head-key="description" name="description" content="Discuss a Laravel product, operational platform or infrastructure project with Ibrahim Nawab.">
-    </Head>
     <PortfolioLayout :profile="profile">
         <div class="contact-page has-atmosphere">
             <PageAtmosphere tone="contact" mode="orbs" />

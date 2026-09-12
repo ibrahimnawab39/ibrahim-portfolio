@@ -6,6 +6,11 @@
         <meta name="theme-color" content="#11131b">
         <meta name="color-scheme" content="light dark">
 
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="manifest" href="/site.webmanifest">
+
         <script>try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
         <title inertia>{{ config('app.name', 'Ibrahim Nawab') }}</title>
 

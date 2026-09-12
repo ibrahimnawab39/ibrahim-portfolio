@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ibrahim Nawab">
+  <rect width="64" height="64" rx="14" fill="#11131b"/>
+  <path
+    d="M14 14h9v36H14zM30 50V14h8l14 22V14h-8v36h-7L22 26"
+    fill="none"
+    stroke="#b1aeff"
+    stroke-width="4.5"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+</svg>

@@ -5,7 +5,7 @@ import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import CompanyLogo from '@/Components/Portfolio/CompanyLogo.vue';
 import Reveal from '@/Components/Portfolio/Reveal.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { motion } from 'motion-v';
 
@@ -46,10 +46,6 @@ const studios = computed(() => {
 </script>
 
 <template>
-    <Head>
-        <title>About — Ibrahim Nawab</title>
-        <meta head-key="description" name="description" :content="profile?.summary">
-    </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page about-page has-atmosphere">
             <PageAtmosphere tone="about" mode="beams" />

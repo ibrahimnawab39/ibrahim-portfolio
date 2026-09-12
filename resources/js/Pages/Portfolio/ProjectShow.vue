@@ -5,7 +5,7 @@ import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import ProjectCover from '@/Components/Portfolio/ProjectCover.vue';
 import Reveal from '@/Components/Portfolio/Reveal.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { motion } from 'motion-v';
 
@@ -17,10 +17,6 @@ const liveLabel = computed(() => isMobile.value ? 'View on Google Play ↗' : 'V
 </script>
 
 <template>
-    <Head>
-        <title>{{ project.title }} — Ibrahim Nawab</title>
-        <meta head-key="description" name="description" :content="project.summary">
-    </Head>
     <PortfolioLayout :profile="profile">
         <article class="case-study has-atmosphere">
             <PageAtmosphere tone="work" mode="dots" />

@@ -6,7 +6,7 @@ import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
 import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import Reveal from '@/Components/Portfolio/Reveal.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { motion } from 'motion-v';
 
@@ -42,10 +42,6 @@ const toolkit = computed(() =>
 </script>
 
 <template>
-    <Head>
-        <title>{{ profile?.name ?? 'Ibrahim Nawab' }} — Laravel & Full Stack Developer</title>
-        <meta head-key="description" name="description" :content="profile?.summary">
-    </Head>
     <PortfolioLayout :profile="profile">
         <div class="folio-home">
             <section class="editorial-hero immersive-hero">

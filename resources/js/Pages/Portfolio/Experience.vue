@@ -4,7 +4,7 @@ import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
 import CompanyLogo from '@/Components/Portfolio/CompanyLogo.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { motion } from 'motion-v';
 
 defineProps({ profile: Object, experiences: Array });
@@ -14,10 +14,6 @@ const date = (value, empty = 'Present') =>
 </script>
 
 <template>
-    <Head>
-        <title>Experience — Ibrahim Nawab</title>
-        <meta head-key="description" name="description" content="Professional experience, roles and engineering background of Ibrahim Nawab.">
-    </Head>
     <PortfolioLayout :profile="profile">
         <div class="inner-page has-atmosphere">
             <PageAtmosphere tone="experience" mode="mist" />
