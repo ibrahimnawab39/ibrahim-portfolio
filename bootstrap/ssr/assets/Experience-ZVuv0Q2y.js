@@ -1,7 +1,6 @@
 import { unref, withCtx, createVNode, createTextVNode, toDisplayString, openBlock, createBlock, createCommentVNode, Fragment, renderList, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderList, ssrInterpolate, ssrRenderAttr } from "vue/server-renderer";
-import { _ as _sfc_main$1, a as _sfc_main$2 } from "./PageAtmosphere-tZ9iTIjN.js";
-import { _ as _sfc_main$3 } from "./AmbientScene-CdqcK6xN.js";
+import { _ as _sfc_main$1, a as _sfc_main$2, b as _sfc_main$3 } from "./PageAtmosphere-B4p25rd1.js";
 import { _ as _sfc_main$5 } from "./CompanyLogo-DBsmU8oY.js";
 import { _ as _sfc_main$4 } from "./TiltCard-BCpF3Iif.js";
 import { Head, Link } from "@inertiajs/vue3";
@@ -253,23 +252,95 @@ const _sfc_main = {
                 _: 2
               }, _parent2, _scopeId));
             });
-            _push2(`<!--]--></section><section class="page-cta"${_scopeId}><span${_scopeId}>Selected output</span><h2${_scopeId}>Now see how the experience becomes product.</h2>`);
-            _push2(ssrRenderComponent(unref(Link), {
-              href: "/work",
-              class: "pill"
+            _push2(`<!--]--></section>`);
+            _push2(ssrRenderComponent(unref(motion).section, {
+              class: "page-cta page-cta-split",
+              initial: { opacity: 0, y: 24 },
+              "while-in-view": { opacity: 1, y: 0 },
+              viewport: { once: true, amount: 0.35 },
+              transition: { duration: 0.55 }
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`Explore selected work ↗`);
+                  _push3(`<div class="page-cta-copy"${_scopeId2}><span${_scopeId2}>Selected output</span><h2${_scopeId2}>Now see how the experience becomes product.</h2>`);
+                  _push3(ssrRenderComponent(unref(Link), {
+                    href: "/work",
+                    class: "pill"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`Explore selected work ↗`);
+                      } else {
+                        return [
+                          createTextVNode("Explore selected work ↗")
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(`</div>`);
+                  _push3(ssrRenderComponent(unref(motion).div, {
+                    class: "cta-scene",
+                    "aria-hidden": "true",
+                    initial: { opacity: 0, scale: 0.92 },
+                    "while-in-view": { opacity: 1, scale: 1 },
+                    viewport: { once: true },
+                    transition: { duration: 0.7, delay: 0.1 }
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(ssrRenderComponent(_sfc_main$3, {
+                          tone: "experience",
+                          variant: "orbit"
+                        }, null, _parent4, _scopeId3));
+                      } else {
+                        return [
+                          createVNode(_sfc_main$3, {
+                            tone: "experience",
+                            variant: "orbit"
+                          })
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
                 } else {
                   return [
-                    createTextVNode("Explore selected work ↗")
+                    createVNode("div", { class: "page-cta-copy" }, [
+                      createVNode("span", null, "Selected output"),
+                      createVNode("h2", null, "Now see how the experience becomes product."),
+                      createVNode(unref(Link), {
+                        href: "/work",
+                        class: "pill"
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode("Explore selected work ↗")
+                        ]),
+                        _: 1
+                      })
+                    ]),
+                    createVNode(unref(motion).div, {
+                      class: "cta-scene",
+                      "aria-hidden": "true",
+                      initial: { opacity: 0, scale: 0.92 },
+                      "while-in-view": { opacity: 1, scale: 1 },
+                      viewport: { once: true },
+                      transition: { duration: 0.7, delay: 0.1 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_sfc_main$3, {
+                          tone: "experience",
+                          variant: "orbit"
+                        })
+                      ]),
+                      _: 1
+                    })
                   ];
                 }
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`</section></div>`);
+            _push2(`</div>`);
           } else {
             return [
               createVNode("div", { class: "inner-page has-atmosphere" }, [
@@ -387,19 +458,46 @@ const _sfc_main = {
                     }, 1024);
                   }), 128))
                 ]),
-                createVNode("section", { class: "page-cta" }, [
-                  createVNode("span", null, "Selected output"),
-                  createVNode("h2", null, "Now see how the experience becomes product."),
-                  createVNode(unref(Link), {
-                    href: "/work",
-                    class: "pill"
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode("Explore selected work ↗")
+                createVNode(unref(motion).section, {
+                  class: "page-cta page-cta-split",
+                  initial: { opacity: 0, y: 24 },
+                  "while-in-view": { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.35 },
+                  transition: { duration: 0.55 }
+                }, {
+                  default: withCtx(() => [
+                    createVNode("div", { class: "page-cta-copy" }, [
+                      createVNode("span", null, "Selected output"),
+                      createVNode("h2", null, "Now see how the experience becomes product."),
+                      createVNode(unref(Link), {
+                        href: "/work",
+                        class: "pill"
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode("Explore selected work ↗")
+                        ]),
+                        _: 1
+                      })
                     ]),
-                    _: 1
-                  })
-                ])
+                    createVNode(unref(motion).div, {
+                      class: "cta-scene",
+                      "aria-hidden": "true",
+                      initial: { opacity: 0, scale: 0.92 },
+                      "while-in-view": { opacity: 1, scale: 1 },
+                      viewport: { once: true },
+                      transition: { duration: 0.7, delay: 0.1 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_sfc_main$3, {
+                          tone: "experience",
+                          variant: "orbit"
+                        })
+                      ]),
+                      _: 1
+                    })
+                  ]),
+                  _: 1
+                })
               ])
             ];
           }

@@ -1,13 +1,12 @@
 import { unref, withCtx, createVNode, useSSRContext } from "vue";
 import { ssrRenderComponent } from "vue/server-renderer";
 import { _ as _sfc_main$1 } from "./AuthenticatedLayout-gFy7Fq2q.js";
-import _sfc_main$4 from "./DeleteUserForm-DmgA4Ol8.js";
 import _sfc_main$3 from "./UpdatePasswordForm-Bxe9xPET.js";
 import _sfc_main$2 from "./UpdateProfileInformationForm-C-sTB8dc.js";
 import { Head } from "@inertiajs/vue3";
-import "./_plugin-vue_export-helper-1tPrXgE0.js";
 import "./TextInput-A0-GkXWF.js";
 import "./PrimaryButton-CIooT64n.js";
+import "./_plugin-vue_export-helper-1tPrXgE0.js";
 const _sfc_main = {
   __name: "Edit",
   __ssrInlineRender: true,
@@ -26,8 +25,6 @@ const _sfc_main = {
             }, null, _parent2, _scopeId));
             _push2(`</div><div class="account-card"${_scopeId}>`);
             _push2(ssrRenderComponent(_sfc_main$3, null, null, _parent2, _scopeId));
-            _push2(`</div><div class="account-card danger-zone"${_scopeId}>`);
-            _push2(ssrRenderComponent(_sfc_main$4, null, null, _parent2, _scopeId));
             _push2(`</div></div>`);
           } else {
             return [
@@ -45,9 +42,6 @@ const _sfc_main = {
                 ]),
                 createVNode("div", { class: "account-card" }, [
                   createVNode(_sfc_main$3)
-                ]),
-                createVNode("div", { class: "account-card danger-zone" }, [
-                  createVNode(_sfc_main$4)
                 ])
               ])
             ];

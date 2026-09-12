@@ -57,27 +57,33 @@ const submit = () => form.post('/contact', { preserveScroll: true, onSuccess: ()
                 :transition="{ delay: .12, duration: .55 }"
                 novalidate
             >
-                <div v-if="success" class="form-success" role="status">{{ success }}</div>
+                <div v-if="success" class="form-success" role="status">
+                    <motion.div
+                        :initial="{ opacity: 0, y: 8 }"
+                        :animate="{ opacity: 1, y: 0 }"
+                        :transition="{ duration: .4 }"
+                    >{{ success }}</motion.div>
+                </div>
 
                 <div class="form-grid">
-                    <label>
+                    <motion.label :while-hover="{ y: -2 }" :transition="{ duration: .2 }">
                         <span>Name *</span>
                         <input v-model="form.name" type="text" autocomplete="name" placeholder="Your name" :aria-invalid="!!form.errors.name">
                         <small v-if="form.errors.name">{{ form.errors.name }}</small>
-                    </label>
-                    <label>
+                    </motion.label>
+                    <motion.label :while-hover="{ y: -2 }" :transition="{ duration: .2 }">
                         <span>Email *</span>
                         <input v-model="form.email" type="email" autocomplete="email" placeholder="you@company.com" :aria-invalid="!!form.errors.email">
                         <small v-if="form.errors.email">{{ form.errors.email }}</small>
-                    </label>
+                    </motion.label>
                 </div>
                 <div class="form-grid">
-                    <label>
+                    <motion.label :while-hover="{ y: -2 }" :transition="{ duration: .2 }">
                         <span>Company</span>
                         <input v-model="form.company" type="text" autocomplete="organization" placeholder="Company or project">
                         <small v-if="form.errors.company">{{ form.errors.company }}</small>
-                    </label>
-                    <label>
+                    </motion.label>
+                    <motion.label :while-hover="{ y: -2 }" :transition="{ duration: .2 }">
                         <span>Estimated budget</span>
                         <select v-model="form.budget">
                             <option value="">Select a range</option>
@@ -87,13 +93,13 @@ const submit = () => form.post('/contact', { preserveScroll: true, onSuccess: ()
                             <option>$25k+</option>
                         </select>
                         <small v-if="form.errors.budget">{{ form.errors.budget }}</small>
-                    </label>
+                    </motion.label>
                 </div>
-                <label>
+                <motion.label :while-hover="{ y: -2 }" :transition="{ duration: .2 }">
                     <span>What are we building? *</span>
                     <textarea v-model="form.message" rows="7" placeholder="The problem, current setup, goals and ideal timeline…" :aria-invalid="!!form.errors.message"></textarea>
                     <small v-if="form.errors.message">{{ form.errors.message }}</small>
-                </label>
+                </motion.label>
                 <button class="submit-button" type="submit" :disabled="form.processing">
                     <span>{{ form.processing ? 'Sending…' : 'Send project brief' }}</span>
                     <b>↗</b>

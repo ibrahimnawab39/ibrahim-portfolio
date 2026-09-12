@@ -2,6 +2,7 @@
 import PortfolioLayout from '@/Layouts/PortfolioLayout.vue';
 import ProjectCover from '@/Components/Portfolio/ProjectCover.vue';
 import ArchitectureScene from '@/Components/Portfolio/ArchitectureScene.vue';
+import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
 import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import Reveal from '@/Components/Portfolio/Reveal.vue';
 import TiltCard from '@/Components/Portfolio/TiltCard.vue';
@@ -54,36 +55,69 @@ const toolkit = computed(() =>
                 </div>
                 <div class="immersive-grid">
                     <div class="immersive-copy">
-                        <span class="folio-label">IBRAHIM NAWAB / FULL STACK DEVELOPER</span>
-                        <h1>Good ideas.<br>Great <em>engineering.</em></h1>
-                        <p>I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.</p>
-                        <div class="hero-cta-row">
+                        <motion.span
+                            class="folio-label"
+                            :initial="{ opacity: 0, y: 12 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ duration: .5 }"
+                        >IBRAHIM NAWAB / FULL STACK DEVELOPER</motion.span>
+                        <motion.h1
+                            :initial="{ opacity: 0, y: 36 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ duration: .7, delay: .06 }"
+                        >Good ideas.<br>Great <em>engineering.</em></motion.h1>
+                        <motion.p
+                            :initial="{ opacity: 0, y: 18 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ duration: .55, delay: .14 }"
+                        >I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.</motion.p>
+                        <motion.div
+                            class="hero-cta-row"
+                            :initial="{ opacity: 0, y: 14 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ duration: .5, delay: .22 }"
+                        >
                             <Link href="/work" class="folio-button">Explore selected work <span>↗</span></Link>
                             <Link href="/contact" class="hero-secondary">Let’s talk <span>↗</span></Link>
-                        </div>
-                        <div class="hero-signature">
+                        </motion.div>
+                        <motion.div
+                            class="hero-signature"
+                            :initial="{ opacity: 0, y: 12 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ duration: .5, delay: .3 }"
+                        >
                             <img v-if="profile?.photo_path" :src="profile.photo_path" :alt="profile.name" width="48" height="48">
                             <div>
                                 <strong>{{ profile?.name }}</strong>
                                 <span>Currently at Siin &amp; K-Labs</span>
                             </div>
                             <a v-if="profile?.resume_available" href="/resume">Resume ↓</a>
-                        </div>
+                        </motion.div>
                     </div>
                     <div class="immersive-object">
                         <span class="object-index">01 — LIVING SYSTEM</span>
                         <ArchitectureScene />
-                        <div class="orbit-tag">
+                        <motion.div
+                            class="orbit-tag"
+                            :initial="{ opacity: 0, y: 10 }"
+                            :animate="{ opacity: 1, y: 0 }"
+                            :transition="{ delay: .35, duration: .55 }"
+                        >
                             <span>✦</span>
                             <div>Complex systems.<br><strong>Clear experiences.</strong></div>
-                        </div>
+                        </motion.div>
                         <span class="object-coordinates">IDEA → SYSTEM → EXPERIENCE</span>
                     </div>
                 </div>
-                <div class="hero-bottom">
+                <motion.div
+                    class="hero-bottom"
+                    :initial="{ opacity: 0 }"
+                    :animate="{ opacity: 1 }"
+                    :transition="{ delay: .45, duration: .6 }"
+                >
                     <span>BACKEND ENGINEERING <b>✳</b> WEB EXPERIENCES <b>✳</b> MOBILE PRODUCTS</span>
                     <a href="#selected-work">THE WORK BELOW ↓</a>
-                </div>
+                </motion.div>
             </section>
 
             <section class="current-roles" aria-label="Current companies">
@@ -245,14 +279,45 @@ const toolkit = computed(() =>
 
             <section class="folio-contact has-atmosphere">
                 <PageAtmosphere tone="contact" mode="orbs" />
-                <Reveal>
-                    <span class="folio-label">YOUR NEXT CHAPTER STARTS HERE</span>
-                    <h2>Have a good<br><em>challenge?</em><span>↗</span></h2>
-                    <div>
-                        <Link href="/contact" class="folio-button">Let’s build something <span>↗</span></Link>
-                        <a v-if="profile?.email" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
-                    </div>
-                </Reveal>
+                <div class="folio-contact-split">
+                    <Reveal>
+                        <span class="folio-label">YOUR NEXT CHAPTER STARTS HERE</span>
+                        <h2>Have a good<br><em>challenge?</em></h2>
+                        <div class="folio-contact-actions">
+                            <Link href="/contact" class="folio-button">Let’s build something <span>↗</span></Link>
+                            <a v-if="profile?.email" :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+                        </div>
+                    </Reveal>
+                    <motion.aside
+                        class="folio-contact-panel"
+                        :initial="{ opacity: 0, x: 24 }"
+                        :while-in-view="{ opacity: 1, x: 0 }"
+                        :viewport="{ once: true, amount: .3 }"
+                        :transition="{ duration: .65 }"
+                    >
+                        <div class="folio-contact-visual" aria-hidden="true">
+                            <AmbientScene tone="contact" variant="orbit" />
+                            <div class="folio-contact-orbit-label">
+                                <span>✦</span>
+                                <strong>Open for builds</strong>
+                            </div>
+                        </div>
+                        <ul class="folio-contact-meta">
+                            <li>
+                                <small>Availability</small>
+                                <strong>{{ profile?.availability || 'Selected projects' }}</strong>
+                            </li>
+                            <li>
+                                <small>Based in</small>
+                                <strong>{{ profile?.location || 'Karachi' }}</strong>
+                            </li>
+                            <li>
+                                <small>Response</small>
+                                <strong>1–2 business days</strong>
+                            </li>
+                        </ul>
+                    </motion.aside>
+                </div>
             </section>
         </div>
     </PortfolioLayout>

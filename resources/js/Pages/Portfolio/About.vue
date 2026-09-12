@@ -1,5 +1,6 @@
 <script setup>
 import PortfolioLayout from '@/Layouts/PortfolioLayout.vue';
+import AmbientScene from '@/Components/Portfolio/AmbientScene.vue';
 import PageAtmosphere from '@/Components/Portfolio/PageAtmosphere.vue';
 import CompanyLogo from '@/Components/Portfolio/CompanyLogo.vue';
 import Reveal from '@/Components/Portfolio/Reveal.vue';
@@ -76,27 +77,41 @@ const studios = computed(() => {
                     </motion.div>
                 </div>
 
-                <motion.figure
-                    class="about-portrait-frame"
+                <motion.div
                     :initial="{ opacity: 0, scale: .94 }"
                     :animate="{ opacity: 1, scale: 1 }"
                     :transition="{ duration: .75, delay: .08 }"
                 >
-                    <img
-                        v-if="profile?.photo_path"
-                        :src="profile.photo_path"
-                        :alt="profile.name"
-                    >
-                    <div v-else class="about-portrait-fallback">IN</div>
-                </motion.figure>
+                    <TiltCard :max="6" class="about-portrait-tilt">
+                        <figure class="about-portrait-frame">
+                            <img
+                                v-if="profile?.photo_path"
+                                :src="profile.photo_path"
+                                :alt="profile.name"
+                            >
+                            <div v-else class="about-portrait-fallback">IN</div>
+                        </figure>
+                    </TiltCard>
+                </motion.div>
             </header>
 
             <section class="about-bio">
-                <Reveal>
-                    <span class="folio-label">02 / STORY</span>
-                    <h2>I build the systems<br><em>behind the experience.</em></h2>
-                    <p class="lead-copy">{{ profile?.bio }}</p>
-                </Reveal>
+                <div class="about-bio-split">
+                    <Reveal>
+                        <span class="folio-label">02 / STORY</span>
+                        <h2>I build the systems<br><em>behind the experience.</em></h2>
+                        <p class="lead-copy">{{ profile?.bio }}</p>
+                    </Reveal>
+                    <motion.div
+                        class="section-scene"
+                        :initial="{ opacity: 0, scale: .92 }"
+                        :while-in-view="{ opacity: 1, scale: 1 }"
+                        :viewport="{ once: true, amount: .35 }"
+                        :transition="{ duration: .7 }"
+                    >
+                        <AmbientScene tone="about" variant="shards" />
+                    </motion.div>
+                </div>
                 <div class="about-focus">
                     <motion.article
                         v-for="(point, index) in [
@@ -189,7 +204,15 @@ const studios = computed(() => {
                     </header>
                 </Reveal>
                 <div class="about-cert-list">
-                    <article v-for="(certificate, index) in certificates" :key="certificate.id">
+                    <motion.article
+                        v-for="(certificate, index) in certificates"
+                        :key="certificate.id"
+                        :initial="{ opacity: 0, y: 16 }"
+                        :while-in-view="{ opacity: 1, y: 0 }"
+                        :viewport="{ once: true, amount: .35 }"
+                        :transition="{ delay: index * 0.05 }"
+                        :while-hover="{ x: 6 }"
+                    >
                         <span>{{ String(index + 1).padStart(2, '0') }}</span>
                         <div>
                             <small>{{ certificate.issuer }}</small>
@@ -202,18 +225,25 @@ const studios = computed(() => {
                             target="_blank"
                             rel="noreferrer"
                         >Credential ↗</a>
-                    </article>
+                    </motion.article>
                 </div>
             </section>
 
-            <section class="page-cta">
-                <span>Next</span>
-                <h2>Now see how the thinking becomes product.</h2>
-                <div class="about-hero-actions">
-                    <Link href="/experience" class="folio-button">Explore experience <span>↗</span></Link>
-                    <Link href="/work" class="hero-secondary">Selected work <span>↗</span></Link>
-                </div>
-            </section>
+            <Reveal>
+                <section class="page-cta page-cta-split">
+                    <div class="page-cta-copy">
+                        <span>Next</span>
+                        <h2>Now see how the thinking becomes product.</h2>
+                        <div class="about-hero-actions">
+                            <Link href="/experience" class="folio-button">Explore experience <span>↗</span></Link>
+                            <Link href="/work" class="hero-secondary">Selected work <span>↗</span></Link>
+                        </div>
+                    </div>
+                    <div class="cta-scene" aria-hidden="true">
+                        <AmbientScene tone="about" variant="shards" />
+                    </div>
+                </section>
+            </Reveal>
         </div>
     </PortfolioLayout>
 </template>

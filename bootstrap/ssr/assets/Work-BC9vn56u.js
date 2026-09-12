@@ -1,7 +1,6 @@
 import { unref, withCtx, createVNode, createTextVNode, toDisplayString, openBlock, createBlock, Fragment, createCommentVNode, renderList, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderList, ssrInterpolate } from "vue/server-renderer";
-import { _ as _sfc_main$1, a as _sfc_main$2 } from "./PageAtmosphere-tZ9iTIjN.js";
-import { _ as _sfc_main$3 } from "./AmbientScene-CdqcK6xN.js";
+import { _ as _sfc_main$1, a as _sfc_main$2, b as _sfc_main$3 } from "./PageAtmosphere-B4p25rd1.js";
 import { _ as _sfc_main$5 } from "./ProjectCover-D_pFmt3q.js";
 import { _ as _sfc_main$4 } from "./TiltCard-BCpF3Iif.js";
 import { Head, Link } from "@inertiajs/vue3";

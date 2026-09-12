@@ -104,15 +104,15 @@ function buildScene(THREE, variant, colors) {
     }
 
     if (variant === 'orbit') {
-        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.35, .028, 12, 90), mat(colors.a, .8));
-        const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.0, .022, 12, 80), mat(colors.b, .75));
-        const ring3 = new THREE.Mesh(new THREE.TorusGeometry(.65, .018, 12, 70), mat(colors.c, .7));
+        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.35, .038, 12, 90), mat(colors.a, .92));
+        const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.0, .03, 12, 80), mat(colors.b, .88));
+        const ring3 = new THREE.Mesh(new THREE.TorusGeometry(.65, .024, 12, 70), mat(colors.c, .84));
         ring1.rotation.x = Math.PI / 2.6;
         ring2.rotation.x = Math.PI / 2.2;
         ring2.rotation.y = .4;
         ring3.rotation.x = Math.PI / 1.8;
         ring3.rotation.z = .5;
-        const gem = new THREE.Mesh(new THREE.SphereGeometry(.22, 24, 24), mat(colors.b, .9));
+        const gem = new THREE.Mesh(new THREE.IcosahedronGeometry(.32, 0), mat(colors.b, .95));
         meshes = [ring1, ring2, ring3, gem];
         group.add(...meshes);
         return;

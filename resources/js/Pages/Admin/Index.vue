@@ -1,4 +1,10 @@
 <script setup>
+import AdminCharts from '@/Components/Admin/AdminCharts.vue';
+import AdminDataTable from '@/Components/Admin/AdminDataTable.vue';
+import AdminPager from '@/Components/Admin/AdminPager.vue';
+import AdminSidebar from '@/Components/Admin/AdminSidebar.vue';
+import AdminViewToggle from '@/Components/Admin/AdminViewToggle.vue';
+import { sortBy, useAdminPager, usePageSize } from '@/Composables/useAdminPager';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 
@@ -47,48 +53,92 @@ const skillRows = ref([...props.skills]);
 const messageRows = ref([...props.messages]);
 const dragging = ref({ type: null, id: null });
 
-const PER_PAGE = 6;
-const viewMode = ref('grid');
-try { viewMode.value = localStorage.getItem('admin-view-mode') || 'grid'; } catch {}
+const sidebarCollapsed = ref(false);
+try { sidebarCollapsed.value = localStorage.getItem('admin-sidebar-collapsed') === '1'; } catch {}
+watch(sidebarCollapsed, (value) => {
+    try { localStorage.setItem('admin-sidebar-collapsed', value ? '1' : '0'); } catch {}
+});
+
+const viewMode = ref('list');
+try {
+    const stored = localStorage.getItem('admin-view-mode');
+    if (['list', 'grid', 'table'].includes(stored)) viewMode.value = stored;
+} catch {}
 const setViewMode = (mode) => {
     viewMode.value = mode;
     try { localStorage.setItem('admin-view-mode', mode); } catch {}
 };
+
+const { pageSize, setPageSize } = usePageSize();
 
 const projectQuery = ref('');
 const experienceQuery = ref('');
 const certificateQuery = ref('');
 const skillQuery = ref('');
 const messageQuery = ref('');
-const projectPage = ref(1);
-const experiencePage = ref(1);
-const certificatePage = ref(1);
-const skillPage = ref(1);
-const messagePage = ref(1);
 
-const paginate = (rows, query, pageRef, fields) => {
-    const q = query.value.trim().toLowerCase();
-    const filtered = rows.value.filter((item) => {
-        if (!q) return true;
-        return fields.some((field) => String(item[field] ?? '').toLowerCase().includes(q));
-    });
-    const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-    if (pageRef.value > pages) pageRef.value = pages;
-    const start = (pageRef.value - 1) * PER_PAGE;
-    return { filtered, pages, items: filtered.slice(start, start + PER_PAGE), total: filtered.length };
+const projectSort = ref({ key: 'order', dir: 'asc' });
+const experienceSort = ref({ key: 'order', dir: 'asc' });
+const certificateSort = ref({ key: 'order', dir: 'asc' });
+const skillSort = ref({ key: 'order', dir: 'asc' });
+const messageSort = ref({ key: 'created_at', dir: 'desc' });
+
+const toggleSort = (state, key) => {
+    if (state.value.key === key) {
+        state.value = { key, dir: state.value.dir === 'asc' ? 'desc' : 'asc' };
+        return;
+    }
+    state.value = { key, dir: 'asc' };
 };
 
-const projectPager = computed(() => paginate(projectRows, projectQuery, projectPage, ['title', 'company', 'category', 'summary']));
-const experiencePager = computed(() => paginate(experienceRows, experienceQuery, experiencePage, ['role', 'company', 'location', 'description']));
-const certificatePager = computed(() => paginate(certificateRows, certificateQuery, certificatePage, ['title', 'issuer', 'description']));
-const skillPager = computed(() => paginate(skillRows, skillQuery, skillPage, ['name', 'category']));
-const messagePager = computed(() => paginate(messageRows, messageQuery, messagePage, ['name', 'email', 'company', 'message']));
+const sortedProjects = computed(() => sortBy(projectRows.value, projectSort.value));
+const sortedExperiences = computed(() => sortBy(experienceRows.value, experienceSort.value));
+const sortedCertificates = computed(() => sortBy(certificateRows.value, certificateSort.value));
+const sortedSkills = computed(() => sortBy(skillRows.value, skillSort.value));
+const sortedMessages = computed(() => sortBy(messageRows.value, messageSort.value));
 
-watch(projectQuery, () => { projectPage.value = 1; });
-watch(experienceQuery, () => { experiencePage.value = 1; });
-watch(certificateQuery, () => { certificatePage.value = 1; });
-watch(skillQuery, () => { skillPage.value = 1; });
-watch(messageQuery, () => { messagePage.value = 1; });
+const { page: projectPage, pager: projectPager } = useAdminPager(sortedProjects, projectQuery, ['title', 'company', 'category', 'summary'], pageSize);
+const { page: experiencePage, pager: experiencePager } = useAdminPager(sortedExperiences, experienceQuery, ['role', 'company', 'location', 'description'], pageSize);
+const { page: certificatePage, pager: certificatePager } = useAdminPager(sortedCertificates, certificateQuery, ['title', 'issuer', 'description'], pageSize);
+const { page: skillPage, pager: skillPager } = useAdminPager(sortedSkills, skillQuery, ['name', 'category'], pageSize);
+const { page: messagePage, pager: messagePager } = useAdminPager(sortedMessages, messageQuery, ['name', 'email', 'company', 'message'], pageSize);
+
+const canReorderProjects = computed(() => !projectPager.value.isFiltered && viewMode.value !== 'table');
+const canReorderExperiences = computed(() => !experiencePager.value.isFiltered && viewMode.value !== 'table');
+
+const projectColumns = [
+    { key: 'order', label: '#', sortable: true },
+    { key: 'title', label: 'Title', sortable: true },
+    { key: 'company', label: 'Company', sortable: true },
+    { key: 'category', label: 'Category', sortable: true },
+    { key: 'featured', label: 'Featured', sortable: true },
+];
+const experienceColumns = [
+    { key: 'order', label: '#', sortable: true },
+    { key: 'role', label: 'Role', sortable: true },
+    { key: 'company', label: 'Company', sortable: true },
+    { key: 'location', label: 'Location', sortable: true },
+    { key: 'employment_type', label: 'Type', sortable: true },
+];
+const certificateColumns = [
+    { key: 'order', label: '#', sortable: true },
+    { key: 'title', label: 'Title', sortable: true },
+    { key: 'issuer', label: 'Issuer', sortable: true },
+    { key: 'issue_date', label: 'Issued', sortable: true },
+];
+const skillColumns = [
+    { key: 'order', label: '#', sortable: true },
+    { key: 'name', label: 'Skill', sortable: true },
+    { key: 'category', label: 'Category', sortable: true },
+    { key: 'proficiency', label: 'Level', sortable: true },
+];
+const messageColumns = [
+    { key: 'name', label: 'From', sortable: true },
+    { key: 'email', label: 'Email', sortable: true },
+    { key: 'company', label: 'Company', sortable: true },
+    { key: 'created_at', label: 'Date', sortable: true },
+    { key: 'read_at', label: 'Status', sortable: true },
+];
 
 const profileForm = useForm({
     name: props.profile?.name ?? '',
@@ -139,16 +189,16 @@ watch(() => props.skills, (value) => { skillRows.value = [...value]; });
 watch(() => props.messages, (value) => { messageRows.value = [...value]; });
 
 const navItems = [
-    ['overview', 'Overview'],
-    ['profile', 'Profile'],
-    ['projects', 'Projects'],
-    ['experience', 'Experience'],
-    ['certificates', 'Certificates'],
-    ['skills', 'Skills'],
-    ['linkedin', 'LinkedIn'],
-    ['sections', 'Sections'],
-    ['resume', 'Resume PDF'],
-    ['messages', 'Messages'],
+    { id: 'overview', label: 'Overview', glyph: '◉' },
+    { id: 'profile', label: 'Profile', glyph: '☺' },
+    { id: 'projects', label: 'Projects', glyph: '▣' },
+    { id: 'experience', label: 'Experience', glyph: '▤' },
+    { id: 'certificates', label: 'Certificates', glyph: '★' },
+    { id: 'skills', label: 'Skills', glyph: '◈' },
+    { id: 'linkedin', label: 'LinkedIn', glyph: 'in' },
+    { id: 'sections', label: 'Sections', glyph: '≡' },
+    { id: 'resume', label: 'Resume PDF', glyph: '↓' },
+    { id: 'messages', label: 'Messages', glyph: '✉' },
 ];
 
 const setTab = (tab) => {
@@ -351,31 +401,26 @@ const tabTitle = computed(() => ({
     resume: 'Resume PDF',
     messages: 'Messages',
 }[active.value] || active.value));
+
+const formatDate = (value) => {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString();
+};
 </script>
 
 <template>
     <Head title="Portfolio Admin" />
-    <div class="admin-shell">
-        <aside class="admin-sidebar">
-            <Link href="/" class="admin-brand">IBRAHIM<span>.</span><small>Portfolio CMS</small></Link>
-            <nav>
-                <button
-                    v-for="item in navItems"
-                    :key="item[0]"
-                    :class="{ active: active === item[0] }"
-                    @click="setTab(item[0])"
-                >
-                    <span>{{ item[1] }}</span>
-                    <b v-if="item[0] === 'messages' && stats.unreadMessages">{{ stats.unreadMessages }}</b>
-                    <em v-else-if="item[0] === 'linkedin'" class="nav-dot" :class="{ on: linkedInConnected }" />
-                </button>
-            </nav>
-            <div class="admin-side-foot">
-                <Link href="/" target="_blank">View website ↗</Link>
-                <Link href="/profile">Account settings</Link>
-                <Link href="/logout" method="post" as="button">Sign out</Link>
-            </div>
-        </aside>
+    <div class="admin-shell" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
+        <AdminSidebar
+            :active="active"
+            :collapsed="sidebarCollapsed"
+            :items="navItems"
+            :unread-messages="stats.unreadMessages"
+            :linked-in-connected="linkedInConnected"
+            @update:collapsed="sidebarCollapsed = $event"
+            @navigate="setTab"
+        />
 
         <main class="admin-main">
             <header class="admin-topbar">
@@ -417,6 +462,7 @@ const tabTitle = computed(() => ({
                     <button @click="setTab('skills')"><strong>{{ stats.skills }}</strong><span>Skills</span></button>
                     <button @click="setTab('messages')"><strong>{{ stats.unreadMessages }}</strong><span>Unread messages</span></button>
                 </div>
+                <AdminCharts :stats="stats" :messages="messageRows" />
                 <div class="admin-quick-grid">
                     <button @click="setTab('profile')"><strong>Profile</strong><span>Photo, bio, social links</span></button>
                     <button @click="setTab('linkedin')"><strong>LinkedIn</strong><span>Connect & share portfolio</span></button>
@@ -433,7 +479,6 @@ const tabTitle = computed(() => ({
                     </div>
                     <span class="li-badge" :class="{ on: linkedInConnected }">{{ linkedInConnected ? 'Profile linked' : 'Not connected' }}</span>
                 </div>
-
                 <div class="li-hero">
                     <div>
                         <h3>Connect your portfolio to LinkedIn</h3>
@@ -445,7 +490,6 @@ const tabTitle = computed(() => ({
                         <li>On LinkedIn → Profile → Featured → Add a link → paste your portfolio URL.</li>
                     </ol>
                 </div>
-
                 <form class="admin-form" @submit.prevent="saveProfile">
                     <div class="admin-grid">
                         <label>
@@ -465,7 +509,6 @@ const tabTitle = computed(() => ({
                         <button type="button" class="admin-ghost" @click="copyText(linkedInFeatureText, 'Featured post text copied')">Copy Featured post text</button>
                     </div>
                 </form>
-
                 <div class="li-share-grid">
                     <article>
                         <h4>Featured section text</h4>
@@ -593,22 +636,38 @@ const tabTitle = computed(() => ({
 
                 <div class="admin-toolbar">
                     <input v-model="projectQuery" type="search" placeholder="Search projects…">
-                    <div class="view-toggle" role="group" aria-label="View mode">
-                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
-                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
-                    </div>
+                    <AdminViewToggle :model-value="viewMode" @update:model-value="setViewMode" />
                     <span class="toolbar-meta">{{ projectPager.total }} items</span>
                 </div>
+                <p v-if="!canReorderProjects" class="sort-help">Clear search and use List/Grid to drag-reorder. Table mode supports column sorting for browsing.</p>
+                <p v-else-if="viewMode === 'list'" class="sort-help">Drag ⋮⋮ or use ↑ ↓ to set the public Works order.</p>
 
-                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--projects'">
+                <AdminDataTable
+                    v-if="viewMode === 'table'"
+                    :columns="projectColumns"
+                    :rows="projectPager.items"
+                    :sort-key="projectSort.key"
+                    :sort-dir="projectSort.dir"
+                    @sort="toggleSort(projectSort, $event)"
+                >
+                    <template #cell-order="{ row }">{{ String((row.order ?? 0) + 1).padStart(2, '0') }}</template>
+                    <template #cell-featured="{ row }">{{ row.featured ? 'Yes' : 'No' }}</template>
+                    <template #actions="{ row }">
+                        <button @click="editProject(row)">Edit</button>
+                        <Link :href="`/work/${row.slug}`" target="_blank">View ↗</Link>
+                        <button class="danger" @click="remove(`/admin/projects/${row.id}`, row.title)">Delete</button>
+                    </template>
+                </AdminDataTable>
+
+                <div v-else :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--projects'">
                     <article
                         v-for="project in projectPager.items"
                         :key="project.id"
-                        draggable="true"
+                        :draggable="canReorderProjects"
                         :class="[{ dragging: dragging.type === 'projects' && dragging.id === project.id }, viewMode === 'grid' ? 'admin-card' : '']"
-                        @dragstart="startDrag($event, 'projects', project.id)"
+                        @dragstart="canReorderProjects && startDrag($event, 'projects', project.id)"
                         @dragover.prevent
-                        @drop="dropRecord('projects', project.id)"
+                        @drop="canReorderProjects && dropRecord('projects', project.id)"
                         @dragend="dragging = { type: null, id: null }"
                     >
                         <template v-if="viewMode === 'grid'">
@@ -640,12 +699,16 @@ const tabTitle = computed(() => ({
                             </div>
                         </template>
                     </article>
+                    <div v-if="!projectPager.total" class="admin-empty">No projects found.</div>
                 </div>
-                <div v-if="projectPager.pages > 1" class="admin-pager">
-                    <button type="button" :disabled="projectPage <= 1" @click="projectPage--">← Prev</button>
-                    <span>Page {{ projectPage }} / {{ projectPager.pages }}</span>
-                    <button type="button" :disabled="projectPage >= projectPager.pages" @click="projectPage++">Next →</button>
-                </div>
+                <AdminPager
+                    :page="projectPage"
+                    :pages="projectPager.pages"
+                    :total="projectPager.total"
+                    :page-size="pageSize"
+                    @update:page="projectPage = $event"
+                    @update:page-size="setPageSize"
+                />
             </section>
 
             <section v-if="active === 'experience'" class="admin-view">
@@ -678,22 +741,35 @@ const tabTitle = computed(() => ({
 
                 <div class="admin-toolbar">
                     <input v-model="experienceQuery" type="search" placeholder="Search experience…">
-                    <div class="view-toggle" role="group" aria-label="View mode">
-                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
-                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
-                    </div>
+                    <AdminViewToggle :model-value="viewMode" @update:model-value="setViewMode" />
                     <span class="toolbar-meta">{{ experiencePager.total }} items</span>
                 </div>
+                <p v-if="!canReorderExperiences" class="sort-help">Clear search and use List/Grid to drag-reorder. Table mode supports column sorting.</p>
 
-                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--experiences'">
+                <AdminDataTable
+                    v-if="viewMode === 'table'"
+                    :columns="experienceColumns"
+                    :rows="experiencePager.items"
+                    :sort-key="experienceSort.key"
+                    :sort-dir="experienceSort.dir"
+                    @sort="toggleSort(experienceSort, $event)"
+                >
+                    <template #cell-order="{ row }">{{ String((row.order ?? 0) + 1).padStart(2, '0') }}</template>
+                    <template #actions="{ row }">
+                        <button @click="editExperience(row)">Edit</button>
+                        <button class="danger" @click="remove(`/admin/experiences/${row.id}`, row.role)">Delete</button>
+                    </template>
+                </AdminDataTable>
+
+                <div v-else :class="viewMode === 'grid' ? 'admin-card-grid' : 'admin-records sortable-records sortable-records--experiences'">
                     <article
                         v-for="item in experiencePager.items"
                         :key="item.id"
-                        draggable="true"
+                        :draggable="canReorderExperiences"
                         :class="[{ dragging: dragging.type === 'experiences' && dragging.id === item.id }, viewMode === 'grid' ? 'admin-card' : '']"
-                        @dragstart="startDrag($event, 'experiences', item.id)"
+                        @dragstart="canReorderExperiences && startDrag($event, 'experiences', item.id)"
                         @dragover.prevent
-                        @drop="dropRecord('experiences', item.id)"
+                        @drop="canReorderExperiences && dropRecord('experiences', item.id)"
                         @dragend="dragging = { type: null, id: null }"
                     >
                         <template v-if="viewMode === 'grid'">
@@ -723,12 +799,16 @@ const tabTitle = computed(() => ({
                             </div>
                         </template>
                     </article>
+                    <div v-if="!experiencePager.total" class="admin-empty">No experience found.</div>
                 </div>
-                <div v-if="experiencePager.pages > 1" class="admin-pager">
-                    <button type="button" :disabled="experiencePage <= 1" @click="experiencePage--">← Prev</button>
-                    <span>Page {{ experiencePage }} / {{ experiencePager.pages }}</span>
-                    <button type="button" :disabled="experiencePage >= experiencePager.pages" @click="experiencePage++">Next →</button>
-                </div>
+                <AdminPager
+                    :page="experiencePage"
+                    :pages="experiencePager.pages"
+                    :total="experiencePager.total"
+                    :page-size="pageSize"
+                    @update:page="experiencePage = $event"
+                    @update:page-size="setPageSize"
+                />
             </section>
 
             <section v-if="active === 'certificates'" class="admin-view">
@@ -746,12 +826,25 @@ const tabTitle = computed(() => ({
                 </form>
                 <div class="admin-toolbar">
                     <input v-model="certificateQuery" type="search" placeholder="Search certificates…">
-                    <div class="view-toggle">
-                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
-                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
-                    </div>
+                    <AdminViewToggle :model-value="viewMode" @update:model-value="setViewMode" />
+                    <span class="toolbar-meta">{{ certificatePager.total }} items</span>
                 </div>
-                <div :class="viewMode === 'grid' ? 'admin-card-grid' : 'certificate-admin-list'">
+                <AdminDataTable
+                    v-if="viewMode === 'table'"
+                    :columns="certificateColumns"
+                    :rows="certificatePager.items"
+                    :sort-key="certificateSort.key"
+                    :sort-dir="certificateSort.dir"
+                    @sort="toggleSort(certificateSort, $event)"
+                >
+                    <template #cell-order="{ row }">{{ String((row.order ?? 0) + 1).padStart(2, '0') }}</template>
+                    <template #cell-issue_date="{ row }">{{ formatDate(row.issue_date) }}</template>
+                    <template #actions="{ row }">
+                        <button @click="editCertificate(row)">Edit</button>
+                        <button class="danger" @click="remove(`/admin/certificates/${row.id}`, row.title)">Delete</button>
+                    </template>
+                </AdminDataTable>
+                <div v-else :class="viewMode === 'grid' ? 'admin-card-grid' : 'certificate-admin-list'">
                     <article v-for="certificate in certificatePager.items" :key="certificate.id" :class="{ 'admin-card': viewMode === 'grid' }">
                         <div class="admin-card-body" v-if="viewMode === 'grid'">
                             <small>{{ certificate.issuer }}</small>
@@ -772,11 +865,14 @@ const tabTitle = computed(() => ({
                         </template>
                     </article>
                 </div>
-                <div v-if="certificatePager.pages > 1" class="admin-pager">
-                    <button type="button" :disabled="certificatePage <= 1" @click="certificatePage--">← Prev</button>
-                    <span>Page {{ certificatePage }} / {{ certificatePager.pages }}</span>
-                    <button type="button" :disabled="certificatePage >= certificatePager.pages" @click="certificatePage++">Next →</button>
-                </div>
+                <AdminPager
+                    :page="certificatePage"
+                    :pages="certificatePager.pages"
+                    :total="certificatePager.total"
+                    :page-size="pageSize"
+                    @update:page="certificatePage = $event"
+                    @update:page-size="setPageSize"
+                />
             </section>
 
             <section v-if="active === 'skills'" class="admin-view">
@@ -796,12 +892,25 @@ const tabTitle = computed(() => ({
                 </form>
                 <div class="admin-toolbar">
                     <input v-model="skillQuery" type="search" placeholder="Search skills…">
-                    <div class="view-toggle">
-                        <button type="button" :class="{ active: viewMode === 'list' }" @click="setViewMode('list')">List</button>
-                        <button type="button" :class="{ active: viewMode === 'grid' }" @click="setViewMode('grid')">Grid</button>
-                    </div>
+                    <AdminViewToggle :model-value="viewMode" @update:model-value="setViewMode" />
+                    <span class="toolbar-meta">{{ skillPager.total }} items</span>
                 </div>
-                <div :class="viewMode === 'grid' ? 'admin-card-grid skills-grid-cards' : 'skill-admin-list'">
+                <AdminDataTable
+                    v-if="viewMode === 'table'"
+                    :columns="skillColumns"
+                    :rows="skillPager.items"
+                    :sort-key="skillSort.key"
+                    :sort-dir="skillSort.dir"
+                    @sort="toggleSort(skillSort, $event)"
+                >
+                    <template #cell-order="{ row }">{{ String((row.order ?? 0) + 1).padStart(2, '0') }}</template>
+                    <template #cell-proficiency="{ row }">{{ row.proficiency }}%</template>
+                    <template #actions="{ row }">
+                        <button @click="editSkill(row)">Edit</button>
+                        <button class="danger" @click="remove(`/admin/skills/${row.id}`, row.name)">Delete</button>
+                    </template>
+                </AdminDataTable>
+                <div v-else :class="viewMode === 'grid' ? 'admin-card-grid skills-grid-cards' : 'skill-admin-list'">
                     <article v-for="skill in skillPager.items" :key="skill.id" :class="{ 'admin-card': viewMode === 'grid' }">
                         <div v-if="viewMode === 'grid'" class="admin-card-body">
                             <small>{{ skill.category }}</small>
@@ -822,21 +931,41 @@ const tabTitle = computed(() => ({
                         </template>
                     </article>
                 </div>
-                <div v-if="skillPager.pages > 1" class="admin-pager">
-                    <button type="button" :disabled="skillPage <= 1" @click="skillPage--">← Prev</button>
-                    <span>Page {{ skillPage }} / {{ skillPager.pages }}</span>
-                    <button type="button" :disabled="skillPage >= skillPager.pages" @click="skillPage++">Next →</button>
-                </div>
+                <AdminPager
+                    :page="skillPage"
+                    :pages="skillPager.pages"
+                    :total="skillPager.total"
+                    :page-size="pageSize"
+                    @update:page="skillPage = $event"
+                    @update:page-size="setPageSize"
+                />
             </section>
 
             <section v-if="active === 'messages'" class="admin-view">
                 <div class="admin-heading"><div><span>Project enquiries</span><h2>Messages</h2></div></div>
                 <div class="admin-toolbar">
                     <input v-model="messageQuery" type="search" placeholder="Search messages…">
+                    <AdminViewToggle :model-value="viewMode === 'grid' ? 'list' : viewMode" @update:model-value="setViewMode($event === 'grid' ? 'list' : $event)" />
                     <span class="toolbar-meta">{{ messagePager.total }} messages</span>
                 </div>
                 <div v-if="!messagePager.total" class="admin-empty">No messages yet.</div>
-                <div class="message-list">
+                <AdminDataTable
+                    v-else-if="viewMode === 'table'"
+                    :columns="messageColumns"
+                    :rows="messagePager.items"
+                    :sort-key="messageSort.key"
+                    :sort-dir="messageSort.dir"
+                    @sort="toggleSort(messageSort, $event)"
+                >
+                    <template #cell-created_at="{ row }">{{ formatDate(row.created_at) }}</template>
+                    <template #cell-read_at="{ row }">{{ row.read_at ? 'Read' : 'Unread' }}</template>
+                    <template #actions="{ row }">
+                        <button v-if="!row.read_at" @click="router.patch(`/admin/messages/${row.id}/read`, {}, { preserveScroll: true })">Mark read</button>
+                        <a :href="`mailto:${row.email}`">Reply ↗</a>
+                        <button class="danger" @click="remove(`/admin/messages/${row.id}`, 'message')">Delete</button>
+                    </template>
+                </AdminDataTable>
+                <div v-else class="message-list">
                     <article v-for="message in messagePager.items" :key="message.id" :class="{ unread: !message.read_at }">
                         <header>
                             <div>
@@ -844,7 +973,7 @@ const tabTitle = computed(() => ({
                                 <strong>{{ message.name }}</strong>
                                 <small>{{ message.email }} · {{ message.company || 'Independent' }}</small>
                             </div>
-                            <time>{{ new Date(message.created_at).toLocaleDateString() }}</time>
+                            <time>{{ formatDate(message.created_at) }}</time>
                         </header>
                         <p>{{ message.message }}</p>
                         <footer>
@@ -855,11 +984,14 @@ const tabTitle = computed(() => ({
                         </footer>
                     </article>
                 </div>
-                <div v-if="messagePager.pages > 1" class="admin-pager">
-                    <button type="button" :disabled="messagePage <= 1" @click="messagePage--">← Prev</button>
-                    <span>Page {{ messagePage }} / {{ messagePager.pages }}</span>
-                    <button type="button" :disabled="messagePage >= messagePager.pages" @click="messagePage++">Next →</button>
-                </div>
+                <AdminPager
+                    :page="messagePage"
+                    :pages="messagePager.pages"
+                    :total="messagePager.total"
+                    :page-size="pageSize"
+                    @update:page="messagePage = $event"
+                    @update:page-size="setPageSize"
+                />
             </section>
         </main>
     </div>

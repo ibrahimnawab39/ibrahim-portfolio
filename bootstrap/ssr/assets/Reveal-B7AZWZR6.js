@@ -1,4 +1,4 @@
-import { unref, mergeProps, withCtx, renderSlot, useSSRContext } from "vue";
+import { ref, onMounted, onBeforeUnmount, unref, mergeProps, withCtx, renderSlot, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderSlot } from "vue/server-renderer";
 import { motion } from "motion-v";
 const _sfc_main = {
@@ -12,9 +12,33 @@ const _sfc_main = {
     once: { type: Boolean, default: true }
   },
   setup(__props) {
+    const props = __props;
+    const inview = ref(false);
+    const root = ref(null);
+    let observer;
+    onMounted(() => {
+      const el = root.value?.$el ?? root.value;
+      if (!el || typeof IntersectionObserver === "undefined") {
+        inview.value = true;
+        return;
+      }
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          inview.value = true;
+          if (props.once) observer?.disconnect();
+        },
+        { threshold: Math.min(Math.max(props.amount, 0.05), 1) }
+      );
+      observer.observe(el);
+    });
+    onBeforeUnmount(() => observer?.disconnect());
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(motion).div, mergeProps({
+        ref_key: "root",
+        ref: root,
         as: __props.as,
+        class: ["folio-reveal", { "is-inview": inview.value }],
         initial: { opacity: 0, y: __props.y },
         "while-in-view": { opacity: 1, y: 0 },
         viewport: { once: __props.once, amount: __props.amount },

@@ -1,8 +1,8 @@
-import { ref, onMounted, onBeforeUnmount, mergeProps, useSSRContext, computed, unref, withCtx, createVNode, toDisplayString, createTextVNode, openBlock, createBlock, Fragment, renderList, createCommentVNode } from "vue";
+import { ref, onMounted, onBeforeUnmount, mergeProps, useSSRContext, computed, unref, withCtx, createVNode, toDisplayString, createTextVNode, openBlock, createBlock, createCommentVNode, Fragment, renderList } from "vue";
 import { ssrRenderAttrs, ssrRenderComponent, ssrInterpolate, ssrRenderAttr, ssrRenderList, ssrRenderStyle } from "vue/server-renderer";
-import { _ as _sfc_main$2, a as _sfc_main$3 } from "./PageAtmosphere-tZ9iTIjN.js";
+import { _ as _sfc_main$2, a as _sfc_main$3, b as _sfc_main$7 } from "./PageAtmosphere-B4p25rd1.js";
 import { _ as _sfc_main$6 } from "./ProjectCover-D_pFmt3q.js";
-import { _ as _sfc_main$4 } from "./Reveal-COkcuhhh.js";
+import { _ as _sfc_main$4 } from "./Reveal-B7AZWZR6.js";
 import { _ as _sfc_main$5 } from "./TiltCard-BCpF3Iif.js";
 import { Head, Link } from "@inertiajs/vue3";
 import { motion } from "motion-v";
@@ -305,54 +305,217 @@ const _sfc_main = {
       _push(ssrRenderComponent(_sfc_main$2, { profile: __props.profile }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<div class="folio-home"${_scopeId}><section class="editorial-hero immersive-hero"${_scopeId}><div class="hero-byline"${_scopeId}><span${_scopeId}><i${_scopeId}></i> ${ssrInterpolate(__props.profile?.availability || "Full stack developer")}</span><span${_scopeId}>${ssrInterpolate(__props.profile?.location || "Karachi, Pakistan")} · Working globally</span></div><div class="immersive-grid"${_scopeId}><div class="immersive-copy"${_scopeId}><span class="folio-label"${_scopeId}>IBRAHIM NAWAB / FULL STACK DEVELOPER</span><h1${_scopeId}>Good ideas.<br${_scopeId}>Great <em${_scopeId}>engineering.</em></h1><p${_scopeId}>I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.</p><div class="hero-cta-row"${_scopeId}>`);
-            _push2(ssrRenderComponent(unref(Link), {
-              href: "/work",
-              class: "folio-button"
+            _push2(`<div class="folio-home"${_scopeId}><section class="editorial-hero immersive-hero"${_scopeId}><div class="hero-byline"${_scopeId}><span${_scopeId}><i${_scopeId}></i> ${ssrInterpolate(__props.profile?.availability || "Full stack developer")}</span><span${_scopeId}>${ssrInterpolate(__props.profile?.location || "Karachi, Pakistan")} · Working globally</span></div><div class="immersive-grid"${_scopeId}><div class="immersive-copy"${_scopeId}>`);
+            _push2(ssrRenderComponent(unref(motion).span, {
+              class: "folio-label",
+              initial: { opacity: 0, y: 12 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.5 }
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`Explore selected work <span${_scopeId2}>↗</span>`);
+                  _push3(`IBRAHIM NAWAB / FULL STACK DEVELOPER`);
                 } else {
                   return [
-                    createTextVNode("Explore selected work "),
-                    createVNode("span", null, "↗")
+                    createTextVNode("IBRAHIM NAWAB / FULL STACK DEVELOPER")
                   ];
                 }
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(ssrRenderComponent(unref(Link), {
-              href: "/contact",
-              class: "hero-secondary"
+            _push2(ssrRenderComponent(unref(motion).h1, {
+              initial: { opacity: 0, y: 36 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.7, delay: 0.06 }
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`Let’s talk <span${_scopeId2}>↗</span>`);
+                  _push3(`Good ideas.<br${_scopeId2}>Great <em${_scopeId2}>engineering.</em>`);
                 } else {
                   return [
-                    createTextVNode("Let’s talk "),
-                    createVNode("span", null, "↗")
+                    createTextVNode("Good ideas."),
+                    createVNode("br"),
+                    createTextVNode("Great "),
+                    createVNode("em", null, "engineering.")
                   ];
                 }
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`</div><div class="hero-signature"${_scopeId}>`);
-            if (__props.profile?.photo_path) {
-              _push2(`<img${ssrRenderAttr("src", __props.profile.photo_path)}${ssrRenderAttr("alt", __props.profile.name)} width="48" height="48"${_scopeId}>`);
-            } else {
-              _push2(`<!---->`);
-            }
-            _push2(`<div${_scopeId}><strong${_scopeId}>${ssrInterpolate(__props.profile?.name)}</strong><span${_scopeId}>Currently at Siin &amp; K-Labs</span></div>`);
-            if (__props.profile?.resume_available) {
-              _push2(`<a href="/resume"${_scopeId}>Resume ↓</a>`);
-            } else {
-              _push2(`<!---->`);
-            }
-            _push2(`</div></div><div class="immersive-object"${_scopeId}><span class="object-index"${_scopeId}>01 — LIVING SYSTEM</span>`);
+            _push2(ssrRenderComponent(unref(motion).p, {
+              initial: { opacity: 0, y: 18 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.55, delay: 0.14 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(`I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.`);
+                } else {
+                  return [
+                    createTextVNode("I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.")
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "hero-cta-row",
+              initial: { opacity: 0, y: 14 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.5, delay: 0.22 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(unref(Link), {
+                    href: "/work",
+                    class: "folio-button"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`Explore selected work <span${_scopeId3}>↗</span>`);
+                      } else {
+                        return [
+                          createTextVNode("Explore selected work "),
+                          createVNode("span", null, "↗")
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(ssrRenderComponent(unref(Link), {
+                    href: "/contact",
+                    class: "hero-secondary"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`Let’s talk <span${_scopeId3}>↗</span>`);
+                      } else {
+                        return [
+                          createTextVNode("Let’s talk "),
+                          createVNode("span", null, "↗")
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                } else {
+                  return [
+                    createVNode(unref(Link), {
+                      href: "/work",
+                      class: "folio-button"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode("Explore selected work "),
+                        createVNode("span", null, "↗")
+                      ]),
+                      _: 1
+                    }),
+                    createVNode(unref(Link), {
+                      href: "/contact",
+                      class: "hero-secondary"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode("Let’s talk "),
+                        createVNode("span", null, "↗")
+                      ]),
+                      _: 1
+                    })
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "hero-signature",
+              initial: { opacity: 0, y: 12 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.5, delay: 0.3 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  if (__props.profile?.photo_path) {
+                    _push3(`<img${ssrRenderAttr("src", __props.profile.photo_path)}${ssrRenderAttr("alt", __props.profile.name)} width="48" height="48"${_scopeId2}>`);
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                  _push3(`<div${_scopeId2}><strong${_scopeId2}>${ssrInterpolate(__props.profile?.name)}</strong><span${_scopeId2}>Currently at Siin &amp; K-Labs</span></div>`);
+                  if (__props.profile?.resume_available) {
+                    _push3(`<a href="/resume"${_scopeId2}>Resume ↓</a>`);
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                } else {
+                  return [
+                    __props.profile?.photo_path ? (openBlock(), createBlock("img", {
+                      key: 0,
+                      src: __props.profile.photo_path,
+                      alt: __props.profile.name,
+                      width: "48",
+                      height: "48"
+                    }, null, 8, ["src", "alt"])) : createCommentVNode("", true),
+                    createVNode("div", null, [
+                      createVNode("strong", null, toDisplayString(__props.profile?.name), 1),
+                      createVNode("span", null, "Currently at Siin & K-Labs")
+                    ]),
+                    __props.profile?.resume_available ? (openBlock(), createBlock("a", {
+                      key: 1,
+                      href: "/resume"
+                    }, "Resume ↓")) : createCommentVNode("", true)
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`</div><div class="immersive-object"${_scopeId}><span class="object-index"${_scopeId}>01 — LIVING SYSTEM</span>`);
             _push2(ssrRenderComponent(_sfc_main$1, null, null, _parent2, _scopeId));
-            _push2(`<div class="orbit-tag"${_scopeId}><span${_scopeId}>✦</span><div${_scopeId}>Complex systems.<br${_scopeId}><strong${_scopeId}>Clear experiences.</strong></div></div><span class="object-coordinates"${_scopeId}>IDEA → SYSTEM → EXPERIENCE</span></div></div><div class="hero-bottom"${_scopeId}><span${_scopeId}>BACKEND ENGINEERING <b${_scopeId}>✳</b> WEB EXPERIENCES <b${_scopeId}>✳</b> MOBILE PRODUCTS</span><a href="#selected-work"${_scopeId}>THE WORK BELOW ↓</a></div></section><section class="current-roles" aria-label="Current companies"${_scopeId}><span class="folio-label"${_scopeId}>CURRENTLY BUILDING WITH</span><!--[-->`);
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "orbit-tag",
+              initial: { opacity: 0, y: 10 },
+              animate: { opacity: 1, y: 0 },
+              transition: { delay: 0.35, duration: 0.55 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(`<span${_scopeId2}>✦</span><div${_scopeId2}>Complex systems.<br${_scopeId2}><strong${_scopeId2}>Clear experiences.</strong></div>`);
+                } else {
+                  return [
+                    createVNode("span", null, "✦"),
+                    createVNode("div", null, [
+                      createTextVNode("Complex systems."),
+                      createVNode("br"),
+                      createVNode("strong", null, "Clear experiences.")
+                    ])
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`<span class="object-coordinates"${_scopeId}>IDEA → SYSTEM → EXPERIENCE</span></div></div>`);
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "hero-bottom",
+              initial: { opacity: 0 },
+              animate: { opacity: 1 },
+              transition: { delay: 0.45, duration: 0.6 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(`<span${_scopeId2}>BACKEND ENGINEERING <b${_scopeId2}>✳</b> WEB EXPERIENCES <b${_scopeId2}>✳</b> MOBILE PRODUCTS</span><a href="#selected-work"${_scopeId2}>THE WORK BELOW ↓</a>`);
+                } else {
+                  return [
+                    createVNode("span", null, [
+                      createTextVNode("BACKEND ENGINEERING "),
+                      createVNode("b", null, "✳"),
+                      createTextVNode(" WEB EXPERIENCES "),
+                      createVNode("b", null, "✳"),
+                      createTextVNode(" MOBILE PRODUCTS")
+                    ]),
+                    createVNode("a", { href: "#selected-work" }, "THE WORK BELOW ↓")
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`</section><section class="current-roles" aria-label="Current companies"${_scopeId}><span class="folio-label"${_scopeId}>CURRENTLY BUILDING WITH</span><!--[-->`);
             ssrRenderList(currentRoles.value, (item, index) => {
               _push2(ssrRenderComponent(unref(motion).span, {
                 key: item.id,
@@ -867,10 +1030,11 @@ const _sfc_main = {
               tone: "contact",
               mode: "orbs"
             }, null, _parent2, _scopeId));
+            _push2(`<div class="folio-contact-split"${_scopeId}>`);
             _push2(ssrRenderComponent(_sfc_main$4, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`<span class="folio-label"${_scopeId2}>YOUR NEXT CHAPTER STARTS HERE</span><h2${_scopeId2}>Have a good<br${_scopeId2}><em${_scopeId2}>challenge?</em><span${_scopeId2}>↗</span></h2><div${_scopeId2}>`);
+                  _push3(`<span class="folio-label"${_scopeId2}>YOUR NEXT CHAPTER STARTS HERE</span><h2${_scopeId2}>Have a good<br${_scopeId2}><em${_scopeId2}>challenge?</em></h2><div class="folio-contact-actions"${_scopeId2}>`);
                   _push3(ssrRenderComponent(unref(Link), {
                     href: "/contact",
                     class: "folio-button"
@@ -899,10 +1063,9 @@ const _sfc_main = {
                     createVNode("h2", null, [
                       createTextVNode("Have a good"),
                       createVNode("br"),
-                      createVNode("em", null, "challenge?"),
-                      createVNode("span", null, "↗")
+                      createVNode("em", null, "challenge?")
                     ]),
-                    createVNode("div", null, [
+                    createVNode("div", { class: "folio-contact-actions" }, [
                       createVNode(unref(Link), {
                         href: "/contact",
                         class: "folio-button"
@@ -923,7 +1086,56 @@ const _sfc_main = {
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`</section></div>`);
+            _push2(ssrRenderComponent(unref(motion).aside, {
+              class: "folio-contact-panel",
+              initial: { opacity: 0, x: 24 },
+              "while-in-view": { opacity: 1, x: 0 },
+              viewport: { once: true, amount: 0.3 },
+              transition: { duration: 0.65 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(`<div class="folio-contact-visual" aria-hidden="true"${_scopeId2}>`);
+                  _push3(ssrRenderComponent(_sfc_main$7, {
+                    tone: "contact",
+                    variant: "orbit"
+                  }, null, _parent3, _scopeId2));
+                  _push3(`<div class="folio-contact-orbit-label"${_scopeId2}><span${_scopeId2}>✦</span><strong${_scopeId2}>Open for builds</strong></div></div><ul class="folio-contact-meta"${_scopeId2}><li${_scopeId2}><small${_scopeId2}>Availability</small><strong${_scopeId2}>${ssrInterpolate(__props.profile?.availability || "Selected projects")}</strong></li><li${_scopeId2}><small${_scopeId2}>Based in</small><strong${_scopeId2}>${ssrInterpolate(__props.profile?.location || "Karachi")}</strong></li><li${_scopeId2}><small${_scopeId2}>Response</small><strong${_scopeId2}>1–2 business days</strong></li></ul>`);
+                } else {
+                  return [
+                    createVNode("div", {
+                      class: "folio-contact-visual",
+                      "aria-hidden": "true"
+                    }, [
+                      createVNode(_sfc_main$7, {
+                        tone: "contact",
+                        variant: "orbit"
+                      }),
+                      createVNode("div", { class: "folio-contact-orbit-label" }, [
+                        createVNode("span", null, "✦"),
+                        createVNode("strong", null, "Open for builds")
+                      ])
+                    ]),
+                    createVNode("ul", { class: "folio-contact-meta" }, [
+                      createVNode("li", null, [
+                        createVNode("small", null, "Availability"),
+                        createVNode("strong", null, toDisplayString(__props.profile?.availability || "Selected projects"), 1)
+                      ]),
+                      createVNode("li", null, [
+                        createVNode("small", null, "Based in"),
+                        createVNode("strong", null, toDisplayString(__props.profile?.location || "Karachi"), 1)
+                      ]),
+                      createVNode("li", null, [
+                        createVNode("small", null, "Response"),
+                        createVNode("strong", null, "1–2 business days")
+                      ])
+                    ])
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`</div></section></div>`);
           } else {
             return [
               createVNode("div", { class: "folio-home" }, [
@@ -937,78 +1149,136 @@ const _sfc_main = {
                   ]),
                   createVNode("div", { class: "immersive-grid" }, [
                     createVNode("div", { class: "immersive-copy" }, [
-                      createVNode("span", { class: "folio-label" }, "IBRAHIM NAWAB / FULL STACK DEVELOPER"),
-                      createVNode("h1", null, [
-                        createTextVNode("Good ideas."),
-                        createVNode("br"),
-                        createTextVNode("Great "),
-                        createVNode("em", null, "engineering.")
-                      ]),
-                      createVNode("p", null, "I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day."),
-                      createVNode("div", { class: "hero-cta-row" }, [
-                        createVNode(unref(Link), {
-                          href: "/work",
-                          class: "folio-button"
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode("Explore selected work "),
-                            createVNode("span", null, "↗")
-                          ]),
-                          _: 1
-                        }),
-                        createVNode(unref(Link), {
-                          href: "/contact",
-                          class: "hero-secondary"
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode("Let’s talk "),
-                            createVNode("span", null, "↗")
-                          ]),
-                          _: 1
-                        })
-                      ]),
-                      createVNode("div", { class: "hero-signature" }, [
-                        __props.profile?.photo_path ? (openBlock(), createBlock("img", {
-                          key: 0,
-                          src: __props.profile.photo_path,
-                          alt: __props.profile.name,
-                          width: "48",
-                          height: "48"
-                        }, null, 8, ["src", "alt"])) : createCommentVNode("", true),
-                        createVNode("div", null, [
-                          createVNode("strong", null, toDisplayString(__props.profile?.name), 1),
-                          createVNode("span", null, "Currently at Siin & K-Labs")
+                      createVNode(unref(motion).span, {
+                        class: "folio-label",
+                        initial: { opacity: 0, y: 12 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.5 }
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode("IBRAHIM NAWAB / FULL STACK DEVELOPER")
                         ]),
-                        __props.profile?.resume_available ? (openBlock(), createBlock("a", {
-                          key: 1,
-                          href: "/resume"
-                        }, "Resume ↓")) : createCommentVNode("", true)
-                      ])
+                        _: 1
+                      }),
+                      createVNode(unref(motion).h1, {
+                        initial: { opacity: 0, y: 36 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.7, delay: 0.06 }
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode("Good ideas."),
+                          createVNode("br"),
+                          createTextVNode("Great "),
+                          createVNode("em", null, "engineering.")
+                        ]),
+                        _: 1
+                      }),
+                      createVNode(unref(motion).p, {
+                        initial: { opacity: 0, y: 18 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.55, delay: 0.14 }
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode("I build the platforms behind the experience — Laravel APIs, admin systems, commerce sites and mobile products people rely on every day.")
+                        ]),
+                        _: 1
+                      }),
+                      createVNode(unref(motion).div, {
+                        class: "hero-cta-row",
+                        initial: { opacity: 0, y: 14 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.5, delay: 0.22 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode(unref(Link), {
+                            href: "/work",
+                            class: "folio-button"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Explore selected work "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          }),
+                          createVNode(unref(Link), {
+                            href: "/contact",
+                            class: "hero-secondary"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Let’s talk "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          })
+                        ]),
+                        _: 1
+                      }),
+                      createVNode(unref(motion).div, {
+                        class: "hero-signature",
+                        initial: { opacity: 0, y: 12 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.5, delay: 0.3 }
+                      }, {
+                        default: withCtx(() => [
+                          __props.profile?.photo_path ? (openBlock(), createBlock("img", {
+                            key: 0,
+                            src: __props.profile.photo_path,
+                            alt: __props.profile.name,
+                            width: "48",
+                            height: "48"
+                          }, null, 8, ["src", "alt"])) : createCommentVNode("", true),
+                          createVNode("div", null, [
+                            createVNode("strong", null, toDisplayString(__props.profile?.name), 1),
+                            createVNode("span", null, "Currently at Siin & K-Labs")
+                          ]),
+                          __props.profile?.resume_available ? (openBlock(), createBlock("a", {
+                            key: 1,
+                            href: "/resume"
+                          }, "Resume ↓")) : createCommentVNode("", true)
+                        ]),
+                        _: 1
+                      })
                     ]),
                     createVNode("div", { class: "immersive-object" }, [
                       createVNode("span", { class: "object-index" }, "01 — LIVING SYSTEM"),
                       createVNode(_sfc_main$1),
-                      createVNode("div", { class: "orbit-tag" }, [
-                        createVNode("span", null, "✦"),
-                        createVNode("div", null, [
-                          createTextVNode("Complex systems."),
-                          createVNode("br"),
-                          createVNode("strong", null, "Clear experiences.")
-                        ])
-                      ]),
+                      createVNode(unref(motion).div, {
+                        class: "orbit-tag",
+                        initial: { opacity: 0, y: 10 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { delay: 0.35, duration: 0.55 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("span", null, "✦"),
+                          createVNode("div", null, [
+                            createTextVNode("Complex systems."),
+                            createVNode("br"),
+                            createVNode("strong", null, "Clear experiences.")
+                          ])
+                        ]),
+                        _: 1
+                      }),
                       createVNode("span", { class: "object-coordinates" }, "IDEA → SYSTEM → EXPERIENCE")
                     ])
                   ]),
-                  createVNode("div", { class: "hero-bottom" }, [
-                    createVNode("span", null, [
-                      createTextVNode("BACKEND ENGINEERING "),
-                      createVNode("b", null, "✳"),
-                      createTextVNode(" WEB EXPERIENCES "),
-                      createVNode("b", null, "✳"),
-                      createTextVNode(" MOBILE PRODUCTS")
+                  createVNode(unref(motion).div, {
+                    class: "hero-bottom",
+                    initial: { opacity: 0 },
+                    animate: { opacity: 1 },
+                    transition: { delay: 0.45, duration: 0.6 }
+                  }, {
+                    default: withCtx(() => [
+                      createVNode("span", null, [
+                        createTextVNode("BACKEND ENGINEERING "),
+                        createVNode("b", null, "✳"),
+                        createTextVNode(" WEB EXPERIENCES "),
+                        createVNode("b", null, "✳"),
+                        createTextVNode(" MOBILE PRODUCTS")
+                      ]),
+                      createVNode("a", { href: "#selected-work" }, "THE WORK BELOW ↓")
                     ]),
-                    createVNode("a", { href: "#selected-work" }, "THE WORK BELOW ↓")
-                  ])
+                    _: 1
+                  })
                 ]),
                 createVNode("section", {
                   class: "current-roles",
@@ -1303,34 +1573,73 @@ const _sfc_main = {
                     tone: "contact",
                     mode: "orbs"
                   }),
-                  createVNode(_sfc_main$4, null, {
-                    default: withCtx(() => [
-                      createVNode("span", { class: "folio-label" }, "YOUR NEXT CHAPTER STARTS HERE"),
-                      createVNode("h2", null, [
-                        createTextVNode("Have a good"),
-                        createVNode("br"),
-                        createVNode("em", null, "challenge?"),
-                        createVNode("span", null, "↗")
+                  createVNode("div", { class: "folio-contact-split" }, [
+                    createVNode(_sfc_main$4, null, {
+                      default: withCtx(() => [
+                        createVNode("span", { class: "folio-label" }, "YOUR NEXT CHAPTER STARTS HERE"),
+                        createVNode("h2", null, [
+                          createTextVNode("Have a good"),
+                          createVNode("br"),
+                          createVNode("em", null, "challenge?")
+                        ]),
+                        createVNode("div", { class: "folio-contact-actions" }, [
+                          createVNode(unref(Link), {
+                            href: "/contact",
+                            class: "folio-button"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Let’s build something "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          }),
+                          __props.profile?.email ? (openBlock(), createBlock("a", {
+                            key: 0,
+                            href: `mailto:${__props.profile.email}`
+                          }, toDisplayString(__props.profile.email), 9, ["href"])) : createCommentVNode("", true)
+                        ])
                       ]),
-                      createVNode("div", null, [
-                        createVNode(unref(Link), {
-                          href: "/contact",
-                          class: "folio-button"
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode("Let’s build something "),
-                            createVNode("span", null, "↗")
+                      _: 1
+                    }),
+                    createVNode(unref(motion).aside, {
+                      class: "folio-contact-panel",
+                      initial: { opacity: 0, x: 24 },
+                      "while-in-view": { opacity: 1, x: 0 },
+                      viewport: { once: true, amount: 0.3 },
+                      transition: { duration: 0.65 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode("div", {
+                          class: "folio-contact-visual",
+                          "aria-hidden": "true"
+                        }, [
+                          createVNode(_sfc_main$7, {
+                            tone: "contact",
+                            variant: "orbit"
+                          }),
+                          createVNode("div", { class: "folio-contact-orbit-label" }, [
+                            createVNode("span", null, "✦"),
+                            createVNode("strong", null, "Open for builds")
+                          ])
+                        ]),
+                        createVNode("ul", { class: "folio-contact-meta" }, [
+                          createVNode("li", null, [
+                            createVNode("small", null, "Availability"),
+                            createVNode("strong", null, toDisplayString(__props.profile?.availability || "Selected projects"), 1)
                           ]),
-                          _: 1
-                        }),
-                        __props.profile?.email ? (openBlock(), createBlock("a", {
-                          key: 0,
-                          href: `mailto:${__props.profile.email}`
-                        }, toDisplayString(__props.profile.email), 9, ["href"])) : createCommentVNode("", true)
-                      ])
-                    ]),
-                    _: 1
-                  })
+                          createVNode("li", null, [
+                            createVNode("small", null, "Based in"),
+                            createVNode("strong", null, toDisplayString(__props.profile?.location || "Karachi"), 1)
+                          ]),
+                          createVNode("li", null, [
+                            createVNode("small", null, "Response"),
+                            createVNode("strong", null, "1–2 business days")
+                          ])
+                        ])
+                      ]),
+                      _: 1
+                    })
+                  ])
                 ])
               ])
             ];

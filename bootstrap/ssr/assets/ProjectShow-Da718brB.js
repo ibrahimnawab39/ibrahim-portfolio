@@ -1,9 +1,9 @@
 import { computed, unref, withCtx, createVNode, toDisplayString, createTextVNode, openBlock, createBlock, Fragment, createCommentVNode, renderList, useSSRContext } from "vue";
-import { ssrRenderComponent, ssrInterpolate, ssrRenderAttr, ssrRenderList } from "vue/server-renderer";
-import { _ as _sfc_main$1, a as _sfc_main$2 } from "./PageAtmosphere-tZ9iTIjN.js";
-import { _ as _sfc_main$3 } from "./AmbientScene-CdqcK6xN.js";
-import { _ as _sfc_main$4 } from "./ProjectCover-D_pFmt3q.js";
-import { _ as _sfc_main$5 } from "./Reveal-COkcuhhh.js";
+import { ssrRenderComponent, ssrInterpolate, ssrRenderAttr, ssrRenderList, ssrRenderClass } from "vue/server-renderer";
+import { _ as _sfc_main$1, a as _sfc_main$2, b as _sfc_main$3 } from "./PageAtmosphere-B4p25rd1.js";
+import { _ as _sfc_main$5 } from "./ProjectCover-D_pFmt3q.js";
+import { _ as _sfc_main$6 } from "./Reveal-B7AZWZR6.js";
+import { _ as _sfc_main$4 } from "./TiltCard-BCpF3Iif.js";
 import { Head, Link } from "@inertiajs/vue3";
 import { motion } from "motion-v";
 import "./_plugin-vue_export-helper-1tPrXgE0.js";
@@ -88,18 +88,73 @@ const _sfc_main = {
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`<div class="case-meta"${_scopeId}><div${_scopeId}><small${_scopeId}>Association</small><span${_scopeId}>${ssrInterpolate(__props.project.company || "Independent project")}</span></div><div${_scopeId}><small${_scopeId}>System</small><span${_scopeId}>${ssrInterpolate(__props.project.category)}</span></div><div${_scopeId}><small${_scopeId}>Stack</small><span${_scopeId}>${ssrInterpolate((__props.project.tech_stack ?? []).slice(0, 3).join(" · "))}</span></div></div><div class="case-actions case-actions-top"${_scopeId}>`);
-            if (__props.project.live_url) {
-              _push2(`<a${ssrRenderAttr("href", __props.project.live_url)} target="_blank" rel="noreferrer" class="pill"${_scopeId}>${ssrInterpolate(liveLabel.value)}</a>`);
-            } else {
-              _push2(`<!---->`);
-            }
-            if (__props.project.repo_url) {
-              _push2(`<a${ssrRenderAttr("href", __props.project.repo_url)} target="_blank" rel="noreferrer" class="pill alt"${_scopeId}>View repository ↗</a>`);
-            } else {
-              _push2(`<!---->`);
-            }
-            _push2(`</div></header><div class="case-ambient-band" aria-hidden="true"${_scopeId}>`);
+            _push2(`<div class="case-meta"${_scopeId}><!--[-->`);
+            ssrRenderList([
+              { label: "Association", value: __props.project.company || "Independent project" },
+              { label: "System", value: __props.project.category },
+              { label: "Stack", value: (__props.project.tech_stack ?? []).slice(0, 3).join(" · ") }
+            ], (item, index) => {
+              _push2(ssrRenderComponent(unref(motion).div, {
+                key: item.label,
+                initial: { opacity: 0, y: 12 },
+                animate: { opacity: 1, y: 0 },
+                transition: { delay: 0.18 + index * 0.06 },
+                "while-hover": { y: -3 }
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`<small${_scopeId2}>${ssrInterpolate(item.label)}</small><span${_scopeId2}>${ssrInterpolate(item.value)}</span>`);
+                  } else {
+                    return [
+                      createVNode("small", null, toDisplayString(item.label), 1),
+                      createVNode("span", null, toDisplayString(item.value), 1)
+                    ];
+                  }
+                }),
+                _: 2
+              }, _parent2, _scopeId));
+            });
+            _push2(`<!--]--></div>`);
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "case-actions case-actions-top",
+              initial: { opacity: 0, y: 10 },
+              animate: { opacity: 1, y: 0 },
+              transition: { delay: 0.36 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  if (__props.project.live_url) {
+                    _push3(`<a${ssrRenderAttr("href", __props.project.live_url)} target="_blank" rel="noreferrer" class="pill"${_scopeId2}>${ssrInterpolate(liveLabel.value)}</a>`);
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                  if (__props.project.repo_url) {
+                    _push3(`<a${ssrRenderAttr("href", __props.project.repo_url)} target="_blank" rel="noreferrer" class="pill alt"${_scopeId2}>View repository ↗</a>`);
+                  } else {
+                    _push3(`<!---->`);
+                  }
+                } else {
+                  return [
+                    __props.project.live_url ? (openBlock(), createBlock("a", {
+                      key: 0,
+                      href: __props.project.live_url,
+                      target: "_blank",
+                      rel: "noreferrer",
+                      class: "pill"
+                    }, toDisplayString(liveLabel.value), 9, ["href"])) : createCommentVNode("", true),
+                    __props.project.repo_url ? (openBlock(), createBlock("a", {
+                      key: 1,
+                      href: __props.project.repo_url,
+                      target: "_blank",
+                      rel: "noreferrer",
+                      class: "pill alt"
+                    }, "View repository ↗", 8, ["href"])) : createCommentVNode("", true)
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`</header><div class="case-ambient-band" aria-hidden="true"${_scopeId}>`);
             _push2(ssrRenderComponent(_sfc_main$3, {
               tone: "work",
               variant: "dots"
@@ -107,48 +162,94 @@ const _sfc_main = {
             _push2(`</div>`);
             if (gallery.value.length) {
               _push2(ssrRenderComponent(unref(motion).div, {
-                class: ["case-visual", isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot"],
                 initial: { opacity: 0, scale: 0.97 },
                 animate: { opacity: 1, scale: 1 },
                 transition: { duration: 0.8 }
               }, {
                 default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                   if (_push3) {
-                    if (isMobile.value) {
-                      _push3(`<div class="phone-showcase"${_scopeId2}><!--[-->`);
-                      ssrRenderList(gallery.value.slice(0, 4), (shot, index) => {
-                        _push3(`<figure class="phone-frame case-phone"${_scopeId2}><span class="phone-notch"${_scopeId2}></span><img${ssrRenderAttr("src", shot)}${ssrRenderAttr("alt", `${__props.project.title} screen ${index + 1}`)} loading="lazy"${_scopeId2}></figure>`);
-                      });
-                      _push3(`<!--]--></div>`);
-                    } else {
-                      _push3(`<img${ssrRenderAttr("src", gallery.value[0])}${ssrRenderAttr("alt", `${__props.project.title} screenshot`)}${_scopeId2}>`);
-                    }
-                    _push3(`<i${_scopeId2}>${ssrInterpolate(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY")} / ${ssrInterpolate(String(__props.project.order ?? 0).padStart(2, "0"))}</i>`);
+                    _push3(ssrRenderComponent(_sfc_main$4, { max: 5 }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(`<div class="${ssrRenderClass([isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot", "case-visual"])}"${_scopeId3}>`);
+                          if (isMobile.value) {
+                            _push4(`<div class="phone-showcase"${_scopeId3}><!--[-->`);
+                            ssrRenderList(gallery.value.slice(0, 4), (shot, index) => {
+                              _push4(`<figure class="phone-frame case-phone"${_scopeId3}><span class="phone-notch"${_scopeId3}></span><img${ssrRenderAttr("src", shot)}${ssrRenderAttr("alt", `${__props.project.title} screen ${index + 1}`)} loading="lazy"${_scopeId3}></figure>`);
+                            });
+                            _push4(`<!--]--></div>`);
+                          } else {
+                            _push4(`<img${ssrRenderAttr("src", gallery.value[0])}${ssrRenderAttr("alt", `${__props.project.title} screenshot`)}${_scopeId3}>`);
+                          }
+                          _push4(`<i${_scopeId3}>${ssrInterpolate(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY")} / ${ssrInterpolate(String(__props.project.order ?? 0).padStart(2, "0"))}</i></div>`);
+                        } else {
+                          return [
+                            createVNode("div", {
+                              class: ["case-visual", isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot"]
+                            }, [
+                              isMobile.value ? (openBlock(), createBlock("div", {
+                                key: 0,
+                                class: "phone-showcase"
+                              }, [
+                                (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(0, 4), (shot, index) => {
+                                  return openBlock(), createBlock("figure", {
+                                    key: shot,
+                                    class: "phone-frame case-phone"
+                                  }, [
+                                    createVNode("span", { class: "phone-notch" }),
+                                    createVNode("img", {
+                                      src: shot,
+                                      alt: `${__props.project.title} screen ${index + 1}`,
+                                      loading: "lazy"
+                                    }, null, 8, ["src", "alt"])
+                                  ]);
+                                }), 128))
+                              ])) : (openBlock(), createBlock("img", {
+                                key: 1,
+                                src: gallery.value[0],
+                                alt: `${__props.project.title} screenshot`
+                              }, null, 8, ["src", "alt"])),
+                              createVNode("i", null, toDisplayString(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY") + " / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                            ], 2)
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
                   } else {
                     return [
-                      isMobile.value ? (openBlock(), createBlock("div", {
-                        key: 0,
-                        class: "phone-showcase"
-                      }, [
-                        (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(0, 4), (shot, index) => {
-                          return openBlock(), createBlock("figure", {
-                            key: shot,
-                            class: "phone-frame case-phone"
+                      createVNode(_sfc_main$4, { max: 5 }, {
+                        default: withCtx(() => [
+                          createVNode("div", {
+                            class: ["case-visual", isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot"]
                           }, [
-                            createVNode("span", { class: "phone-notch" }),
-                            createVNode("img", {
-                              src: shot,
-                              alt: `${__props.project.title} screen ${index + 1}`,
-                              loading: "lazy"
-                            }, null, 8, ["src", "alt"])
-                          ]);
-                        }), 128))
-                      ])) : (openBlock(), createBlock("img", {
-                        key: 1,
-                        src: gallery.value[0],
-                        alt: `${__props.project.title} screenshot`
-                      }, null, 8, ["src", "alt"])),
-                      createVNode("i", null, toDisplayString(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY") + " / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                            isMobile.value ? (openBlock(), createBlock("div", {
+                              key: 0,
+                              class: "phone-showcase"
+                            }, [
+                              (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(0, 4), (shot, index) => {
+                                return openBlock(), createBlock("figure", {
+                                  key: shot,
+                                  class: "phone-frame case-phone"
+                                }, [
+                                  createVNode("span", { class: "phone-notch" }),
+                                  createVNode("img", {
+                                    src: shot,
+                                    alt: `${__props.project.title} screen ${index + 1}`,
+                                    loading: "lazy"
+                                  }, null, 8, ["src", "alt"])
+                                ]);
+                              }), 128))
+                            ])) : (openBlock(), createBlock("img", {
+                              key: 1,
+                              src: gallery.value[0],
+                              alt: `${__props.project.title} screenshot`
+                            }, null, 8, ["src", "alt"])),
+                            createVNode("i", null, toDisplayString(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY") + " / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                          ], 2)
+                        ]),
+                        _: 1
+                      })
                     ];
                   }
                 }),
@@ -156,26 +257,51 @@ const _sfc_main = {
               }, _parent2, _scopeId));
             } else {
               _push2(ssrRenderComponent(unref(motion).div, {
-                class: "case-visual",
                 initial: { opacity: 0, scale: 0.97 },
                 animate: { opacity: 1, scale: 1 },
                 transition: { duration: 0.8 }
               }, {
                 default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                   if (_push3) {
-                    _push3(ssrRenderComponent(_sfc_main$4, {
-                      project: __props.project,
-                      index: __props.project.order || 0
-                    }, null, _parent3, _scopeId2));
-                    _push3(`<span${_scopeId2}>${ssrInterpolate(__props.project.title)}</span><i${_scopeId2}>CASE STUDY / ${ssrInterpolate(String(__props.project.order ?? 0).padStart(2, "0"))}</i>`);
+                    _push3(ssrRenderComponent(_sfc_main$4, { max: 5 }, {
+                      default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                        if (_push4) {
+                          _push4(`<div class="case-visual"${_scopeId3}>`);
+                          _push4(ssrRenderComponent(_sfc_main$5, {
+                            project: __props.project,
+                            index: __props.project.order || 0
+                          }, null, _parent4, _scopeId3));
+                          _push4(`<span${_scopeId3}>${ssrInterpolate(__props.project.title)}</span><i${_scopeId3}>CASE STUDY / ${ssrInterpolate(String(__props.project.order ?? 0).padStart(2, "0"))}</i></div>`);
+                        } else {
+                          return [
+                            createVNode("div", { class: "case-visual" }, [
+                              createVNode(_sfc_main$5, {
+                                project: __props.project,
+                                index: __props.project.order || 0
+                              }, null, 8, ["project", "index"]),
+                              createVNode("span", null, toDisplayString(__props.project.title), 1),
+                              createVNode("i", null, "CASE STUDY / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                            ])
+                          ];
+                        }
+                      }),
+                      _: 1
+                    }, _parent3, _scopeId2));
                   } else {
                     return [
-                      createVNode(_sfc_main$4, {
-                        project: __props.project,
-                        index: __props.project.order || 0
-                      }, null, 8, ["project", "index"]),
-                      createVNode("span", null, toDisplayString(__props.project.title), 1),
-                      createVNode("i", null, "CASE STUDY / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                      createVNode(_sfc_main$4, { max: 5 }, {
+                        default: withCtx(() => [
+                          createVNode("div", { class: "case-visual" }, [
+                            createVNode(_sfc_main$5, {
+                              project: __props.project,
+                              index: __props.project.order || 0
+                            }, null, 8, ["project", "index"]),
+                            createVNode("span", null, toDisplayString(__props.project.title), 1),
+                            createVNode("i", null, "CASE STUDY / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                          ])
+                        ]),
+                        _: 1
+                      })
                     ];
                   }
                 }),
@@ -183,35 +309,25 @@ const _sfc_main = {
               }, _parent2, _scopeId));
             }
             if (gallery.value.length > 1 && !isMobile.value) {
-              _push2(ssrRenderComponent(_sfc_main$5, null, {
-                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                  if (_push3) {
-                    _push3(`<section class="case-gallery"${_scopeId2}><!--[-->`);
-                    ssrRenderList(gallery.value.slice(1), (shot, index) => {
-                      _push3(`<img${ssrRenderAttr("src", shot)}${ssrRenderAttr("alt", `${__props.project.title} detail ${index + 2}`)} loading="lazy"${_scopeId2}>`);
-                    });
-                    _push3(`<!--]--></section>`);
-                  } else {
-                    return [
-                      createVNode("section", { class: "case-gallery" }, [
-                        (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(1), (shot, index) => {
-                          return openBlock(), createBlock("img", {
-                            key: shot,
-                            src: shot,
-                            alt: `${__props.project.title} detail ${index + 2}`,
-                            loading: "lazy"
-                          }, null, 8, ["src", "alt"]);
-                        }), 128))
-                      ])
-                    ];
-                  }
-                }),
-                _: 1
-              }, _parent2, _scopeId));
+              _push2(`<section class="case-gallery"${_scopeId}><!--[-->`);
+              ssrRenderList(gallery.value.slice(1), (shot, index) => {
+                _push2(ssrRenderComponent(unref(motion).img, {
+                  key: shot,
+                  src: shot,
+                  alt: `${__props.project.title} detail ${index + 2}`,
+                  loading: "lazy",
+                  initial: { opacity: 0, y: 18 },
+                  "while-in-view": { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.25 },
+                  transition: { delay: Math.min(index * 0.06, 0.24), duration: 0.5 },
+                  "while-hover": { y: -4 }
+                }, null, _parent2, _scopeId));
+              });
+              _push2(`<!--]--></section>`);
             } else {
               _push2(`<!---->`);
             }
-            _push2(ssrRenderComponent(_sfc_main$5, null, {
+            _push2(ssrRenderComponent(_sfc_main$6, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
                   _push3(`<section class="case-content"${_scopeId2}><div${_scopeId2}><span class="section-kicker"${_scopeId2}>The brief</span><h2${_scopeId2}>Turning operational complexity into one dependable system.</h2></div><div${_scopeId2}><p${_scopeId2}>${ssrInterpolate(__props.project.description)}</p><h3${_scopeId2}>Technology</h3><div class="tags large"${_scopeId2}><!--[-->`);
@@ -268,7 +384,7 @@ const _sfc_main = {
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(ssrRenderComponent(_sfc_main$5, { delay: 0.05 }, {
+            _push2(ssrRenderComponent(_sfc_main$6, { delay: 0.05 }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
                   if (__props.nextProject && __props.nextProject.id !== __props.project.id) {
@@ -374,35 +490,50 @@ const _sfc_main = {
                     _: 1
                   }),
                   createVNode("div", { class: "case-meta" }, [
-                    createVNode("div", null, [
-                      createVNode("small", null, "Association"),
-                      createVNode("span", null, toDisplayString(__props.project.company || "Independent project"), 1)
-                    ]),
-                    createVNode("div", null, [
-                      createVNode("small", null, "System"),
-                      createVNode("span", null, toDisplayString(__props.project.category), 1)
-                    ]),
-                    createVNode("div", null, [
-                      createVNode("small", null, "Stack"),
-                      createVNode("span", null, toDisplayString((__props.project.tech_stack ?? []).slice(0, 3).join(" · ")), 1)
-                    ])
+                    (openBlock(true), createBlock(Fragment, null, renderList([
+                      { label: "Association", value: __props.project.company || "Independent project" },
+                      { label: "System", value: __props.project.category },
+                      { label: "Stack", value: (__props.project.tech_stack ?? []).slice(0, 3).join(" · ") }
+                    ], (item, index) => {
+                      return openBlock(), createBlock(unref(motion).div, {
+                        key: item.label,
+                        initial: { opacity: 0, y: 12 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { delay: 0.18 + index * 0.06 },
+                        "while-hover": { y: -3 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("small", null, toDisplayString(item.label), 1),
+                          createVNode("span", null, toDisplayString(item.value), 1)
+                        ]),
+                        _: 2
+                      }, 1032, ["transition"]);
+                    }), 128))
                   ]),
-                  createVNode("div", { class: "case-actions case-actions-top" }, [
-                    __props.project.live_url ? (openBlock(), createBlock("a", {
-                      key: 0,
-                      href: __props.project.live_url,
-                      target: "_blank",
-                      rel: "noreferrer",
-                      class: "pill"
-                    }, toDisplayString(liveLabel.value), 9, ["href"])) : createCommentVNode("", true),
-                    __props.project.repo_url ? (openBlock(), createBlock("a", {
-                      key: 1,
-                      href: __props.project.repo_url,
-                      target: "_blank",
-                      rel: "noreferrer",
-                      class: "pill alt"
-                    }, "View repository ↗", 8, ["href"])) : createCommentVNode("", true)
-                  ])
+                  createVNode(unref(motion).div, {
+                    class: "case-actions case-actions-top",
+                    initial: { opacity: 0, y: 10 },
+                    animate: { opacity: 1, y: 0 },
+                    transition: { delay: 0.36 }
+                  }, {
+                    default: withCtx(() => [
+                      __props.project.live_url ? (openBlock(), createBlock("a", {
+                        key: 0,
+                        href: __props.project.live_url,
+                        target: "_blank",
+                        rel: "noreferrer",
+                        class: "pill"
+                      }, toDisplayString(liveLabel.value), 9, ["href"])) : createCommentVNode("", true),
+                      __props.project.repo_url ? (openBlock(), createBlock("a", {
+                        key: 1,
+                        href: __props.project.repo_url,
+                        target: "_blank",
+                        rel: "noreferrer",
+                        class: "pill alt"
+                      }, "View repository ↗", 8, ["href"])) : createCommentVNode("", true)
+                    ]),
+                    _: 1
+                  })
                 ]),
                 createVNode("div", {
                   class: "case-ambient-band",
@@ -415,70 +546,87 @@ const _sfc_main = {
                 ]),
                 gallery.value.length ? (openBlock(), createBlock(unref(motion).div, {
                   key: 0,
-                  class: ["case-visual", isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot"],
                   initial: { opacity: 0, scale: 0.97 },
                   animate: { opacity: 1, scale: 1 },
                   transition: { duration: 0.8 }
                 }, {
                   default: withCtx(() => [
-                    isMobile.value ? (openBlock(), createBlock("div", {
-                      key: 0,
-                      class: "phone-showcase"
-                    }, [
-                      (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(0, 4), (shot, index) => {
-                        return openBlock(), createBlock("figure", {
-                          key: shot,
-                          class: "phone-frame case-phone"
+                    createVNode(_sfc_main$4, { max: 5 }, {
+                      default: withCtx(() => [
+                        createVNode("div", {
+                          class: ["case-visual", isMobile.value ? "case-visual-mobile" : "case-visual-web has-shot"]
                         }, [
-                          createVNode("span", { class: "phone-notch" }),
-                          createVNode("img", {
-                            src: shot,
-                            alt: `${__props.project.title} screen ${index + 1}`,
-                            loading: "lazy"
-                          }, null, 8, ["src", "alt"])
-                        ]);
-                      }), 128))
-                    ])) : (openBlock(), createBlock("img", {
-                      key: 1,
-                      src: gallery.value[0],
-                      alt: `${__props.project.title} screenshot`
-                    }, null, 8, ["src", "alt"])),
-                    createVNode("i", null, toDisplayString(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY") + " / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                          isMobile.value ? (openBlock(), createBlock("div", {
+                            key: 0,
+                            class: "phone-showcase"
+                          }, [
+                            (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(0, 4), (shot, index) => {
+                              return openBlock(), createBlock("figure", {
+                                key: shot,
+                                class: "phone-frame case-phone"
+                              }, [
+                                createVNode("span", { class: "phone-notch" }),
+                                createVNode("img", {
+                                  src: shot,
+                                  alt: `${__props.project.title} screen ${index + 1}`,
+                                  loading: "lazy"
+                                }, null, 8, ["src", "alt"])
+                              ]);
+                            }), 128))
+                          ])) : (openBlock(), createBlock("img", {
+                            key: 1,
+                            src: gallery.value[0],
+                            alt: `${__props.project.title} screenshot`
+                          }, null, 8, ["src", "alt"])),
+                          createVNode("i", null, toDisplayString(__props.project.live_url ? "LIVE PRODUCT" : "CASE STUDY") + " / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                        ], 2)
+                      ]),
+                      _: 1
+                    })
                   ]),
                   _: 1
-                }, 8, ["class"])) : (openBlock(), createBlock(unref(motion).div, {
+                })) : (openBlock(), createBlock(unref(motion).div, {
                   key: 1,
-                  class: "case-visual",
                   initial: { opacity: 0, scale: 0.97 },
                   animate: { opacity: 1, scale: 1 },
                   transition: { duration: 0.8 }
                 }, {
                   default: withCtx(() => [
-                    createVNode(_sfc_main$4, {
-                      project: __props.project,
-                      index: __props.project.order || 0
-                    }, null, 8, ["project", "index"]),
-                    createVNode("span", null, toDisplayString(__props.project.title), 1),
-                    createVNode("i", null, "CASE STUDY / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                    createVNode(_sfc_main$4, { max: 5 }, {
+                      default: withCtx(() => [
+                        createVNode("div", { class: "case-visual" }, [
+                          createVNode(_sfc_main$5, {
+                            project: __props.project,
+                            index: __props.project.order || 0
+                          }, null, 8, ["project", "index"]),
+                          createVNode("span", null, toDisplayString(__props.project.title), 1),
+                          createVNode("i", null, "CASE STUDY / " + toDisplayString(String(__props.project.order ?? 0).padStart(2, "0")), 1)
+                        ])
+                      ]),
+                      _: 1
+                    })
                   ]),
                   _: 1
                 })),
-                gallery.value.length > 1 && !isMobile.value ? (openBlock(), createBlock(_sfc_main$5, { key: 2 }, {
-                  default: withCtx(() => [
-                    createVNode("section", { class: "case-gallery" }, [
-                      (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(1), (shot, index) => {
-                        return openBlock(), createBlock("img", {
-                          key: shot,
-                          src: shot,
-                          alt: `${__props.project.title} detail ${index + 2}`,
-                          loading: "lazy"
-                        }, null, 8, ["src", "alt"]);
-                      }), 128))
-                    ])
-                  ]),
-                  _: 1
-                })) : createCommentVNode("", true),
-                createVNode(_sfc_main$5, null, {
+                gallery.value.length > 1 && !isMobile.value ? (openBlock(), createBlock("section", {
+                  key: 2,
+                  class: "case-gallery"
+                }, [
+                  (openBlock(true), createBlock(Fragment, null, renderList(gallery.value.slice(1), (shot, index) => {
+                    return openBlock(), createBlock(unref(motion).img, {
+                      key: shot,
+                      src: shot,
+                      alt: `${__props.project.title} detail ${index + 2}`,
+                      loading: "lazy",
+                      initial: { opacity: 0, y: 18 },
+                      "while-in-view": { opacity: 1, y: 0 },
+                      viewport: { once: true, amount: 0.25 },
+                      transition: { delay: Math.min(index * 0.06, 0.24), duration: 0.5 },
+                      "while-hover": { y: -4 }
+                    }, null, 8, ["src", "alt", "transition"]);
+                  }), 128))
+                ])) : createCommentVNode("", true),
+                createVNode(_sfc_main$6, null, {
                   default: withCtx(() => [
                     createVNode("section", { class: "case-content" }, [
                       createVNode("div", null, [
@@ -514,7 +662,7 @@ const _sfc_main = {
                   ]),
                   _: 1
                 }),
-                createVNode(_sfc_main$5, { delay: 0.05 }, {
+                createVNode(_sfc_main$6, { delay: 0.05 }, {
                   default: withCtx(() => [
                     __props.nextProject && __props.nextProject.id !== __props.project.id ? (openBlock(), createBlock(unref(Link), {
                       key: 0,

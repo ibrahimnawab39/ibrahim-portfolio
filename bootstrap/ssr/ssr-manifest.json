@@ -3,6 +3,21 @@
     "/build/assets/_plugin-vue_export-helper-1tPrXgE0.js"
   ],
   "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
+  "resources/js/Components/Admin/AdminCharts.vue": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
+  "resources/js/Components/Admin/AdminDataTable.vue": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
+  "resources/js/Components/Admin/AdminPager.vue": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
+  "resources/js/Components/Admin/AdminSidebar.vue": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
+  "resources/js/Components/Admin/AdminViewToggle.vue": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
   "resources/js/Components/DangerButton.vue": [
     "/build/assets/DeleteUserForm-DmgA4Ol8.js"
   ],
@@ -16,28 +31,28 @@
     "/build/assets/DeleteUserForm-DmgA4Ol8.js"
   ],
   "resources/js/Components/Portfolio/AmbientScene.vue": [
-    "/build/assets/AmbientScene-CdqcK6xN.js"
+    "/build/assets/PageAtmosphere-B4p25rd1.js"
   ],
   "resources/js/Components/Portfolio/ArchitectureScene.vue": [
-    "/build/assets/Home-B3q-9nW-.js"
+    "/build/assets/Home-Bz0sUtsb.js"
   ],
   "resources/js/Components/Portfolio/BrandMark.vue": [
-    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+    "/build/assets/PageAtmosphere-B4p25rd1.js"
   ],
   "resources/js/Components/Portfolio/CompanyLogo.vue": [
     "/build/assets/CompanyLogo-DBsmU8oY.js"
   ],
   "resources/js/Components/Portfolio/PageAtmosphere.vue": [
-    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+    "/build/assets/PageAtmosphere-B4p25rd1.js"
   ],
   "resources/js/Components/Portfolio/ProjectCover.vue": [
     "/build/assets/ProjectCover-D_pFmt3q.js"
   ],
   "resources/js/Components/Portfolio/Reveal.vue": [
-    "/build/assets/Reveal-COkcuhhh.js"
+    "/build/assets/Reveal-B7AZWZR6.js"
   ],
   "resources/js/Components/Portfolio/SeoHead.vue": [
-    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+    "/build/assets/PageAtmosphere-B4p25rd1.js"
   ],
   "resources/js/Components/Portfolio/TiltCard.vue": [
     "/build/assets/TiltCard-BCpF3Iif.js"
@@ -51,6 +66,9 @@
   "resources/js/Components/TextInput.vue": [
     "/build/assets/TextInput-A0-GkXWF.js"
   ],
+  "resources/js/Composables/useAdminPager.js": [
+    "/build/assets/Index-BUnZHHUA.js"
+  ],
   "resources/js/Layouts/AuthenticatedLayout.vue": [
     "/build/assets/AuthenticatedLayout-gFy7Fq2q.js"
   ],
@@ -58,10 +76,10 @@
     "/build/assets/GuestLayout-B5DkTAnn.js"
   ],
   "resources/js/Layouts/PortfolioLayout.vue": [
-    "/build/assets/PageAtmosphere-tZ9iTIjN.js"
+    "/build/assets/PageAtmosphere-B4p25rd1.js"
   ],
   "resources/js/Pages/Admin/Index.vue": [
-    "/build/assets/Index-BQh9W0hv.js"
+    "/build/assets/Index-BUnZHHUA.js"
   ],
   "resources/js/Pages/Auth/ConfirmPassword.vue": [
     "/build/assets/ConfirmPassword-D6_B41d3.js"
@@ -85,25 +103,25 @@
     "/build/assets/Dashboard-B6Fx7LC9.js"
   ],
   "resources/js/Pages/Home.vue": [
-    "/build/assets/Home-B3q-9nW-.js"
+    "/build/assets/Home-Bz0sUtsb.js"
   ],
   "resources/js/Pages/Portfolio/About.vue": [
-    "/build/assets/About-DBX0MN0l.js"
+    "/build/assets/About-Br6Ji9kE.js"
   ],
   "resources/js/Pages/Portfolio/Contact.vue": [
-    "/build/assets/Contact-CEqCu1uk.js"
+    "/build/assets/Contact-BuP4KMYD.js"
   ],
   "resources/js/Pages/Portfolio/Experience.vue": [
-    "/build/assets/Experience-CDHS3tpi.js"
+    "/build/assets/Experience-ZVuv0Q2y.js"
   ],
   "resources/js/Pages/Portfolio/ProjectShow.vue": [
-    "/build/assets/ProjectShow-9UhnNCZX.js"
+    "/build/assets/ProjectShow-Da718brB.js"
   ],
   "resources/js/Pages/Portfolio/Work.vue": [
-    "/build/assets/Work-INgG_Me1.js"
+    "/build/assets/Work-BC9vn56u.js"
   ],
   "resources/js/Pages/Profile/Edit.vue": [
-    "/build/assets/Edit-D5YX8A2M.js"
+    "/build/assets/Edit-Cwt9eWLT.js"
   ],
   "resources/js/Pages/Profile/Partials/DeleteUserForm.vue": [
     "/build/assets/DeleteUserForm-DmgA4Ol8.js"

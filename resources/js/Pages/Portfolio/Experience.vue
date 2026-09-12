@@ -75,11 +75,29 @@ const date = (value, empty = 'Present') =>
                 </TiltCard>
             </section>
 
-            <section class="page-cta">
-                <span>Selected output</span>
-                <h2>Now see how the experience becomes product.</h2>
-                <Link href="/work" class="pill">Explore selected work ↗</Link>
-            </section>
+            <motion.section
+                class="page-cta page-cta-split"
+                :initial="{ opacity: 0, y: 24 }"
+                :while-in-view="{ opacity: 1, y: 0 }"
+                :viewport="{ once: true, amount: .35 }"
+                :transition="{ duration: .55 }"
+            >
+                <div class="page-cta-copy">
+                    <span>Selected output</span>
+                    <h2>Now see how the experience becomes product.</h2>
+                    <Link href="/work" class="pill">Explore selected work ↗</Link>
+                </div>
+                <motion.div
+                    class="cta-scene"
+                    aria-hidden="true"
+                    :initial="{ opacity: 0, scale: .92 }"
+                    :while-in-view="{ opacity: 1, scale: 1 }"
+                    :viewport="{ once: true }"
+                    :transition="{ duration: .7, delay: .1 }"
+                >
+                    <AmbientScene tone="experience" variant="orbit" />
+                </motion.div>
+            </motion.section>
         </div>
     </PortfolioLayout>
 </template>

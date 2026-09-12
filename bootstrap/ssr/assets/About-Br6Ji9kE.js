@@ -1,9 +1,9 @@
-import { computed, unref, withCtx, createVNode, createTextVNode, toDisplayString, openBlock, createBlock, Fragment, renderList, createCommentVNode, useSSRContext } from "vue";
+import { computed, unref, withCtx, createVNode, createTextVNode, toDisplayString, openBlock, createBlock, createCommentVNode, Fragment, renderList, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderAttr, ssrInterpolate, ssrRenderList } from "vue/server-renderer";
-import { _ as _sfc_main$1, a as _sfc_main$2 } from "./PageAtmosphere-tZ9iTIjN.js";
-import { _ as _sfc_main$5 } from "./CompanyLogo-DBsmU8oY.js";
-import { _ as _sfc_main$3 } from "./Reveal-COkcuhhh.js";
-import { _ as _sfc_main$4 } from "./TiltCard-BCpF3Iif.js";
+import { _ as _sfc_main$1, a as _sfc_main$2, b as _sfc_main$5 } from "./PageAtmosphere-B4p25rd1.js";
+import { _ as _sfc_main$6 } from "./CompanyLogo-DBsmU8oY.js";
+import { _ as _sfc_main$4 } from "./Reveal-B7AZWZR6.js";
+import { _ as _sfc_main$3 } from "./TiltCard-BCpF3Iif.js";
 import { Head, Link } from "@inertiajs/vue3";
 import { motion } from "motion-v";
 import "./_plugin-vue_export-helper-1tPrXgE0.js";
@@ -219,36 +219,70 @@ const _sfc_main = {
               _: 1
             }, _parent2, _scopeId));
             _push2(`</div>`);
-            _push2(ssrRenderComponent(unref(motion).figure, {
-              class: "about-portrait-frame",
+            _push2(ssrRenderComponent(unref(motion).div, {
               initial: { opacity: 0, scale: 0.94 },
               animate: { opacity: 1, scale: 1 },
               transition: { duration: 0.75, delay: 0.08 }
             }, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  if (__props.profile?.photo_path) {
-                    _push3(`<img${ssrRenderAttr("src", __props.profile.photo_path)}${ssrRenderAttr("alt", __props.profile.name)}${_scopeId2}>`);
-                  } else {
-                    _push3(`<div class="about-portrait-fallback"${_scopeId2}>IN</div>`);
-                  }
+                  _push3(ssrRenderComponent(_sfc_main$3, {
+                    max: 6,
+                    class: "about-portrait-tilt"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`<figure class="about-portrait-frame"${_scopeId3}>`);
+                        if (__props.profile?.photo_path) {
+                          _push4(`<img${ssrRenderAttr("src", __props.profile.photo_path)}${ssrRenderAttr("alt", __props.profile.name)}${_scopeId3}>`);
+                        } else {
+                          _push4(`<div class="about-portrait-fallback"${_scopeId3}>IN</div>`);
+                        }
+                        _push4(`</figure>`);
+                      } else {
+                        return [
+                          createVNode("figure", { class: "about-portrait-frame" }, [
+                            __props.profile?.photo_path ? (openBlock(), createBlock("img", {
+                              key: 0,
+                              src: __props.profile.photo_path,
+                              alt: __props.profile.name
+                            }, null, 8, ["src", "alt"])) : (openBlock(), createBlock("div", {
+                              key: 1,
+                              class: "about-portrait-fallback"
+                            }, "IN"))
+                          ])
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
                 } else {
                   return [
-                    __props.profile?.photo_path ? (openBlock(), createBlock("img", {
-                      key: 0,
-                      src: __props.profile.photo_path,
-                      alt: __props.profile.name
-                    }, null, 8, ["src", "alt"])) : (openBlock(), createBlock("div", {
-                      key: 1,
-                      class: "about-portrait-fallback"
-                    }, "IN"))
+                    createVNode(_sfc_main$3, {
+                      max: 6,
+                      class: "about-portrait-tilt"
+                    }, {
+                      default: withCtx(() => [
+                        createVNode("figure", { class: "about-portrait-frame" }, [
+                          __props.profile?.photo_path ? (openBlock(), createBlock("img", {
+                            key: 0,
+                            src: __props.profile.photo_path,
+                            alt: __props.profile.name
+                          }, null, 8, ["src", "alt"])) : (openBlock(), createBlock("div", {
+                            key: 1,
+                            class: "about-portrait-fallback"
+                          }, "IN"))
+                        ])
+                      ]),
+                      _: 1
+                    })
                   ];
                 }
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`</header><section class="about-bio"${_scopeId}>`);
-            _push2(ssrRenderComponent(_sfc_main$3, null, {
+            _push2(`</header><section class="about-bio"${_scopeId}><div class="about-bio-split"${_scopeId}>`);
+            _push2(ssrRenderComponent(_sfc_main$4, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
                   _push3(`<span class="folio-label"${_scopeId2}>02 / STORY</span><h2${_scopeId2}>I build the systems<br${_scopeId2}><em${_scopeId2}>behind the experience.</em></h2><p class="lead-copy"${_scopeId2}>${ssrInterpolate(__props.profile?.bio)}</p>`);
@@ -266,7 +300,31 @@ const _sfc_main = {
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`<div class="about-focus"${_scopeId}><!--[-->`);
+            _push2(ssrRenderComponent(unref(motion).div, {
+              class: "section-scene",
+              initial: { opacity: 0, scale: 0.92 },
+              "while-in-view": { opacity: 1, scale: 1 },
+              viewport: { once: true, amount: 0.35 },
+              transition: { duration: 0.7 }
+            }, {
+              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                if (_push3) {
+                  _push3(ssrRenderComponent(_sfc_main$5, {
+                    tone: "about",
+                    variant: "shards"
+                  }, null, _parent3, _scopeId2));
+                } else {
+                  return [
+                    createVNode(_sfc_main$5, {
+                      tone: "about",
+                      variant: "shards"
+                    })
+                  ];
+                }
+              }),
+              _: 1
+            }, _parent2, _scopeId));
+            _push2(`</div><div class="about-focus"${_scopeId}><!--[-->`);
             ssrRenderList([
               { title: "Systems thinking", copy: "APIs, admin tools, commerce and mobile treated as one product — not separate deliveries." },
               { title: "Operational focus", copy: "Work starts from real constraints: reliability, clarity and the people who use the system daily." },
@@ -294,7 +352,7 @@ const _sfc_main = {
               }, _parent2, _scopeId));
             });
             _push2(`<!--]--></div></section><section class="about-studios"${_scopeId}>`);
-            _push2(ssrRenderComponent(_sfc_main$3, null, {
+            _push2(ssrRenderComponent(_sfc_main$4, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
                   _push3(`<header class="about-section-head"${_scopeId2}><span class="folio-label"${_scopeId2}>03 / STUDIOS</span><h2${_scopeId2}>Where the craft<br${_scopeId2}><em${_scopeId2}>has been practiced.</em></h2></header>`);
@@ -315,7 +373,7 @@ const _sfc_main = {
             }, _parent2, _scopeId));
             _push2(`<div class="about-studio-rail"${_scopeId}><!--[-->`);
             ssrRenderList(studios.value, (studio, index) => {
-              _push2(ssrRenderComponent(_sfc_main$4, {
+              _push2(ssrRenderComponent(_sfc_main$3, {
                 key: studio.name,
                 max: 8
               }, {
@@ -330,7 +388,7 @@ const _sfc_main = {
                     }, {
                       default: withCtx((_3, _push4, _parent4, _scopeId3) => {
                         if (_push4) {
-                          _push4(ssrRenderComponent(_sfc_main$5, {
+                          _push4(ssrRenderComponent(_sfc_main$6, {
                             src: studio.logo,
                             name: studio.name,
                             size: "md"
@@ -338,7 +396,7 @@ const _sfc_main = {
                           _push4(`<strong${_scopeId3}>${ssrInterpolate(studio.name)}</strong><small${_scopeId3}>${ssrInterpolate(studio.role)}</small>`);
                         } else {
                           return [
-                            createVNode(_sfc_main$5, {
+                            createVNode(_sfc_main$6, {
                               src: studio.logo,
                               name: studio.name,
                               size: "md"
@@ -366,7 +424,7 @@ const _sfc_main = {
                           transition: { delay: Math.min(index * 0.04, 0.28) }
                         }, {
                           default: withCtx(() => [
-                            createVNode(_sfc_main$5, {
+                            createVNode(_sfc_main$6, {
                               src: studio.logo,
                               name: studio.name,
                               size: "md"
@@ -384,7 +442,7 @@ const _sfc_main = {
               }, _parent2, _scopeId));
             });
             _push2(`<!--]--></div><p class="about-platform-note"${_scopeId}> Also delivering through <a href="https://www.freelancer.com/" target="_blank" rel="noreferrer"${_scopeId}>Freelancer.com</a> · <a href="https://www.fiverr.com/" target="_blank" rel="noreferrer"${_scopeId}>Fiverr</a></p></section><section class="about-layers"${_scopeId}>`);
-            _push2(ssrRenderComponent(_sfc_main$3, null, {
+            _push2(ssrRenderComponent(_sfc_main$4, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
                   _push3(`<header class="about-section-head"${_scopeId2}><span class="folio-label"${_scopeId2}>04 / STACK</span><h2${_scopeId2}>One partner across<br${_scopeId2}><em${_scopeId2}>the critical layers.</em></h2></header>`);
@@ -430,7 +488,7 @@ const _sfc_main = {
             _push2(`<!--]--></div></section>`);
             if (__props.certificates?.length) {
               _push2(`<section class="about-certs"${_scopeId}>`);
-              _push2(ssrRenderComponent(_sfc_main$3, null, {
+              _push2(ssrRenderComponent(_sfc_main$4, null, {
                 default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                   if (_push3) {
                     _push3(`<header class="about-section-head"${_scopeId2}><span class="folio-label"${_scopeId2}>05 / FOUNDATION</span><h2${_scopeId2}>Education that<br${_scopeId2}><em${_scopeId2}>supports the craft.</em></h2></header>`);
@@ -451,52 +509,133 @@ const _sfc_main = {
               }, _parent2, _scopeId));
               _push2(`<div class="about-cert-list"${_scopeId}><!--[-->`);
               ssrRenderList(__props.certificates, (certificate, index) => {
-                _push2(`<article${_scopeId}><span${_scopeId}>${ssrInterpolate(String(index + 1).padStart(2, "0"))}</span><div${_scopeId}><small${_scopeId}>${ssrInterpolate(certificate.issuer)}</small><h3${_scopeId}>${ssrInterpolate(certificate.title)}</h3><p${_scopeId}>${ssrInterpolate(certificate.description)}</p></div>`);
-                if (certificate.credential_url) {
-                  _push2(`<a${ssrRenderAttr("href", certificate.credential_url)} target="_blank" rel="noreferrer"${_scopeId}>Credential ↗</a>`);
-                } else {
-                  _push2(`<!---->`);
-                }
-                _push2(`</article>`);
+                _push2(ssrRenderComponent(unref(motion).article, {
+                  key: certificate.id,
+                  initial: { opacity: 0, y: 16 },
+                  "while-in-view": { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.35 },
+                  transition: { delay: index * 0.05 },
+                  "while-hover": { x: 6 }
+                }, {
+                  default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                    if (_push3) {
+                      _push3(`<span${_scopeId2}>${ssrInterpolate(String(index + 1).padStart(2, "0"))}</span><div${_scopeId2}><small${_scopeId2}>${ssrInterpolate(certificate.issuer)}</small><h3${_scopeId2}>${ssrInterpolate(certificate.title)}</h3><p${_scopeId2}>${ssrInterpolate(certificate.description)}</p></div>`);
+                      if (certificate.credential_url) {
+                        _push3(`<a${ssrRenderAttr("href", certificate.credential_url)} target="_blank" rel="noreferrer"${_scopeId2}>Credential ↗</a>`);
+                      } else {
+                        _push3(`<!---->`);
+                      }
+                    } else {
+                      return [
+                        createVNode("span", null, toDisplayString(String(index + 1).padStart(2, "0")), 1),
+                        createVNode("div", null, [
+                          createVNode("small", null, toDisplayString(certificate.issuer), 1),
+                          createVNode("h3", null, toDisplayString(certificate.title), 1),
+                          createVNode("p", null, toDisplayString(certificate.description), 1)
+                        ]),
+                        certificate.credential_url ? (openBlock(), createBlock("a", {
+                          key: 0,
+                          href: certificate.credential_url,
+                          target: "_blank",
+                          rel: "noreferrer"
+                        }, "Credential ↗", 8, ["href"])) : createCommentVNode("", true)
+                      ];
+                    }
+                  }),
+                  _: 2
+                }, _parent2, _scopeId));
               });
               _push2(`<!--]--></div></section>`);
             } else {
               _push2(`<!---->`);
             }
-            _push2(`<section class="page-cta"${_scopeId}><span${_scopeId}>Next</span><h2${_scopeId}>Now see how the thinking becomes product.</h2><div class="about-hero-actions"${_scopeId}>`);
-            _push2(ssrRenderComponent(unref(Link), {
-              href: "/experience",
-              class: "folio-button"
-            }, {
+            _push2(ssrRenderComponent(_sfc_main$4, null, {
               default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                 if (_push3) {
-                  _push3(`Explore experience <span${_scopeId2}>↗</span>`);
+                  _push3(`<section class="page-cta page-cta-split"${_scopeId2}><div class="page-cta-copy"${_scopeId2}><span${_scopeId2}>Next</span><h2${_scopeId2}>Now see how the thinking becomes product.</h2><div class="about-hero-actions"${_scopeId2}>`);
+                  _push3(ssrRenderComponent(unref(Link), {
+                    href: "/experience",
+                    class: "folio-button"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`Explore experience <span${_scopeId3}>↗</span>`);
+                      } else {
+                        return [
+                          createTextVNode("Explore experience "),
+                          createVNode("span", null, "↗")
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(ssrRenderComponent(unref(Link), {
+                    href: "/work",
+                    class: "hero-secondary"
+                  }, {
+                    default: withCtx((_3, _push4, _parent4, _scopeId3) => {
+                      if (_push4) {
+                        _push4(`Selected work <span${_scopeId3}>↗</span>`);
+                      } else {
+                        return [
+                          createTextVNode("Selected work "),
+                          createVNode("span", null, "↗")
+                        ];
+                      }
+                    }),
+                    _: 1
+                  }, _parent3, _scopeId2));
+                  _push3(`</div></div><div class="cta-scene" aria-hidden="true"${_scopeId2}>`);
+                  _push3(ssrRenderComponent(_sfc_main$5, {
+                    tone: "about",
+                    variant: "shards"
+                  }, null, _parent3, _scopeId2));
+                  _push3(`</div></section>`);
                 } else {
                   return [
-                    createTextVNode("Explore experience "),
-                    createVNode("span", null, "↗")
+                    createVNode("section", { class: "page-cta page-cta-split" }, [
+                      createVNode("div", { class: "page-cta-copy" }, [
+                        createVNode("span", null, "Next"),
+                        createVNode("h2", null, "Now see how the thinking becomes product."),
+                        createVNode("div", { class: "about-hero-actions" }, [
+                          createVNode(unref(Link), {
+                            href: "/experience",
+                            class: "folio-button"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Explore experience "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          }),
+                          createVNode(unref(Link), {
+                            href: "/work",
+                            class: "hero-secondary"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Selected work "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          })
+                        ])
+                      ]),
+                      createVNode("div", {
+                        class: "cta-scene",
+                        "aria-hidden": "true"
+                      }, [
+                        createVNode(_sfc_main$5, {
+                          tone: "about",
+                          variant: "shards"
+                        })
+                      ])
+                    ])
                   ];
                 }
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(ssrRenderComponent(unref(Link), {
-              href: "/work",
-              class: "hero-secondary"
-            }, {
-              default: withCtx((_2, _push3, _parent3, _scopeId2) => {
-                if (_push3) {
-                  _push3(`Selected work <span${_scopeId2}>↗</span>`);
-                } else {
-                  return [
-                    createTextVNode("Selected work "),
-                    createVNode("span", null, "↗")
-                  ];
-                }
-              }),
-              _: 1
-            }, _parent2, _scopeId));
-            _push2(`</div></section></div>`);
+            _push2(`</div>`);
           } else {
             return [
               createVNode("div", { class: "inner-page about-page has-atmosphere" }, [
@@ -592,38 +731,64 @@ const _sfc_main = {
                       _: 1
                     })
                   ]),
-                  createVNode(unref(motion).figure, {
-                    class: "about-portrait-frame",
+                  createVNode(unref(motion).div, {
                     initial: { opacity: 0, scale: 0.94 },
                     animate: { opacity: 1, scale: 1 },
                     transition: { duration: 0.75, delay: 0.08 }
                   }, {
                     default: withCtx(() => [
-                      __props.profile?.photo_path ? (openBlock(), createBlock("img", {
-                        key: 0,
-                        src: __props.profile.photo_path,
-                        alt: __props.profile.name
-                      }, null, 8, ["src", "alt"])) : (openBlock(), createBlock("div", {
-                        key: 1,
-                        class: "about-portrait-fallback"
-                      }, "IN"))
+                      createVNode(_sfc_main$3, {
+                        max: 6,
+                        class: "about-portrait-tilt"
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("figure", { class: "about-portrait-frame" }, [
+                            __props.profile?.photo_path ? (openBlock(), createBlock("img", {
+                              key: 0,
+                              src: __props.profile.photo_path,
+                              alt: __props.profile.name
+                            }, null, 8, ["src", "alt"])) : (openBlock(), createBlock("div", {
+                              key: 1,
+                              class: "about-portrait-fallback"
+                            }, "IN"))
+                          ])
+                        ]),
+                        _: 1
+                      })
                     ]),
                     _: 1
                   })
                 ]),
                 createVNode("section", { class: "about-bio" }, [
-                  createVNode(_sfc_main$3, null, {
-                    default: withCtx(() => [
-                      createVNode("span", { class: "folio-label" }, "02 / STORY"),
-                      createVNode("h2", null, [
-                        createTextVNode("I build the systems"),
-                        createVNode("br"),
-                        createVNode("em", null, "behind the experience.")
+                  createVNode("div", { class: "about-bio-split" }, [
+                    createVNode(_sfc_main$4, null, {
+                      default: withCtx(() => [
+                        createVNode("span", { class: "folio-label" }, "02 / STORY"),
+                        createVNode("h2", null, [
+                          createTextVNode("I build the systems"),
+                          createVNode("br"),
+                          createVNode("em", null, "behind the experience.")
+                        ]),
+                        createVNode("p", { class: "lead-copy" }, toDisplayString(__props.profile?.bio), 1)
                       ]),
-                      createVNode("p", { class: "lead-copy" }, toDisplayString(__props.profile?.bio), 1)
-                    ]),
-                    _: 1
-                  }),
+                      _: 1
+                    }),
+                    createVNode(unref(motion).div, {
+                      class: "section-scene",
+                      initial: { opacity: 0, scale: 0.92 },
+                      "while-in-view": { opacity: 1, scale: 1 },
+                      viewport: { once: true, amount: 0.35 },
+                      transition: { duration: 0.7 }
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_sfc_main$5, {
+                          tone: "about",
+                          variant: "shards"
+                        })
+                      ]),
+                      _: 1
+                    })
+                  ]),
                   createVNode("div", { class: "about-focus" }, [
                     (openBlock(), createBlock(Fragment, null, renderList([
                       { title: "Systems thinking", copy: "APIs, admin tools, commerce and mobile treated as one product — not separate deliveries." },
@@ -648,7 +813,7 @@ const _sfc_main = {
                   ])
                 ]),
                 createVNode("section", { class: "about-studios" }, [
-                  createVNode(_sfc_main$3, null, {
+                  createVNode(_sfc_main$4, null, {
                     default: withCtx(() => [
                       createVNode("header", { class: "about-section-head" }, [
                         createVNode("span", { class: "folio-label" }, "03 / STUDIOS"),
@@ -663,7 +828,7 @@ const _sfc_main = {
                   }),
                   createVNode("div", { class: "about-studio-rail" }, [
                     (openBlock(true), createBlock(Fragment, null, renderList(studios.value, (studio, index) => {
-                      return openBlock(), createBlock(_sfc_main$4, {
+                      return openBlock(), createBlock(_sfc_main$3, {
                         key: studio.name,
                         max: 8
                       }, {
@@ -681,7 +846,7 @@ const _sfc_main = {
                               transition: { delay: Math.min(index * 0.04, 0.28) }
                             }, {
                               default: withCtx(() => [
-                                createVNode(_sfc_main$5, {
+                                createVNode(_sfc_main$6, {
                                   src: studio.logo,
                                   name: studio.name,
                                   size: "md"
@@ -713,7 +878,7 @@ const _sfc_main = {
                   ])
                 ]),
                 createVNode("section", { class: "about-layers" }, [
-                  createVNode(_sfc_main$3, null, {
+                  createVNode(_sfc_main$4, null, {
                     default: withCtx(() => [
                       createVNode("header", { class: "about-section-head" }, [
                         createVNode("span", { class: "folio-label" }, "04 / STACK"),
@@ -750,7 +915,7 @@ const _sfc_main = {
                   key: 0,
                   class: "about-certs"
                 }, [
-                  createVNode(_sfc_main$3, null, {
+                  createVNode(_sfc_main$4, null, {
                     default: withCtx(() => [
                       createVNode("header", { class: "about-section-head" }, [
                         createVNode("span", { class: "folio-label" }, "05 / FOUNDATION"),
@@ -765,51 +930,75 @@ const _sfc_main = {
                   }),
                   createVNode("div", { class: "about-cert-list" }, [
                     (openBlock(true), createBlock(Fragment, null, renderList(__props.certificates, (certificate, index) => {
-                      return openBlock(), createBlock("article", {
-                        key: certificate.id
-                      }, [
-                        createVNode("span", null, toDisplayString(String(index + 1).padStart(2, "0")), 1),
-                        createVNode("div", null, [
-                          createVNode("small", null, toDisplayString(certificate.issuer), 1),
-                          createVNode("h3", null, toDisplayString(certificate.title), 1),
-                          createVNode("p", null, toDisplayString(certificate.description), 1)
+                      return openBlock(), createBlock(unref(motion).article, {
+                        key: certificate.id,
+                        initial: { opacity: 0, y: 16 },
+                        "while-in-view": { opacity: 1, y: 0 },
+                        viewport: { once: true, amount: 0.35 },
+                        transition: { delay: index * 0.05 },
+                        "while-hover": { x: 6 }
+                      }, {
+                        default: withCtx(() => [
+                          createVNode("span", null, toDisplayString(String(index + 1).padStart(2, "0")), 1),
+                          createVNode("div", null, [
+                            createVNode("small", null, toDisplayString(certificate.issuer), 1),
+                            createVNode("h3", null, toDisplayString(certificate.title), 1),
+                            createVNode("p", null, toDisplayString(certificate.description), 1)
+                          ]),
+                          certificate.credential_url ? (openBlock(), createBlock("a", {
+                            key: 0,
+                            href: certificate.credential_url,
+                            target: "_blank",
+                            rel: "noreferrer"
+                          }, "Credential ↗", 8, ["href"])) : createCommentVNode("", true)
                         ]),
-                        certificate.credential_url ? (openBlock(), createBlock("a", {
-                          key: 0,
-                          href: certificate.credential_url,
-                          target: "_blank",
-                          rel: "noreferrer"
-                        }, "Credential ↗", 8, ["href"])) : createCommentVNode("", true)
-                      ]);
+                        _: 2
+                      }, 1032, ["transition"]);
                     }), 128))
                   ])
                 ])) : createCommentVNode("", true),
-                createVNode("section", { class: "page-cta" }, [
-                  createVNode("span", null, "Next"),
-                  createVNode("h2", null, "Now see how the thinking becomes product."),
-                  createVNode("div", { class: "about-hero-actions" }, [
-                    createVNode(unref(Link), {
-                      href: "/experience",
-                      class: "folio-button"
-                    }, {
-                      default: withCtx(() => [
-                        createTextVNode("Explore experience "),
-                        createVNode("span", null, "↗")
+                createVNode(_sfc_main$4, null, {
+                  default: withCtx(() => [
+                    createVNode("section", { class: "page-cta page-cta-split" }, [
+                      createVNode("div", { class: "page-cta-copy" }, [
+                        createVNode("span", null, "Next"),
+                        createVNode("h2", null, "Now see how the thinking becomes product."),
+                        createVNode("div", { class: "about-hero-actions" }, [
+                          createVNode(unref(Link), {
+                            href: "/experience",
+                            class: "folio-button"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Explore experience "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          }),
+                          createVNode(unref(Link), {
+                            href: "/work",
+                            class: "hero-secondary"
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Selected work "),
+                              createVNode("span", null, "↗")
+                            ]),
+                            _: 1
+                          })
+                        ])
                       ]),
-                      _: 1
-                    }),
-                    createVNode(unref(Link), {
-                      href: "/work",
-                      class: "hero-secondary"
-                    }, {
-                      default: withCtx(() => [
-                        createTextVNode("Selected work "),
-                        createVNode("span", null, "↗")
-                      ]),
-                      _: 1
-                    })
-                  ])
-                ])
+                      createVNode("div", {
+                        class: "cta-scene",
+                        "aria-hidden": "true"
+                      }, [
+                        createVNode(_sfc_main$5, {
+                          tone: "about",
+                          variant: "shards"
+                        })
+                      ])
+                    ])
+                  ]),
+                  _: 1
+                })
               ])
             ];
           }
