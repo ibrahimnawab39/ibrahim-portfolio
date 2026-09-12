@@ -1,5 +1,5 @@
 #!/bin/bash
-# Pre-deploy hook for Railway app service.
+# Optional pre-deploy: migrate + seed empty DB + cache.
 set -euo pipefail
 
 php artisan storage:link --force || true
@@ -14,6 +14,7 @@ echo App\Models\User::query()->exists() ? "0" : "1";
 ')"
 
 if [ "$needs_seed" = "1" ]; then
+  echo "Empty database detected — seeding ..."
   php artisan db:seed --force
 fi
 
