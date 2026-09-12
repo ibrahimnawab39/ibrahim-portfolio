@@ -12,18 +12,15 @@ if [ -z "${DB_URL:-}" ] && [ -n "${MYSQL_URL:-}" ]; then
   export DB_URL="$MYSQL_URL"
 fi
 
-# Prefer file cache unless explicitly overridden — avoids login 500 when
-# database cache table is missing after a partial migrate.
-export CACHE_STORE="${CACHE_STORE:-file}"
-
 if [ "${IS_LARAVEL:-}" = "true" ]; then
   echo "DB target: ${DB_CONNECTION}://${DB_USERNAME}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}"
 
   if [ -z "${DB_HOST}" ] && [ -z "${DB_URL:-}" ]; then
-    echo "ERROR: No MySQL host. Set DB_HOST=\${{MySQL.MYSQLHOST}} on the app service."
+    echo "ERROR: No MySQL host. Set DB_HOST=\${{MySQL.MYSQLHOST}} (or share MYSQLHOST) on the app service."
     exit 1
   fi
 
+  # Drop any stale cached config that may still point at sqlite/localhost.
   php artisan optimize:clear
 
   echo "Running migrations ..."
@@ -41,15 +38,6 @@ echo App\Models\User::query()->exists() ? "0" : "1";
     echo "Empty database — seeding portfolio data ..."
     php artisan db:seed --force
   fi
-
-  php -r '
-require "vendor/autoload.php";
-$app = require "bootstrap/app.php";
-$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-foreach (["users", "sessions", "cache", "profiles", "projects"] as $table) {
-    echo $table.":".(Illuminate\Support\Facades\Schema::hasTable($table) ? "ok" : "MISSING").PHP_EOL;
-}
-'
 
   php artisan storage:link --force >/dev/null 2>&1 || true
   php artisan config:cache
